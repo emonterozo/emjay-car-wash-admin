@@ -6,6 +6,8 @@
       //We will have to add the same thing in babel.config.js
       "@app/screens": ["./src/screens"],
       "@app/components": ["./src/components"],
+      "@types/context": ["./src/types/context/types"],
+      "@types/navigation": ["./src/types/navigation/types"]
     }
   }
 }

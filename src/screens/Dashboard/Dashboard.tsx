@@ -50,7 +50,7 @@ function Section({ children, title }: SectionProps): React.JSX.Element {
   );
 }
 
-const Home = () => {
+const Dashboard = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -110,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default Dashboard;

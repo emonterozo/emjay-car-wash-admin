@@ -1,2 +1,14 @@
-export { default as Home } from './Home/Home';
+export { default as Attendance } from './Attendance/Attendance';
+export { default as Consumables } from './Consumables/Consumables';
+export { default as Customers } from './Customers/Customers';
+export { default as Dashboard } from './Dashboard/Dashboard';
+export { default as Employee } from './Employee/Employee';
+export { default as Expenses } from './Expenses/Expenses';
 export { default as Login } from './Login/Login';
+export { default as Ongoing } from './Ongoing/Ongoing';
+export { default as Publish } from './Publish/Publish';
+export { default as Sales } from './Sales/Sales';
+export { default as Scan } from './Scan/Scan';
+export { default as Services } from './Services/Services';
+export { default as Settings } from './Settings/Settings';
+export { default as Transaction } from './Transaction/Transaction';
