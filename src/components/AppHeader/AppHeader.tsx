@@ -1,29 +1,39 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text } from '@ui-kitten/components';
+
+import MaterialCommunityIcon from '../MaterialCommunityIcon/MaterialCommunityIcon';
 
 interface AppHeaderProps {
   title: string;
+  onBack?: () => void;
 }
 
-const AppHeader = ({ title }: AppHeaderProps) => {
+const AppHeader = ({ title, onBack }: AppHeaderProps) => {
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>{title}</Text>
+      {onBack && (
+        <TouchableOpacity onPress={onBack}>
+          <MaterialCommunityIcon name="chevron-left" size={50} color="#04528E" />
+        </TouchableOpacity>
+      )}
+      <Text category="h2" style={styles.title}>
+        {title}
+      </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#f8f8f8',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    flexDirection: 'row',
+    gap: 10,
     alignItems: 'center',
+    marginBottom: 20,
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
+    color: '#333333',
   },
 });
 

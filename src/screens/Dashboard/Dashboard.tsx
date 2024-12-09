@@ -1,112 +1,80 @@
-import React, { PropsWithChildren } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
-} from 'react-native';
-import {
-  Header,
-  Colors,
-  ReloadInstructions,
-  DebugInstructions,
-  LearnMoreLinks,
-} from 'react-native/Libraries/NewAppScreen';
+import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text, Avatar } from '@ui-kitten/components';
+import { useNavigation } from '@react-navigation/native';
 
-import { AppHeader } from '@app/components';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({ children, title }: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}
-      >
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}
-      >
-        {children}
-      </Text>
-    </View>
-  );
-}
+import { DASHBOARD_ITEMS } from '../../utils/constant/constant';
+import { MaterialCommunityIcon } from '@app/components';
 
 const Dashboard = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const navigation = useNavigation<any>();
 
   return (
-    <View>
-      <AppHeader title="Home" />
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-          <Header />
-          <View
-            style={{
-              backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            }}
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.heading}>
+        <Avatar size="giant" source={require('../../../assets/images/human.png')} />
+        <Text category="h5" status="info" style={styles.greeting}>
+          Good Day Admin!
+        </Text>
+      </View>
+      <View style={styles.listContainer}>
+        {DASHBOARD_ITEMS.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={styles.itemContainer}
+            onPress={() => navigation.navigate(item.screen)}
           >
-            <Section title="Step One">
-              Edit <Text style={styles.highlight}>App.tsx</Text> to change this screen and then come
-              back to see your edits.
-            </Section>
-            <Section title="See Your Changes">
-              <ReloadInstructions />
-            </Section>
-            <Section title="Debug">
-              <DebugInstructions />
-            </Section>
-            <Section title="Learn More">Read the docs to discover what to do next:</Section>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcon name={item.icon} size={32} color="#FFFFFF" />
+            </View>
+            <Text style={styles.itemText}>{item.title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: '#F7F9FC',
+    padding: 16,
   },
-  sectionTitle: {
-    fontSize: 24,
+  heading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 24,
+  },
+  greeting: {
+    fontWeight: 'bold',
+  },
+  listContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  itemContainer: {
+    width: '30%',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  iconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#04528E',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  itemText: {
+    fontSize: 12,
+    textAlign: 'center',
+    color: '#333333',
     fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
   },
 });
 

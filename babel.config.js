@@ -9,8 +9,10 @@ module.exports = {
           // This has to be mirrored in tsconfig.json
           '@app/screens': './src/screens',
           '@app/components': './src/components',
-          '@types/context': './src/types/context/types',
-          '@types/navigation': './src/types/navigation/types',
+          '@app/context': './src/context/GlobalContext.tsx',
+          '@app/metrics': './src/utils/helpers/metrics.tsx',
+          '@app/constant': './src/utils/constant/constant.ts',
+          '@types/context': './src/types/context/types.ts',
         },
       },
     ],

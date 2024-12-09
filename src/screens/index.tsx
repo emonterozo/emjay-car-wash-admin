@@ -1,6 +1,7 @@
 export { default as Attendance } from './Attendance/Attendance';
 export { default as Consumables } from './Consumables/Consumables';
 export { default as Customers } from './Customers/Customers';
+export { default as CustomerDetails } from './CustomerDetails/CustomerDetails';
 export { default as Dashboard } from './Dashboard/Dashboard';
 export { default as Employee } from './Employee/Employee';
 export { default as Expenses } from './Expenses/Expenses';

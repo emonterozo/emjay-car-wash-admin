@@ -17,10 +17,11 @@ import {
   Services,
   Settings,
   Transaction,
+  CustomerDetails,
 } from '@app/screens';
-import { AuthStackParamList } from 'src/types/navigation/types';
-import GlobalContext from 'src/context/GlobalContext';
-import { TUser } from 'src/types/context/types';
+import GlobalContext from '@app/context';
+import { AuthStackParamList } from '../types/navigation/types';
+import { TUser } from '../types/context/types';
 
 const UnAuthStack = createStackNavigator();
 const AuthStack = createStackNavigator<AuthStackParamList>();
@@ -41,10 +42,11 @@ const Navigation = () => {
       <GlobalContext.Provider value={initialContext}>
         {user.id.length > 0 ? (
           <AuthStack.Navigator initialRouteName="Dashboard" screenOptions={{ headerShown: false }}>
+            <AuthStack.Screen name="Dashboard" component={Dashboard} />
             <AuthStack.Screen name="Attendance" component={Attendance} />
             <AuthStack.Screen name="Consumables" component={Consumables} />
             <AuthStack.Screen name="Customers" component={Customers} />
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
+            <AuthStack.Screen name="CustomerDetails" component={CustomerDetails} />
             <AuthStack.Screen name="Employee" component={Employee} />
             <AuthStack.Screen name="Expenses" component={Expenses} />
             <AuthStack.Screen name="Ongoing" component={Ongoing} />

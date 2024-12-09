@@ -5,6 +5,7 @@ export type AuthStackParamList = {
   Attendance: undefined;
   Consumables: undefined;
   Customers: undefined;
+  CustomerDetails: { id: string };
   Dashboard: undefined;
   Employee: undefined;
   Expenses: undefined;
@@ -19,4 +20,4 @@ export type AuthStackParamList = {
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
 
-export type AttendanceRouteProp = RouteProp<AuthStackParamList, 'Attendance'>;
+export type CustomerDetailsRouteProp = RouteProp<AuthStackParamList, 'CustomerDetails'>;
