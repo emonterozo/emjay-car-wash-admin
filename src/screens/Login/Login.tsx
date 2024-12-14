@@ -1,7 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Input, Icon, IconProps, Spinner } from '@ui-kitten/components';
-import { Dimensions, Image, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 import GlobalContext from '@app/context';
 import { horizontalScale, verticalScale } from '@app/metrics';
@@ -46,44 +55,53 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
-      <View style={styles.formContainer}>
-        <Input
-          disabled={screenStatus.isLoading}
-          maxLength={20}
-          accessoryLeft={renderInputIcon('person-outline')}
-          placeholder="Username"
-          onChangeText={(text) => onChange('username', text)}
-          style={styles.input}
-          size="large"
-        />
-        <Input
-          disabled={screenStatus.isLoading}
-          maxLength={64}
-          secureTextEntry={isPasswordSecure}
-          accessoryLeft={renderInputIcon('lock-outline')}
-          accessoryRight={renderIcon}
-          placeholder="Password"
-          onChangeText={(text) => onChange('password', text)}
-          style={styles.input}
-          size="large"
-        />
-        <Button
-          size="large"
-          disabled={screenStatus.isLoading || hasNoInput()}
-          accessoryLeft={
-            screenStatus.isLoading ? (
-              <View>
-                <Spinner />
-              </View>
-            ) : undefined
-          }
-          onPress={login}
-          style={styles.button}
-        >
-          {screenStatus.isLoading ? undefined : 'Sign In'}
-        </Button>
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.avoidingView}
+      >
+        <ScrollView bounces={false} contentContainerStyle={styles.scrollView}>
+          <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
+          <View style={styles.formContainer}>
+            <Input
+              disabled={screenStatus.isLoading}
+              maxLength={20}
+              accessoryLeft={renderInputIcon('person-outline')}
+              placeholder="Username"
+              onChangeText={(text) => onChange('username', text)}
+              style={styles.input}
+              size="large"
+              status="default"
+            />
+            <Input
+              disabled={screenStatus.isLoading}
+              maxLength={64}
+              secureTextEntry={isPasswordSecure}
+              accessoryLeft={renderInputIcon('lock-outline')}
+              accessoryRight={renderIcon}
+              placeholder="Password"
+              onChangeText={(text) => onChange('password', text)}
+              style={styles.input}
+              size="large"
+              status="default"
+            />
+            <Button
+              size="large"
+              disabled={screenStatus.isLoading || hasNoInput()}
+              accessoryLeft={
+                screenStatus.isLoading ? (
+                  <View>
+                    <Spinner />
+                  </View>
+                ) : undefined
+              }
+              onPress={login}
+              style={styles.button}
+            >
+              {screenStatus.isLoading ? undefined : 'Sign In'}
+            </Button>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -91,9 +109,16 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#f7f9fc',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 24,
+  },
+  avoidingView: {
+    flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
   },
   image: {
     width: horizontalScale(Dimensions.get('window').width),
@@ -105,11 +130,12 @@ const styles = StyleSheet.create({
   formContainer: {
     width: '100%',
     alignSelf: 'center',
+    backgroundColor: 'transparent',
   },
   input: {
     marginBottom: verticalScale(16),
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 8,

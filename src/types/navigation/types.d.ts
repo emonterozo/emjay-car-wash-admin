@@ -1,6 +1,12 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
 
+export type CarwashList = {
+  icon: string;
+  size: string;
+  description: string;
+};
+
 export type AuthStackParamList = {
   Attendance: undefined;
   Consumables: undefined;
@@ -24,9 +30,21 @@ export type AuthStackParamList = {
   Services: undefined;
   Settings: undefined;
   Transaction: undefined;
+  AddOngoing: {
+    customerId?: string;
+    firstName?: string;
+    lastName?: string;
+    freeCarwashList?: CarwashList[];
+  };
+  PreTransaction: { id: string };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
 
 export type CustomerDetailsRouteProp = RouteProp<AuthStackParamList, 'CustomerDetails'>;
+
+export type PreTransactionsRouteProp = RouteProp<AuthStackParamList, 'PreTransaction'>;
+
+export type AddOngoingRouteProp = RouteProp<AuthStackParamList, 'AddOngoing'>;
+
 export type EmployeeDetailsRouteProp = RouteProp<AuthStackParamList, 'EmployeeDetails'>;

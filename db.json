@@ -1,0 +1,334 @@
+{
+  "services": [
+    {
+      "id": "1734114800299-bdxmu9m81",
+      "title": "Complete Wash",
+      "description": "A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 250
+        },
+        {
+          "category": "md",
+          "price": 350
+        },
+        {
+          "category": "lg",
+          "price": 450
+        },
+        {
+          "category": "xl",
+          "price": 550
+        },
+        {
+          "category": "xxl",
+          "price": 650
+        }
+      ]
+    },
+    {
+      "id": "1734114800299-bdxmu9m82",
+      "title": "Complete Wash",
+      "description": "A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.",
+      "type": "motorcycle",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 80
+        },
+        {
+          "category": "md",
+          "price": 100
+        },
+        {
+          "category": "lg",
+          "price": 120
+        }
+      ]
+    },
+    {
+      "id": "1734114800299-bdxmu9m83",
+      "title": "Seat Cover Removal",
+      "description": "Give your car a showroom shine with our waxing and polishing service.",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "All Size",
+          "price": 250
+        }
+      ]
+    },
+    {
+      "id": "1734114800299-bdxmu9m84",
+      "title": "Interior Cleaning",
+      "description": "Deep cleaning for the interior. Refresh your car’s interior with our service.",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 250
+        },
+        {
+          "category": "md",
+          "price": 350
+        },
+        {
+          "category": "lg",
+          "price": 450
+        },
+        {
+          "category": "xl",
+          "price": 550
+        },
+        {
+          "category": "xxl",
+          "price": 650
+        }
+      ]
+    },
+    {
+      "id": "1734114800299-bdxmu9m85",
+      "title": "Wax & Polish",
+      "description": "Give your car a showroom shine with our waxing and polishing service.",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 250
+        },
+        {
+          "category": "md",
+          "price": 350
+        },
+        {
+          "category": "lg",
+          "price": 450
+        },
+        {
+          "category": "xl",
+          "price": 550
+        },
+        {
+          "category": "xxl",
+          "price": 650
+        }
+      ]
+    },
+    {
+      "id": "1734114800299-bdxmu9m86",
+      "title": "Motor Buffing",
+      "description": "Give your car a showroom shine with our waxing and polishing service.",
+      "type": "motorcycle",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 250
+        },
+        {
+          "category": "md",
+          "price": 350
+        },
+        {
+          "category": "lg",
+          "price": 450
+        }
+      ]
+    }
+  ],
+  "customers": [
+    {
+      "id": "customer-one",
+      "first_name": "Customer",
+      "last_name": "One",
+      "contact_number": "+0987654321",
+      "password": "securepassword123",
+      "date_added": "November 20, 2024",
+      "motor_services_count": [
+        {
+          "size": "sm",
+          "count": 0
+        },
+        {
+          "size": "md",
+          "count": 0
+        },
+        {
+          "size": "lg",
+          "count": 0
+        }
+      ],
+      "car_services_count": [
+        {
+          "size": "sm",
+          "count": 0
+        },
+        {
+          "size": "md",
+          "count": 0
+        },
+        {
+          "size": "lg",
+          "count": 0
+        },
+        {
+          "size": "xl",
+          "count": 0
+        },
+        {
+          "size": "xxl",
+          "count": 0
+        }
+      ],
+      "transactions": []
+    },
+    {
+      "id": "customer-two",
+      "first_name": "Customer",
+      "last_name": "Two",
+      "contact_number": "+0987654321",
+      "password": "securepassword123",
+      "date_added": "November 21, 2024",
+      "motor_services_count": [
+        {
+          "size": "sm",
+          "count": 0
+        },
+        {
+          "size": "md",
+          "count": 0
+        },
+        {
+          "size": "lg",
+          "count": 10
+        }
+      ],
+      "car_services_count": [
+        {
+          "size": "sm",
+          "count": 0
+        },
+        {
+          "size": "md",
+          "count": 10
+        },
+        {
+          "size": "lg",
+          "count": 0
+        },
+        {
+          "size": "xl",
+          "count": 0
+        },
+        {
+          "size": "xxl",
+          "count": 0
+        }
+      ],
+      "transactions": []
+    }
+  ],
+  "employees": [
+    {
+      "id": "employee-one",
+      "first_name": "Employee",
+      "last_name": "One",
+      "contact_number": "+1234567890",
+      "date_started": "November 01, 2024",
+      "employee_title": "Car wash Boy",
+      "status": "active",
+      "transactions_count": 0,
+      "transactions": []
+    },
+    {
+      "id": "employee-two",
+      "first_name": "Employee",
+      "last_name": "Two",
+      "contact_number": "+1234567890",
+      "date_started": "November 01, 2024",
+      "employee_title": "Car wash Boy",
+      "status": "active",
+      "transactions_count": 0,
+      "transactions": []
+    }
+  ],
+  "ongoing": [
+    {
+      "id": "1734159139804-6qvpue3wq",
+      "customer_id": "customer-one",
+      "first_name": "Customer",
+      "last_name": "One",
+      "vehicle_type": "car",
+      "vehicle_size": "sm",
+      "model": "Car small",
+      "plate_number": "NFI9272",
+      "contact_number": "09122011108",
+      "date": "December 14, 2024 02:52 PM",
+      "is_completed": false,
+      "pre_transaction": [
+        {
+          "id": "1734159299618-d6ytpgx6i",
+          "service": "Seat Cover Removal",
+          "amount": 250,
+          "company_earnings": 150,
+          "employee_share": 100,
+          "assigned_employee": [
+            "Jane Third"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1734159190141-bvitb3cdn",
+      "customer_id": "",
+      "first_name": "",
+      "last_name": "",
+      "vehicle_type": "car",
+      "vehicle_size": "md",
+      "model": "Car Medium",
+      "plate_number": "NFI9276",
+      "contact_number": "09122011108",
+      "date": "December 14, 2024 02:53 PM",
+      "is_completed": false,
+      "pre_transaction": [
+        {
+          "id": "1734159276941-eiwdgiuvr",
+          "service": "Complete Wash",
+          "amount": 350,
+          "company_earnings": 210,
+          "employee_share": 140,
+          "assigned_employee": [
+            "John First",
+            "John Second"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1734159236739-v7uho3cc2",
+      "customer_id": "customer-two",
+      "first_name": "Customer",
+      "last_name": "Two",
+      "vehicle_type": "motorcycle",
+      "vehicle_size": "lg",
+      "model": "Motorcycle Large",
+      "plate_number": "932XDR",
+      "contact_number": "09122011108",
+      "date": "December 14, 2024 02:53 PM",
+      "is_completed": false,
+      "pre_transaction": [
+        {
+          "id": "1734159260632-np3fea6ek",
+          "service": "Motor Buffing",
+          "amount": 450,
+          "company_earnings": 270,
+          "employee_share": 180,
+          "assigned_employee": [
+            "Jane First"
+          ]
+        }
+      ]
+    }
+  ]
+}

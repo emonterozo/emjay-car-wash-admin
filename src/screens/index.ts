@@ -14,3 +14,5 @@ export { default as Scan } from './Scan/Scan';
 export { default as Services } from './Services/Services';
 export { default as Settings } from './Settings/Settings';
 export { default as Transaction } from './Transaction/Transaction';
+export { default as AddOngoing } from './AddOngoing/AddOngoing';
+export { default as PreTransaction } from './PreTransaction/PreTransaction';

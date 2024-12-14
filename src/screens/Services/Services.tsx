@@ -3,97 +3,41 @@ import { Button, Card, Modal, Text, useTheme } from '@ui-kitten/components';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
 
-import { AppHeader, EmptyState, LoadingAnimation, MaterialCommunityIcon } from '@app/components';
-
-const servicesData = [
-  {
-    id: '1',
-    title: 'Complete Wash',
-    description: 'A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.',
-    icon: 'car-hatchback',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '2',
-    title: 'Motor Buffing',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    icon: 'motorbike',
-    price_list: [{ category: 'All Size', price: 250 }],
-  },
-  {
-    id: '3',
-    title: 'Interior Cleaning',
-    description: 'Deep cleaning for the interior. Refresh your car’s interior with our service.',
-    icon: 'motorbike',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '4',
-    title: 'Wax & Polish',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    icon: 'car-hatchback',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '5',
-    title: 'Motor Buffing',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    icon: 'motorbike',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-    ],
-  },
-];
-
-const getServicesRequest = () => {
-  return axios
-    .get('https://fake-json-api.mock.beeceptor.com/users')
-    .then((res) => res.data)
-    .catch((err) => {
-      throw err;
-    });
-};
+import {
+  AppHeader,
+  EmptyState,
+  ErrorModal,
+  LoadingAnimation,
+  MaterialCommunityIcon,
+} from '@app/components';
+import { getServicesRequest } from '@app/services';
+import { ERR_NETWORK } from '@app/constant';
+import { Service, ServicePrice } from '../../types/services/types';
+import { ErrorModalProps } from '../../components/ErrorModal/ErrorModal';
 
 const Services = () => {
   const theme = useTheme();
   const navigation = useNavigation();
   const [screenStatus, setScreenStatus] = useState({
-    isLoading: true,
+    isLoading: false,
     error: '',
   });
-  const [services, setServices] = useState([]);
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [selectedServices, setSelectedServices] = useState<ServicePrice[]>([]);
 
-  const fetchServices = async () => {
+  const fetchServices = () => {
+    setScreenStatus({ error: '', isLoading: true });
     getServicesRequest()
-      .then((_res) => {
+      .then((response) => {
         setScreenStatus({ ...screenStatus, isLoading: false });
-        setServices(servicesData);
+        setServices(response);
       })
-      .catch((_err) => {
-        setScreenStatus({ isLoading: false, error: 'network' });
+      .catch((error) => {
+        setScreenStatus({
+          isLoading: false,
+          error: error.code === ERR_NETWORK ? 'network' : 'server',
+        });
       });
   };
 
@@ -102,7 +46,14 @@ const Services = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const renderItem = ({ item }) => (
+  const handlePressBack = () => {
+    setScreenStatus({ ...screenStatus, error: '' });
+    navigation.goBack();
+  };
+
+  const handlePressClose = () => setSelectedServices([]);
+
+  const renderItem = ({ item }: { item: Service }) => (
     <Card
       style={styles.card}
       status="primary"
@@ -111,8 +62,12 @@ const Services = () => {
     >
       <View style={styles.cardContent}>
         <View style={styles.header}>
-          <MaterialCommunityIcon name={item.icon} size={32} color={theme['color-info-500']} />
-          <Text category="h5" style={styles.headerTitle}>
+          <MaterialCommunityIcon
+            name={item.type === 'car' ? 'car-hatchback' : 'motorbike'}
+            size={32}
+            color={theme['color-info-500']}
+          />
+          <Text category="h5" status="info" style={styles.headerTitle}>
             {item.title}
           </Text>
         </View>
@@ -136,7 +91,13 @@ const Services = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LoadingAnimation isLoading={screenStatus.isLoading} />
-      <AppHeader title="Services" onBack={() => navigation.goBack()} />
+      <ErrorModal
+        isVisible={screenStatus.error !== ''}
+        variant={screenStatus.error as ErrorModalProps['variant']}
+        onRetry={fetchServices}
+        onCancel={handlePressBack}
+      />
+      <AppHeader title="Services" onBack={handlePressBack} />
       <FlatList
         data={services}
         keyExtractor={(item) => item.id}
@@ -166,7 +127,7 @@ const Services = () => {
               </View>
             ))}
           </View>
-          <Button style={styles.closeButton} status="info" onPress={() => setSelectedServices([])}>
+          <Button style={styles.closeButton} status="info" onPress={handlePressClose}>
             Close
           </Button>
         </Card>
@@ -201,7 +162,6 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontWeight: 'bold',
-    color: '#04528E',
   },
   description: {
     marginVertical: 8,

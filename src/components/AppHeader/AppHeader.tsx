@@ -17,7 +17,7 @@ const AppHeader = ({ title, onBack }: AppHeaderProps) => {
           <MaterialCommunityIcon name="chevron-left" size={50} color="#04528E" />
         </TouchableOpacity>
       )}
-      <Text category="h2" style={styles.title}>
+      <Text category="h4" style={styles.title}>
         {title}
       </Text>
     </View>

@@ -1,41 +1,56 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { AppHeader, MaterialCommunityIcon } from '@app/components';
+import {
+  AppHeader,
+  EmptyState,
+  ErrorModal,
+  LoadingAnimation,
+  MaterialCommunityIcon,
+} from '@app/components';
 import { useNavigation } from '@react-navigation/native';
 import { Card, Text } from '@ui-kitten/components';
+
+import { ERR_NETWORK } from '@app/constant';
+import { getCustomersRequest } from '@app/services';
 import { NavigationProp } from '../../types/navigation/types';
-
-type Customer = {
-  id: string;
-  fullName: string;
-  phoneNumber: string;
-  email: string;
-  dateStarted: string;
-};
-
-const employees = [
-  {
-    id: '1',
-    fullName: 'John Doe',
-    phoneNumber: '09122011108',
-    email: 'test@gmail.com',
-    dateStarted: 'January 15, 2020',
-  },
-  {
-    id: '2',
-    fullName: 'Jane Smith',
-    phoneNumber: '09122011108',
-    email: 'test@gmail.com',
-    dateStarted: 'March 2, 2018',
-  },
-];
+import { Customer } from '../../types/services/types';
+import { ErrorModalProps } from '../../components/ErrorModal/ErrorModal';
 
 const Customers = () => {
   const navigation = useNavigation<NavigationProp>();
+  const [screenStatus, setScreenStatus] = useState({
+    isLoading: false,
+    error: '',
+  });
+  const [customers, setCustomers] = useState<Customer[]>([]);
 
-  const renderEmployeeItem = ({ item }: { item: Customer }) => {
+  const fetchCustomers = () => {
+    setScreenStatus({ error: '', isLoading: true });
+    getCustomersRequest()
+      .then((response) => {
+        setScreenStatus({ ...screenStatus, isLoading: false });
+        setCustomers(response);
+      })
+      .catch((error) => {
+        setScreenStatus({
+          isLoading: false,
+          error: error.code === ERR_NETWORK ? 'network' : 'server',
+        });
+      });
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handlePressBack = () => {
+    setScreenStatus({ ...screenStatus, error: '' });
+    navigation.goBack();
+  };
+
+  const renderCustomer = ({ item }: { item: Customer }) => {
     return (
       <Card
         style={styles.card}
@@ -43,32 +58,18 @@ const Customers = () => {
         onPress={() => navigation.navigate('CustomerDetails', { id: item.id })}
       >
         <View style={styles.cardContent}>
-          {/* Header Section */}
           <View style={styles.header}>
             <MaterialCommunityIcon name="account-circle" size={32} color="#04528E" />
             <Text category="h5" style={styles.headerTitle}>
-              {item.fullName}
+              {`${item.first_name} ${item.last_name}`}
             </Text>
           </View>
-
-          {/* Employee Title */}
           <Text category="p1" appearance="hint" style={styles.description}>
-            {item.phoneNumber}
+            {item.contact_number}
           </Text>
-          <Text category="p1" appearance="hint" style={styles.description}>
-            {item.email}
-          </Text>
-
-          {/* <View style={[styles.statusContainer]}>
-          <Text style={styles.statusText}>{item.status}</Text>
-        </View> */}
-
-          {/* Date Started */}
           <Text category="s2" style={styles.dateStarted}>
-            Started: {item.dateStarted}
+            Started: {item.date_added}
           </Text>
-
-          {/* Footer Section */}
           <View style={styles.footer}>
             <Text category="s1" status="info" style={styles.footerText}>
               View Details
@@ -82,13 +83,21 @@ const Customers = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader title="Customers" onBack={() => navigation.goBack()} />
+      <AppHeader title="Customers" onBack={handlePressBack} />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal
+        isVisible={screenStatus.error !== ''}
+        variant={screenStatus.error as ErrorModalProps['variant']}
+        onRetry={fetchCustomers}
+        onCancel={handlePressBack}
+      />
       <FlatList
-        data={employees}
-        renderItem={renderEmployeeItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContainer}
+        data={customers}
+        keyExtractor={(item) => item.id}
+        renderItem={renderCustomer}
+        contentContainerStyle={[styles.list, customers.length === 0 && styles.empty]}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<EmptyState />}
       />
     </SafeAreaView>
   );
@@ -100,8 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 16,
   },
-  listContainer: {
-    paddingHorizontal: 16,
+  list: {
     paddingBottom: 16,
   },
   card: {
@@ -139,6 +147,9 @@ const styles = StyleSheet.create({
   footerText: {
     fontWeight: '600',
     color: '#04528E',
+  },
+  empty: {
+    flex: 1,
   },
 });
 

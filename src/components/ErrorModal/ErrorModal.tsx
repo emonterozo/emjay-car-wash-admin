@@ -4,7 +4,7 @@ import { Modal, Card, Text, Button } from '@ui-kitten/components';
 
 import { IMAGES } from '@app/constant';
 
-type ErrorModalProps = {
+export type ErrorModalProps = {
   isVisible: boolean;
   variant: 'network' | 'server';
   onRetry: () => void;
