@@ -4,6 +4,7 @@ export { default as Customers } from './Customers/Customers';
 export { default as CustomerDetails } from './CustomerDetails/CustomerDetails';
 export { default as Dashboard } from './Dashboard/Dashboard';
 export { default as Employee } from './Employee/Employee';
+export { default as EmployeeDetails } from './EmployeeDetails/EmployeeDetails';
 export { default as Expenses } from './Expenses/Expenses';
 export { default as Login } from './Login/Login';
 export { default as Ongoing } from './Ongoing/Ongoing';
