@@ -13,6 +13,7 @@ const employees = [
     title: 'Software Engineer',
     status: 'Active',
     dateStarted: 'January 15, 2020',
+    contact: '09091114321',
   },
   {
     id: 2,
@@ -20,6 +21,7 @@ const employees = [
     title: 'Product Manager',
     status: 'Inactive',
     dateStarted: 'March 2, 2018',
+    contact: '0990123456',
   },
 ];
 
@@ -28,7 +30,20 @@ const Employee = () => {
 
   const renderEmployeeItem = ({ item }) => {
     return (
-      <Card style={styles.card} status={item.status === 'Active' ? 'success' : 'warning'}>
+      <Card
+        style={styles.card}
+        status={item.status === 'Active' ? 'success' : 'warning'}
+        onPress={() =>
+          navigation.navigate('EmployeeDetails', {
+            id: item.id,
+            fullName: item.fullName,
+            title: item.title,
+            status: item.status,
+            dateStarted: item.dateStarted,
+            contact: item.contact,
+          })
+        }
+      >
         <View style={styles.cardContent}>
           {/* Header Section */}
           <View style={styles.header}>

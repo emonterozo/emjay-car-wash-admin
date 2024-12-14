@@ -8,6 +8,14 @@ export type AuthStackParamList = {
   CustomerDetails: { id: string };
   Dashboard: undefined;
   Employee: undefined;
+  EmployeeDetails: {
+    id: string;
+    fullName: string;
+    title: string;
+    status: string;
+    dateStarted: string;
+    contact: string;
+  };
   Expenses: undefined;
   Ongoing: undefined;
   Publish: undefined;
@@ -21,3 +29,4 @@ export type AuthStackParamList = {
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
 
 export type CustomerDetailsRouteProp = RouteProp<AuthStackParamList, 'CustomerDetails'>;
+export type EmployeeDetailsRouteProp = RouteProp<AuthStackParamList, 'EmployeeDetails'>;

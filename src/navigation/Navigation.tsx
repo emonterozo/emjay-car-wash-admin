@@ -8,6 +8,7 @@ import {
   Customers,
   Dashboard,
   Employee,
+  EmployeeDetails,
   Expenses,
   Login,
   Ongoing,
@@ -48,6 +49,7 @@ const Navigation = () => {
             <AuthStack.Screen name="Customers" component={Customers} />
             <AuthStack.Screen name="CustomerDetails" component={CustomerDetails} />
             <AuthStack.Screen name="Employee" component={Employee} />
+            <AuthStack.Screen name="EmployeeDetails" component={EmployeeDetails} />
             <AuthStack.Screen name="Expenses" component={Expenses} />
             <AuthStack.Screen name="Ongoing" component={Ongoing} />
             <AuthStack.Screen name="Publish" component={Publish} />
