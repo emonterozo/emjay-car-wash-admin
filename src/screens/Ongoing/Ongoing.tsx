@@ -104,7 +104,7 @@ const Ongoing = () => {
           Plate Number: {item.plate_number}
         </Text>
         <Text category="s1" style={styles.detailText}>
-          Check In: {item.date}
+          Check In: {item.check_in}
         </Text>
         <View style={styles.buttonsContainer}>
           <Button

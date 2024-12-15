@@ -36,9 +36,13 @@ export type PreTransaction = {
   id: string;
   service_id: string;
   service: string;
-  amount: number;
+  price: number;
   company_earnings: number;
   employee_share: number;
+  is_done: boolean;
+  is_free: boolean;
+  completed_on: string;
+  assigned_employee_id: string[];
   assigned_employee: string[];
 };
 
@@ -52,7 +56,7 @@ export type OngoingService = {
   model: string;
   plate_number: string;
   contact_number: string;
+  check_in: string;
   is_completed: false;
-  date: string;
   pre_transaction: PreTransaction[];
 };

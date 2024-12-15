@@ -1,37 +1,37 @@
 {
   "services": [
     {
-      "id": "1734114800299-bdxmu9m81",
-      "title": "Complete Wash",
-      "description": "A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.",
+      "id": "1",
+      "title": "Carwash",
+      "description": "Add sample description here",
       "type": "car",
       "price_list": [
         {
           "category": "sm",
-          "price": 250
+          "price": 130
         },
         {
           "category": "md",
-          "price": 350
+          "price": 150
         },
         {
           "category": "lg",
-          "price": 450
+          "price": 200
         },
         {
           "category": "xl",
-          "price": 550
+          "price": 250
         },
         {
           "category": "xxl",
-          "price": 650
+          "price": 300
         }
       ]
     },
     {
-      "id": "1734114800299-bdxmu9m82",
-      "title": "Complete Wash",
-      "description": "A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.",
+      "id": "2",
+      "title": "Moto Wash",
+      "description": "Add sample description here",
       "type": "motorcycle",
       "price_list": [
         {
@@ -49,21 +49,9 @@
       ]
     },
     {
-      "id": "1734114800299-bdxmu9m83",
-      "title": "Seat Cover Removal",
-      "description": "Give your car a showroom shine with our waxing and polishing service.",
-      "type": "car",
-      "price_list": [
-        {
-          "category": "All Size",
-          "price": 250
-        }
-      ]
-    },
-    {
-      "id": "1734114800299-bdxmu9m84",
-      "title": "Interior Cleaning",
-      "description": "Deep cleaning for the interior. Refresh your car’s interior with our service.",
+      "id": "3",
+      "title": "Hand Wax",
+      "description": "Add sample description here",
       "type": "car",
       "price_list": [
         {
@@ -72,67 +60,363 @@
         },
         {
           "category": "md",
-          "price": 350
+          "price": 300
         },
         {
           "category": "lg",
-          "price": 450
+          "price": 400
         },
         {
           "category": "xl",
-          "price": 550
+          "price": 450
         },
         {
           "category": "xxl",
-          "price": 650
+          "price": 500
         }
       ]
     },
     {
-      "id": "1734114800299-bdxmu9m85",
-      "title": "Wax & Polish",
-      "description": "Give your car a showroom shine with our waxing and polishing service.",
-      "type": "car",
-      "price_list": [
-        {
-          "category": "sm",
-          "price": 250
-        },
-        {
-          "category": "md",
-          "price": 350
-        },
-        {
-          "category": "lg",
-          "price": 450
-        },
-        {
-          "category": "xl",
-          "price": 550
-        },
-        {
-          "category": "xxl",
-          "price": 650
-        }
-      ]
-    },
-    {
-      "id": "1734114800299-bdxmu9m86",
-      "title": "Motor Buffing",
-      "description": "Give your car a showroom shine with our waxing and polishing service.",
+      "id": "4",
+      "title": "Hand Wax",
+      "description": "Add sample description here",
       "type": "motorcycle",
       "price_list": [
         {
           "category": "sm",
-          "price": 250
+          "price": 150
         },
         {
           "category": "md",
-          "price": 350
+          "price": 200
         },
         {
           "category": "lg",
+          "price": 250
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "title": "Buff Wax",
+      "description": "Add sample description here",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 350
+        },
+        {
+          "category": "md",
           "price": 450
+        },
+        {
+          "category": "lg",
+          "price": 500
+        },
+        {
+          "category": "xl",
+          "price": 550
+        },
+        {
+          "category": "xxl",
+          "price": 600
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Buff Wax",
+      "description": "Add sample description here",
+      "type": "motorcycle",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 200
+        },
+        {
+          "category": "md",
+          "price": 250
+        },
+        {
+          "category": "lg",
+          "price": 300
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "title": "Engine Wash",
+      "description": "Add sample description here",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 400
+        },
+        {
+          "category": "md",
+          "price": 400
+        },
+        {
+          "category": "lg",
+          "price": 600
+        },
+        {
+          "category": "xl",
+          "price": 600
+        },
+        {
+          "category": "xxl",
+          "price": 600
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "title": "Bac to Zero",
+      "description": "Add sample description here",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 400
+        },
+        {
+          "category": "md",
+          "price": 400
+        },
+        {
+          "category": "lg",
+          "price": 600
+        },
+        {
+          "category": "xl",
+          "price": 600
+        },
+        {
+          "category": "xxl",
+          "price": 600
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "title": "Asphalt Removal",
+      "description": "Add sample description here",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 200
+        },
+        {
+          "category": "md",
+          "price": 250
+        },
+        {
+          "category": "lg",
+          "price": 300
+        },
+        {
+          "category": "xl",
+          "price": 350
+        },
+        {
+          "category": "xxl",
+          "price": 400
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "title": "Headlight Restoration",
+      "description": "Add sample description here",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "per Headlight",
+          "price": 400
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "title": "3 Step buffing",
+      "description": "Add sample description here",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "per panel",
+          "price": 350
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "title": "Package A",
+      "description": "Wash + Buff Wax + Bac to Zero",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 700
+        },
+        {
+          "category": "md",
+          "price": 800
+        },
+        {
+          "category": "lg",
+          "price": 1100
+        },
+        {
+          "category": "xl",
+          "price": 1200
+        },
+        {
+          "category": "xxl",
+          "price": 1300
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "title": "Package B",
+      "description": "Wash + Engine Wash + Buff Wax",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 700
+        },
+        {
+          "category": "md",
+          "price": 800
+        },
+        {
+          "category": "lg",
+          "price": 1100
+        },
+        {
+          "category": "xl",
+          "price": 1200
+        },
+        {
+          "category": "xxl",
+          "price": 1300
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "title": "Package C",
+      "description": "Wash + Under Wash + Buff Wax",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 700
+        },
+        {
+          "category": "md",
+          "price": 800
+        },
+        {
+          "category": "lg",
+          "price": 1100
+        },
+        {
+          "category": "xl",
+          "price": 1200
+        },
+        {
+          "category": "xxl",
+          "price": 1300
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "title": "Package D",
+      "description": "Wash + Asphalt Removal + Buff Wax",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 500
+        },
+        {
+          "category": "md",
+          "price": 650
+        },
+        {
+          "category": "lg",
+          "price": 800
+        },
+        {
+          "category": "xl",
+          "price": 950
+        },
+        {
+          "category": "xxl",
+          "price": 1100
+        }
+      ]
+    },
+    {
+      "id": "16",
+      "title": "Package E",
+      "description": "Wash + Engine Wash + Under Wash",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 730
+        },
+        {
+          "category": "md",
+          "price": 750
+        },
+        {
+          "category": "lg",
+          "price": 1200
+        },
+        {
+          "category": "xl",
+          "price": 1250
+        },
+        {
+          "category": "xxl",
+          "price": 1300
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "title": "All In",
+      "description": "Wash + Buff Wax + Bac to Zero + Under Wash + Engine Wash + Asphalt Removal",
+      "type": "car",
+      "price_list": [
+        {
+          "category": "sm",
+          "price": 1600
+        },
+        {
+          "category": "md",
+          "price": 1700
+        },
+        {
+          "category": "lg",
+          "price": 2500
+        },
+        {
+          "category": "xl",
+          "price": 2600
+        },
+        {
+          "category": "xxl",
+          "price": 2800
         }
       ]
     }
@@ -144,6 +428,10 @@
       "last_name": "One",
       "contact_number": "+0987654321",
       "password": "securepassword123",
+      "province": "Bulacan",
+      "city": "Marilao",
+      "barangay": "Loma de Gato",
+      "address": "Blk 31 Lot 18 HH2",
       "date_added": "November 20, 2024",
       "motor_services_count": [
         {
@@ -189,6 +477,10 @@
       "last_name": "Two",
       "contact_number": "+0987654321",
       "password": "securepassword123",
+      "province": "Bulacan",
+      "city": "Marilao",
+      "barangay": "Loma de Gato",
+      "address": "Blk 31 Lot 18 HH2",
       "date_added": "November 21, 2024",
       "motor_services_count": [
         {
@@ -264,15 +556,22 @@
       "model": "Car small",
       "plate_number": "NFI9272",
       "contact_number": "09122011108",
-      "date": "December 14, 2024 02:52 PM",
-      "is_completed": false,
+      "check_in": "December 14, 2024 02:52 PM",
+      "is_completed": true,
       "pre_transaction": [
         {
           "id": "1734159299618-d6ytpgx6i",
+          "service_id": "service-id",
           "service": "Seat Cover Removal",
-          "amount": 250,
-          "company_earnings": 150,
+          "price": 250,
+          "company_earnings": 0,
           "employee_share": 100,
+          "is_done": true,
+          "is_free": true,
+          "completed_on": "December 14, 2024 03:53 PM",
+          "assigned_employee_id": [
+            "jane-third"
+          ],
           "assigned_employee": [
             "Jane Third"
           ]
@@ -289,15 +588,23 @@
       "model": "Car Medium",
       "plate_number": "NFI9276",
       "contact_number": "09122011108",
-      "date": "December 14, 2024 02:53 PM",
+      "check_in": "December 14, 2024 02:53 PM",
       "is_completed": false,
       "pre_transaction": [
         {
           "id": "1734159276941-eiwdgiuvr",
+          "service_id": "service-id",
           "service": "Complete Wash",
-          "amount": 350,
+          "price": 350,
           "company_earnings": 210,
           "employee_share": 140,
+          "is_done": false,
+          "completed_on": "December 14, 2024 03:53 PM",
+          "is_free": false,
+          "assigned_employee_id": [
+            "john-first",
+            "john-second"
+          ],
           "assigned_employee": [
             "John First",
             "John Second"
@@ -315,20 +622,79 @@
       "model": "Motorcycle Large",
       "plate_number": "932XDR",
       "contact_number": "09122011108",
-      "date": "December 14, 2024 02:53 PM",
-      "is_completed": false,
+      "check_in": "December 14, 2024 02:53 PM",
+      "is_completed": true,
       "pre_transaction": [
         {
           "id": "1734159260632-np3fea6ek",
+          "service_id": "service-id",
           "service": "Motor Buffing",
-          "amount": 450,
+          "price": 450,
           "company_earnings": 270,
           "employee_share": 180,
+          "is_done": true,
+          "completed_on": "December 14, 2024 03:53 PM",
+          "is_free": false,
+          "assigned_employee_id": [
+            "john-first"
+          ],
           "assigned_employee": [
             "Jane First"
           ]
         }
       ]
+    },
+    {
+      "id": "1734269797441-h2kq3o3cf",
+      "customer_id": "",
+      "first_name": "",
+      "last_name": "",
+      "vehicle_type": "motorcycle",
+      "vehicle_size": "sm",
+      "model": "Yamaha Aerox",
+      "plate_number": "932XDR",
+      "contact_number": "09122011108",
+      "date": "December 15, 2024 09:36 PM",
+      "is_completed": false,
+      "pre_transaction": []
+    }
+  ],
+  "transactions": [
+    {
+      "id": "1734159260632-np3fea6ek",
+      "service_id": "service-id",
+      "vehicle_type": "motorcycle",
+      "vehicle_size": "lg",
+      "model": "Motorcycle Large",
+      "price": 450,
+      "company_earnings": 270,
+      "employee_share": 180,
+      "check_in": "December 14, 2024 02:53 PM",
+      "completed_on": "December 14, 2024 03:53 PM",
+      "is_free": false,
+      "customer_id": "customer-two",
+      "assigned_employee_id": [
+        "john-first"
+      ],
+      "claimed_by": "employee_id"
+    },
+    {
+      "id": "1734159299618-d6ytpgx6i",
+      "service_id": "service-id",
+      "vehicle_type": "car",
+      "vehicle_size": "sm",
+      "model": "Car small",
+      "price": 250,
+      "company_earnings": 0,
+      "employee_share": 100,
+      "check_in": "December 14, 2024 02:53 PM",
+      "completed_on": "December 14, 2024 03:53 PM",
+      "is_free": true,
+      "customer_id": "customer-one",
+      "assigned_employee_id": [
+        "jane-third"
+      ],
+      "claimed_by": "employee_id"
     }
   ]
 }
