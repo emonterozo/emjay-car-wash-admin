@@ -10,16 +10,12 @@ import {
   Text,
   TextInput,
   View,
-  TouchableHighlight,
-  TouchableOpacity,
   Pressable,
 } from 'react-native';
 
 import GlobalContext from '@app/context';
 import { IMAGES } from '@app/constant';
 import { EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
-
-
 
 const Login = () => {
   const { user, setUser } = useContext(GlobalContext);
@@ -79,16 +75,17 @@ const Login = () => {
               <EyeCloseIcon />
             </View>
           </View>
-          <TouchableOpacity activeOpacity={0.2}
-            style={styles.button}
+          <Pressable
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed ? 'rgba(1, 111, 185, 0.7)' : '#016FB9',
+              },
+              styles.button,
+            ]}
             onPress={() => {}}
           >
-            <Text
-              style={styles.buttonText}
-            >
-              Sign In
-            </Text>
-          </TouchableOpacity>
+            <Text style={styles.buttonText}>Sign In</Text>
+          </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -156,7 +153,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     width: Dimensions.get('window').width - 48,
     borderRadius: 49,
-    backgroundColor: '#016FB9',
     justifyContent: 'center',
   },
   buttonText: {
