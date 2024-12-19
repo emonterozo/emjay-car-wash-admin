@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Input, Icon, IconProps, Spinner } from '@ui-kitten/components';
 import {
   Dimensions,
   Image,
@@ -8,13 +7,19 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  TouchableWithoutFeedback,
+  Text,
+  TextInput,
   View,
+  TouchableHighlight,
+  TouchableOpacity,
+  Pressable,
 } from 'react-native';
 
 import GlobalContext from '@app/context';
-import { horizontalScale, verticalScale } from '@app/metrics';
 import { IMAGES } from '@app/constant';
+import { EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
+
+
 
 const Login = () => {
   const { user, setUser } = useContext(GlobalContext);
@@ -29,14 +34,6 @@ const Login = () => {
   });
 
   const toggleSecureEntry = () => setIsPasswordSecure(!isPasswordSecure);
-
-  const renderInputIcon = (icon: string) => <Icon name={icon} />;
-
-  const renderIcon = (props: IconProps): React.ReactElement => (
-    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
-      <Icon {...props} name={isPasswordSecure ? 'eye-off' : 'eye'} />
-    </TouchableWithoutFeedback>
-  );
 
   const login = () => {
     setScreenStatus({ hasError: false, isLoading: true });
@@ -61,45 +58,37 @@ const Login = () => {
       >
         <ScrollView bounces={false} contentContainerStyle={styles.scrollView}>
           <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
-          <View style={styles.formContainer}>
-            <Input
-              disabled={screenStatus.isLoading}
-              maxLength={20}
-              accessoryLeft={renderInputIcon('person-outline')}
-              placeholder="Username"
-              onChangeText={(text) => onChange('username', text)}
-              style={styles.input}
-              size="large"
-              status="default"
-            />
-            <Input
-              disabled={screenStatus.isLoading}
-              maxLength={64}
-              secureTextEntry={isPasswordSecure}
-              accessoryLeft={renderInputIcon('lock-outline')}
-              accessoryRight={renderIcon}
-              placeholder="Password"
-              onChangeText={(text) => onChange('password', text)}
-              style={styles.input}
-              size="large"
-              status="default"
-            />
-            <Button
-              size="large"
-              disabled={screenStatus.isLoading || hasNoInput()}
-              accessoryLeft={
-                screenStatus.isLoading ? (
-                  <View>
-                    <Spinner />
-                  </View>
-                ) : undefined
-              }
-              onPress={login}
-              style={styles.button}
-            >
-              {screenStatus.isLoading ? undefined : 'Sign In'}
-            </Button>
+          <Text style={styles.header}>Welcome Back</Text>
+          <Text style={styles.subHeader}>Sign In to Continue</Text>
+          <View style={styles.form}>
+            <View style={styles.inputContainer}>
+              <UserIcon />
+              <TextInput
+                placeholder="Username"
+                placeholderTextColor="#5C5C5C"
+                style={styles.input}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <LockIcon />
+              <TextInput
+                placeholder="Password"
+                placeholderTextColor="#5C5C5C"
+                style={styles.input}
+              />
+              <EyeCloseIcon />
+            </View>
           </View>
+          <TouchableOpacity activeOpacity={0.2}
+            style={styles.button}
+            onPress={() => {}}
+          >
+            <Text
+              style={styles.buttonText}
+            >
+              Sign In
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -109,43 +98,73 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 24,
+    backgroundColor: '#FAFAFA',
   },
   avoidingView: {
     flex: 1,
   },
   scrollView: {
     flexGrow: 1,
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FAFAFA',
+    alignItems: 'center',
   },
   image: {
-    width: horizontalScale(Dimensions.get('window').width),
-    height: verticalScale(200),
-    marginBottom: verticalScale(30),
-    resizeMode: 'contain',
+    width: 245,
+    height: 147,
     alignSelf: 'center',
+    marginTop: 127,
   },
-  formContainer: {
-    width: '100%',
-    alignSelf: 'center',
-    backgroundColor: 'transparent',
+  header: {
+    fontSize: 40,
+    fontFamily: 'AeonikTRIAL-Bold',
+    fontWeight: 'bold',
+    color: '#050303',
+  },
+  subHeader: {
+    fontSize: 16,
+    fontFamily: 'AeonikTRIAL-Regular',
+    fontWeight: 'regular',
+    textAlign: 'center',
+    color: '#5C5C5C',
+    marginTop: 13,
+  },
+  form: {
+    gap: 26,
+    marginTop: 68,
+  },
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: '#8A8989',
+    paddingHorizontal: 20,
+    paddingVertical: 9,
+    width: Dimensions.get('window').width - 48,
+    borderRadius: 49,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
-    marginBottom: verticalScale(16),
-    borderRadius: 8,
-    backgroundColor: 'transparent',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    flex: 1,
+    fontSize: 16,
+    fontFamily: 'AeonikTRIAL-Regular',
+    fontWeight: 'regular',
+    marginHorizontal: 33,
+    color: '#5C5C5C',
   },
   button: {
-    marginTop: verticalScale(16),
-    borderRadius: 8,
-    paddingVertical: verticalScale(12),
-    paddingHorizontal: horizontalScale(24),
+    marginTop: 128,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    width: Dimensions.get('window').width - 48,
+    borderRadius: 49,
+    backgroundColor: '#016FB9',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 24,
+    fontFamily: 'AeonikTRIAL-Regular',
+    fontWeight: 'regular',
+    textAlign: 'center',
+    color: '#ffffffff',
   },
 });
 

@@ -2,6 +2,30 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/fonts/AeonikTRIAL-Bold.otf",
+      "sha1": "55fc9e1587be9bb25dcf0295a5d258e7a586e6bd"
+    },
+    {
+      "path": "assets/fonts/AeonikTRIAL-BoldItalic.otf",
+      "sha1": "d15985caa5060f1b349de011b341b2c8aa7f5fef"
+    },
+    {
+      "path": "assets/fonts/AeonikTRIAL-Light.otf",
+      "sha1": "a288de8ec36452afb4d5089dea70409f052a1706"
+    },
+    {
+      "path": "assets/fonts/AeonikTRIAL-LightItalic.otf",
+      "sha1": "021d507a6ea8f848d07ff0aa722803d4dcfe3c78"
+    },
+    {
+      "path": "assets/fonts/AeonikTRIAL-Regular.otf",
+      "sha1": "2a3b954437d34dfee57b46f092f7e222d805d445"
+    },
+    {
+      "path": "assets/fonts/AeonikTRIAL-RegularItalic.otf",
+      "sha1": "730c155590eb9417e87599aa9090e7f9f36780d6"
+    },
+    {
       "path": "assets/fonts/Poppins-Black.ttf",
       "sha1": "645e04c53c6b5b35bce654a811ebce16af8aa721"
     },

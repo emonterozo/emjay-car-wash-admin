@@ -34,7 +34,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -70,6 +70,12 @@
 		<string>Poppins-SemiBoldItalic.ttf</string>
 		<string>Poppins-Thin.ttf</string>
 		<string>Poppins-ThinItalic.ttf</string>
+		<string>AeonikTRIAL-Bold.otf</string>
+		<string>AeonikTRIAL-BoldItalic.otf</string>
+		<string>AeonikTRIAL-Light.otf</string>
+		<string>AeonikTRIAL-LightItalic.otf</string>
+		<string>AeonikTRIAL-Regular.otf</string>
+		<string>AeonikTRIAL-RegularItalic.otf</string>
 	</array>
 </dict>
 </plist>

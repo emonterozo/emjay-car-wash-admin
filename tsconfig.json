@@ -10,7 +10,8 @@
       "@app/metrics": ["./src/utils/helpers/metrics.ts"],
       "@app/services": ["./src/services/services.ts"],
       "@app/constant": ["./src/utils/constant/constant.ts"],
-      "@types/context": ["./src/types/context/types.d.ts"]
+      "@types/context": ["./src/types/context/types.d.ts"],
+      "@app/icons": ["./assets/icons"],
     }
   }
 }
