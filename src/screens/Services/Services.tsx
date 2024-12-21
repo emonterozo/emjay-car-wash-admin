@@ -14,7 +14,7 @@ import {
 import { getServicesRequest } from '@app/services';
 import { ERR_NETWORK } from '@app/constant';
 import { Service, ServicePrice } from '../../types/services/types';
-import { ErrorModalProps } from '../../components/ErrorModal/ErrorModal';
+// import { ErrorModalProps } from '../../components/ErrorModal/ErrorModal';
 
 const Services = () => {
   const theme = useTheme();
@@ -93,7 +93,7 @@ const Services = () => {
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         isVisible={screenStatus.error !== ''}
-        variant={screenStatus.error as ErrorModalProps['variant']}
+        // variant={screenStatus.error as ErrorModalProps['variant']}
         onRetry={fetchServices}
         onCancel={handlePressBack}
       />

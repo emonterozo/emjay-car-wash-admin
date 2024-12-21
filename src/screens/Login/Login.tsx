@@ -15,7 +15,9 @@ import {
 
 import GlobalContext from '@app/context';
 import { IMAGES } from '@app/constant';
-import { EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
+import { EyeOpenIcon, EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
+// import { ErrorModal, Toast } from '@app/components';
+// import { Spinner } from '@ui-kitten/components';
 
 const Login = () => {
   const { user, setUser } = useContext(GlobalContext);
@@ -29,15 +31,13 @@ const Login = () => {
     password: '',
   });
 
-  const toggleSecureEntry = () => setIsPasswordSecure(!isPasswordSecure);
-
   const login = () => {
     setScreenStatus({ hasError: false, isLoading: true });
 
     setTimeout(() => {
       setUser({
         ...user,
-        id: 'sample to',
+        id: 'user1',
       });
     }, 5000);
   };
@@ -45,6 +45,19 @@ const Login = () => {
   const hasNoInput = () => input.username.length === 0 || input.password.length === 0;
 
   const onChange = (key: string, text: string) => setInput({ ...input, [key]: text });
+
+  const toggleSecureEntry = () => setIsPasswordSecure(!isPasswordSecure);
+
+  {
+    /* For testing */
+  }
+  // const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  // const errorModal = () => {
+  //   setIsErrorModalVisible(true)
+  // };
+  // const handleSignIn = () => {
+  //   hasNoInput() ? console.log('Please input your Username and Password above to Sign In') : login();
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,6 +76,8 @@ const Login = () => {
                 placeholder="Username"
                 placeholderTextColor="#5C5C5C"
                 style={styles.input}
+                onChangeText={(text) => onChange('username', text)}
+                maxLength={20}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -71,20 +86,34 @@ const Login = () => {
                 placeholder="Password"
                 placeholderTextColor="#5C5C5C"
                 style={styles.input}
+                secureTextEntry={isPasswordSecure}
+                onChangeText={(text) => onChange('password', text)}
+                maxLength={64}
               />
-              <EyeCloseIcon />
+              <Pressable onPress={toggleSecureEntry}>
+                {isPasswordSecure ? <EyeCloseIcon /> : <EyeOpenIcon />}
+              </Pressable>
             </View>
           </View>
+          {/* Sign Button */}
           <Pressable
+            disabled={screenStatus.isLoading || hasNoInput()}
             style={({ pressed }) => [
               {
                 backgroundColor: pressed ? 'rgba(1, 111, 185, 0.7)' : '#016FB9',
               },
               styles.button,
             ]}
-            onPress={() => {}}
+            onPress={login}
           >
-            <Text style={styles.buttonText}>Sign In</Text>
+            {/* For testing */}
+            {/* <ErrorModal
+              isVisible={isErrorModalVisible}
+              onRetry={() => { console.log("retry") }}
+              onCancel={() => { setIsErrorModalVisible(false) }}
+            /> */}
+
+            <Text style={styles.buttonText}>{screenStatus.isLoading ? undefined : 'Sign In'}</Text>
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
