@@ -3,10 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 import {
-  Attendance,
   Consumables,
   Customers,
-  Dashboard,
   Employee,
   EmployeeDetails,
   Expenses,
@@ -14,10 +12,7 @@ import {
   Ongoing,
   Publish,
   Sales,
-  Scan,
   Services,
-  Settings,
-  Transaction,
   CustomerDetails,
   PreTransaction,
   AddOngoing,
@@ -25,6 +20,7 @@ import {
 import GlobalContext from '@app/context';
 import { AuthStackParamList } from '../types/navigation/types';
 import { TUser } from '../types/context/types';
+import BottomTab from './BottomTab';
 
 const UnAuthStack = createStackNavigator();
 const AuthStack = createStackNavigator<AuthStackParamList>();
@@ -44,9 +40,8 @@ const Navigation = () => {
     <NavigationContainer>
       <GlobalContext.Provider value={initialContext}>
         {user.id.length > 0 ? (
-          <AuthStack.Navigator initialRouteName="Dashboard" screenOptions={{ headerShown: false }}>
-            <AuthStack.Screen name="Dashboard" component={Dashboard} />
-            <AuthStack.Screen name="Attendance" component={Attendance} />
+          <AuthStack.Navigator initialRouteName="BottomTab" screenOptions={{ headerShown: false }}>
+            <AuthStack.Screen name="BottomTab" component={BottomTab} />
             <AuthStack.Screen name="Consumables" component={Consumables} />
             <AuthStack.Screen name="Customers" component={Customers} />
             <AuthStack.Screen name="CustomerDetails" component={CustomerDetails} />
@@ -56,10 +51,7 @@ const Navigation = () => {
             <AuthStack.Screen name="Ongoing" component={Ongoing} />
             <AuthStack.Screen name="Publish" component={Publish} />
             <AuthStack.Screen name="Sales" component={Sales} />
-            <AuthStack.Screen name="Scan" component={Scan} />
             <AuthStack.Screen name="Services" component={Services} />
-            <AuthStack.Screen name="Settings" component={Settings} />
-            <AuthStack.Screen name="Transaction" component={Transaction} />
             <AuthStack.Screen name="PreTransaction" component={PreTransaction} />
             <AuthStack.Screen name="AddOngoing" component={AddOngoing} />
           </AuthStack.Navigator>

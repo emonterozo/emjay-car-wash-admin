@@ -16,8 +16,7 @@ import {
 import GlobalContext from '@app/context';
 import { IMAGES } from '@app/constant';
 import { EyeOpenIcon, EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
-// import { ErrorModal, Toast } from '@app/components';
-// import { Spinner } from '@ui-kitten/components';
+import { ErrorModal, LoadingAnimation } from '@app/components';
 
 const Login = () => {
   const { user, setUser } = useContext(GlobalContext);
@@ -32,7 +31,7 @@ const Login = () => {
   });
 
   const login = () => {
-    setScreenStatus({ hasError: false, isLoading: true });
+    setScreenStatus({ hasError: false, isLoading: false });
 
     setTimeout(() => {
       setUser({
@@ -48,19 +47,10 @@ const Login = () => {
 
   const toggleSecureEntry = () => setIsPasswordSecure(!isPasswordSecure);
 
-  {
-    /* For testing */
-  }
-  // const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
-  // const errorModal = () => {
-  //   setIsErrorModalVisible(true)
-  // };
-  // const handleSignIn = () => {
-  //   hasNoInput() ? console.log('Please input your Username and Password above to Sign In') : login();
-  // };
-
   return (
     <SafeAreaView style={styles.container}>
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal isVisible={false} onCancel={() => {}} onRetry={() => {}} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.avoidingView}
@@ -95,7 +85,6 @@ const Login = () => {
               </Pressable>
             </View>
           </View>
-          {/* Sign Button */}
           <Pressable
             disabled={screenStatus.isLoading || hasNoInput()}
             style={({ pressed }) => [
@@ -106,14 +95,7 @@ const Login = () => {
             ]}
             onPress={login}
           >
-            {/* For testing */}
-            {/* <ErrorModal
-              isVisible={isErrorModalVisible}
-              onRetry={() => { console.log("retry") }}
-              onCancel={() => { setIsErrorModalVisible(false) }}
-            /> */}
-
-            <Text style={styles.buttonText}>{screenStatus.isLoading ? undefined : 'Sign In'}</Text>
+            <Text style={styles.buttonText}>Sign In</Text>
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>

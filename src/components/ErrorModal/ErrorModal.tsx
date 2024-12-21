@@ -1,32 +1,21 @@
-import React /*useState*/ from 'react';
+import React from 'react';
 import { StyleSheet, View, Modal, Pressable, Text, Dimensions } from 'react-native';
-// import { Modal, Card, Text, Button } from '@ui-kitten/components';
 
-// import { IMAGES } from '@app/constant';
 import { NetworkErrorIcon } from '@app/icons';
-// import { Text } from 'react-native-svg';
-// import { Icon } from '@ui-kitten/components';
 
 export type ErrorModalProps = {
   isVisible: boolean;
-  // variant: 'network' | 'server'
   onRetry: () => void;
   onCancel: () => void;
 };
 
 const titleText = 'Something went wrong';
-const descriptionText = 'Were actively resolving the issue. Please refresh the page and try again.';
+const descriptionText =
+  "We're actively resolving the issue. Please refresh the page and try again.";
 
 const ErrorModal: React.FC<ErrorModalProps> = ({ isVisible, onCancel, onRetry }) => {
   return (
-    <Modal
-      visible={isVisible}
-      animationType="slide"
-      onRequestClose={() => {
-        onCancel;
-      }}
-      transparent={true}
-    >
+    <Modal visible={isVisible} animationType="slide" onRequestClose={onCancel} transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalViewContainer}>
           <NetworkErrorIcon />
@@ -64,7 +53,6 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ isVisible, onCancel, onRetry })
           </View>
         </View>
       </View>
-      {/* </View> */}
     </Modal>
   );
 };
@@ -76,7 +64,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(141, 141, 141, 0.43)',
   },
-
   modalViewContainer: {
     width: Dimensions.get('window').width * 0.9, //- 87.81, //352.29 width as per Figma
     // height: 479.81, // height as per Figma
@@ -88,11 +75,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 38.24,
   },
-
   textContainer: {
     gap: 8,
   },
-
   titleText: {
     fontSize: 19.12,
     fontFamily: 'AeonikTRIAL-Bold',
@@ -100,7 +85,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
   },
-
   descriptionText: {
     fontSize: 12.75,
     fontFamily: 'AeonikTRIAL-Regular',
@@ -108,14 +92,12 @@ const styles = StyleSheet.create({
     color: '#5C5C5C',
     textAlign: 'center',
   },
-
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 12,
   },
-
   buttonCardContainer: {
     paddingHorizontal: 9.56,
     paddingVertical: 12.75,
@@ -125,7 +107,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
-
   buttonCancelText: {
     fontSize: 19.12,
     fontFamily: 'AeonikTRIAL-Regular',
@@ -134,7 +115,6 @@ const styles = StyleSheet.create({
     color: '#016FB9',
     lineHeight: 19.72,
   },
-
   buttonTryAgainText: {
     fontSize: 19.12,
     fontFamily: 'AeonikTRIAL-Regular',

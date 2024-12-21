@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Animated, View } from 'react-native';
-import { Text, Icon, useTheme } from '@ui-kitten/components';
+import { StyleSheet, Animated, View, Text } from 'react-native';
 
 type ToastProps = {
   isVisible: boolean;
   message: string;
   type?: 'success' | 'error' | 'info'; // Toast types
   duration?: number; // Duration in milliseconds
-  onClose?: () => void;
+  onClose: () => void;
 };
 
 const Toast = ({ isVisible, message, type = 'info', duration = 3000, onClose }: ToastProps) => {
-  const theme = useTheme();
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -35,27 +33,15 @@ const Toast = ({ isVisible, message, type = 'info', duration = 3000, onClose }: 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
-  const getIconName = () => {
-    switch (type) {
-      case 'success':
-        return 'checkmark-circle-2';
-      case 'error':
-        return 'alert-triangle';
-      case 'info':
-      default:
-        return 'info';
-    }
-  };
-
   const getStatusColor = () => {
     switch (type) {
       case 'success':
-        return theme['color-success-500'];
+        return '#CCF0C9';
       case 'error':
-        return theme['color-danger-500'];
+        return '#FFCCCC';
       case 'info':
       default:
-        return theme['color-info-500'];
+        return '#D4EDFE';
     }
   };
 
@@ -66,10 +52,7 @@ const Toast = ({ isVisible, message, type = 'info', duration = 3000, onClose }: 
   return (
     <Animated.View style={[styles.toast, { backgroundColor: getStatusColor(), opacity: fadeAnim }]}>
       <View style={styles.content}>
-        <Icon name={getIconName()} fill="#FFFFFF" style={styles.icon} />
-        <Text category="s1" style={styles.message}>
-          {message}
-        </Text>
+        <Text style={styles.message}>{message}</Text>
       </View>
     </Animated.View>
   );
@@ -78,26 +61,26 @@ const Toast = ({ isVisible, message, type = 'info', duration = 3000, onClose }: 
 const styles = StyleSheet.create({
   toast: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 50,
     left: 20,
     right: 20,
-    borderRadius: 8,
-    padding: 16,
     zIndex: 1000,
     elevation: 5,
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    marginRight: 10,
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 24,
+    borderRadius: 8,
   },
   message: {
-    color: '#FFFFFF',
-    flex: 1,
+    fontSize: 12,
+    fontFamily: 'AeonikTRIAL-Regular',
+    fontWeight: 'regular',
+    textAlign: 'center',
+    color: '#050303',
   },
 });
 

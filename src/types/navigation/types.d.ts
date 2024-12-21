@@ -12,7 +12,7 @@ export type AuthStackParamList = {
   Consumables: undefined;
   Customers: undefined;
   CustomerDetails: { id: string };
-  Dashboard: undefined;
+  BottomTab: undefined;
   Employee: undefined;
   EmployeeDetails: {
     id: string;
