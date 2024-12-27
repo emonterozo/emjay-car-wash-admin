@@ -17,31 +17,48 @@ import GlobalContext from '@app/context';
 import { IMAGES } from '@app/constant';
 import { EyeOpenIcon, EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
 import { ErrorModal, LoadingAnimation, Toast } from '@app/components';
-import { COLORS, globalStyles } from 'src/styles/globalstyles';
+import { color, font } from '@app/styles';
+import { loginRequest } from '@app/services';
 
 const Login = () => {
-  const { user, setUser } = useContext(GlobalContext);
+  const { setUser } = useContext(GlobalContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [screenStatus, setScreenStatus] = useState({
     isLoading: false,
-    hasError: true,
+    hasError: false,
   });
   const [input, setInput] = useState({
     username: '',
     password: '',
   });
-  type ToastDetails = {
-    visibility: boolean;
-    duration: number;
-    message: string;
-    type: 'success' | 'error' | 'info';
+  const [isToastVisible, setIsToastVisible] = useState(false);
+
+  const login = async () => {
+    setScreenStatus({ hasError: false, isLoading: true });
+    const response = await loginRequest({ username: input.username, password: input.password });
+    if (response.success && response.data) {
+      const { data, errors } = response.data;
+
+      if (errors.length > 0) {
+        setScreenStatus({ hasError: false, isLoading: false });
+        setIsToastVisible(true);
+      } else {
+        const { token, user } = data;
+        setUser({
+          id: user.id,
+          username: user.username,
+          type: user.type,
+          token: token,
+        });
+      }
+    } else {
+      setScreenStatus({ isLoading: false, hasError: true });
+    }
   };
-  const [toastDetails, setToastDetails] = useState<ToastDetails>({
-    visibility: false,
-    duration: 0,
-    message: '',
-    type: 'info',
-  });
+
+  const onToastClose = () => setIsToastVisible(false);
+
+  const toggleModal = () => setScreenStatus({ ...screenStatus, hasError: !screenStatus.hasError });
 
   const hasNoInput = () => input.username.length === 0 || input.password.length === 0;
 
@@ -49,88 +66,28 @@ const Login = () => {
 
   const toggleSecureEntry = () => setIsPasswordSecure(!isPasswordSecure);
 
-  const login = () => {
-    const { hasError, isLoading } = screenStatus;
-
-    if (hasError) {
-      // Handle error case
-      setScreenStatus({ hasError: true, isLoading: true });
-      setTimeout(() => {
-        //set loading visibility to false
-        setScreenStatus({ hasError: true, isLoading: false });
-        handleToast('error');
-        // console.log('Error: cannot proceed with login');
-      }, 3000); // Simulate toast display duration
-    } else if (!isLoading) {
-      // Handle success case
-      setScreenStatus({ hasError: false, isLoading: true }); // Start loading
-      setTimeout(() => {
-        setScreenStatus({ hasError: false, isLoading: false }); // Stop loading
-        handleToast('success');
-
-        // Delay the setUser until the toast has finished displaying
-        setTimeout(() => {
-          // console.log('Success: login complete');
-          setUser({
-            ...user,
-            id: 'user1',
-          });
-        }, 3000);
-      }, 3000); // Simulate loading duration
-    }
-  };
-
-  const handleToast = (type: 'success' | 'error' | 'info') => {
-    const message =
-      type === 'success'
-        ? 'You have Successfully logged in. Redirecting you to your dashboard now'
-        : type === 'error'
-        ? 'Oops! Seems like you input wrong details. Please try again.'
-        : 'Please input your Username and Password above to Sign In';
-
-    setToastDetails({
-      visibility: true,
-      duration: 3000,
-      message,
-      type,
-    });
-
-    setTimeout(() => {
-      setToastDetails((prev) => ({ ...prev, visibility: false }));
-    }, 3000);
-  };
-
   const getButtonStyle = (pressed: boolean) => {
-    if (screenStatus.isLoading || hasNoInput()) {
+    if (hasNoInput()) {
       return {
         backgroundColor: 'transparent',
         borderWidth: 1,
-        borderColor: COLORS.primary,
+        borderColor: color.primary,
       };
     }
 
-    return {
-      backgroundColor: pressed ? COLORS.pressed : COLORS.primary,
-    };
-  };
-
-  const getButtonTextStyle = () => {
-    if (screenStatus.isLoading || hasNoInput()) {
-      return globalStyles.buttonTextColorDisabled;
-    }
-    return globalStyles.buttonTextColor;
+    return { backgroundColor: pressed ? color.primary_pressed_state : color.primary };
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <LoadingAnimation isLoading={screenStatus.isLoading} />
-      <ErrorModal isVisible={false} onCancel={() => {}} onRetry={() => {}} />
+      <ErrorModal isVisible={screenStatus.hasError} onCancel={toggleModal} onRetry={login} />
       <Toast
-        isVisible={toastDetails.visibility}
-        message={toastDetails.message}
-        duration={toastDetails.duration}
-        type={toastDetails.type}
-        onClose={() => {}}
+        isVisible={isToastVisible}
+        message="Oops! Seems like you input wrong details. Please try again."
+        duration={3000}
+        type="error"
+        onClose={onToastClose}
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -167,15 +124,13 @@ const Login = () => {
             </View>
           </View>
           <Pressable
-            disabled={screenStatus.isLoading || hasNoInput()}
-            style={({ pressed }) => [
-              globalStyles.buttonLarge,
-              { marginTop: 128 },
-              getButtonStyle(pressed),
-            ]}
-            onPress={() => login()}
+            disabled={hasNoInput()}
+            style={({ pressed }) => [styles.button, getButtonStyle(pressed)]}
+            onPress={login}
           >
-            <Text style={[globalStyles.buttonText, getButtonTextStyle()]}>Sign In</Text>
+            <Text style={[styles.buttonText, hasNoInput() && { color: color.primary }]}>
+              Sign In
+            </Text>
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -203,15 +158,13 @@ const styles = StyleSheet.create({
     marginTop: 127,
   },
   header: {
+    ...font.bold,
     fontSize: 40,
-    fontFamily: 'AeonikTRIAL-Bold',
-    fontWeight: 'bold',
     color: '#050303',
   },
   subHeader: {
     fontSize: 16,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     textAlign: 'center',
     color: '#5C5C5C',
     marginTop: 13,
@@ -234,10 +187,24 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     marginHorizontal: 33,
     color: '#5C5C5C',
+  },
+  button: {
+    marginTop: 128,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    borderRadius: 49,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: Dimensions.get('window').width - 48,
+  },
+  buttonText: {
+    ...font.regular,
+    fontSize: 24,
+    lineHeight: 24,
+    color: '#FFFFFF',
   },
 });
 

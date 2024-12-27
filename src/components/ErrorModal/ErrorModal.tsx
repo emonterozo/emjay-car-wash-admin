@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Modal, Pressable, Text, Dimensions } from 'react-native';
 
 import { NetworkErrorIcon } from '@app/icons';
+import { color, font } from '@app/styles';
 
 export type ErrorModalProps = {
   isVisible: boolean;
@@ -30,20 +31,24 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ isVisible, onCancel, onRetry })
               onPress={onCancel}
               style={({ pressed }) => [
                 {
-                  backgroundColor: pressed ? 'rgba(1, 111, 185, 0.84)' : 'white',
-                  borderColor: pressed ? '#9A9A9A' : '#9A9A9A',
-                  borderWidth: pressed ? 1 : 1,
+                  backgroundColor: pressed ? color.primary : 'white',
+                  borderColor: pressed ? color.primary : '#9A9A9A',
+                  borderWidth: 1,
                 },
                 styles.buttonCardContainer,
               ]}
             >
-              <Text style={styles.buttonCancelText}>Cancel</Text>
+              {({ pressed }) => (
+                <Text style={[styles.buttonCancelText, pressed && { color: color.background }]}>
+                  Cancel
+                </Text>
+              )}
             </Pressable>
             <Pressable
               onPress={onRetry}
               style={({ pressed }) => [
                 {
-                  backgroundColor: pressed ? 'rgba(255, 255, 255, 0.72)' : '#016FB9',
+                  backgroundColor: pressed ? color.primary_pressed_state : color.primary,
                 },
                 styles.buttonCardContainer,
               ]}
@@ -65,8 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(141, 141, 141, 0.43)',
   },
   modalViewContainer: {
-    width: Dimensions.get('window').width * 0.9, //- 87.81, //352.29 width as per Figma
-    // height: 479.81, // height as per Figma
+    width: Dimensions.get('window').width * 0.9,
     backgroundColor: 'white',
     borderRadius: 19.12,
     paddingVertical: 47.8,
@@ -79,16 +83,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   titleText: {
+    ...font.bold,
     fontSize: 19.12,
-    fontFamily: 'AeonikTRIAL-Bold',
-    fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
   },
   descriptionText: {
+    ...font.regular,
     fontSize: 12.75,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
     color: '#5C5C5C',
     textAlign: 'center',
   },
@@ -108,17 +110,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonCancelText: {
+    ...font.regular,
     fontSize: 19.12,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
     textAlign: 'center',
-    color: '#016FB9',
+    color: color.primary,
     lineHeight: 19.72,
   },
   buttonTryAgainText: {
+    ...font.regular,
     fontSize: 19.12,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
     color: 'white',
     textAlign: 'center',
     lineHeight: 19.72,

@@ -12,6 +12,7 @@
       "@app/constant": ["./src/utils/constant/constant.ts"],
       "@types/context": ["./src/types/context/types.d.ts"],
       "@app/icons": ["./assets/icons"],
+      "@app/styles": ["./src/styles/globalStyles.ts"],
     }
   }
 }

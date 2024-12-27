@@ -15,6 +15,7 @@ module.exports = {
           '@app/constant': './src/utils/constant/constant.ts',
           '@types/context': './src/types/context/types.ts',
           '@app/icons': './assets/icons',
+          '@app/styles': './src/styles/globalStyles.ts',
         },
       },
     ],

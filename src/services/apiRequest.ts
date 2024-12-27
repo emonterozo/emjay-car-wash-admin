@@ -1,16 +1,26 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import axios, { AxiosRequestConfig } from 'axios';
 
-export type ApiResponse<T> = Promise<T>;
-export type ApiError = AxiosError;
+// Types for API responses and errors
+export type ApiResponse<T> = Promise<{
+  success: boolean;
+  status: number;
+  data?: T;
+  error?: string;
+}>;
 
 type ApiRequestMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
-interface ApiRequestOptions<T> extends AxiosRequestConfig {
+// eslint-disable-next-line no-unused-vars
+interface ApiRequestOptions<Req, Res> extends AxiosRequestConfig {
   method: ApiRequestMethod;
-  data?: T;
+  data?: Req;
 }
 
-export const apiRequest = async <T>(url: string, options: ApiRequestOptions<T>): ApiResponse<T> => {
+export const apiRequest = async <Req, Res>(
+  url: string,
+  options: ApiRequestOptions<Req, Res>,
+): Promise<{ success: boolean; status: number; data?: Res; error?: string }> => {
   try {
     const { method, data, ...config } = options;
 
@@ -21,11 +31,29 @@ export const apiRequest = async <T>(url: string, options: ApiRequestOptions<T>):
       ...config,
     });
 
-    return response.data;
+    return {
+      success: true,
+      status: response.status,
+      data: response.data as Res,
+    };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      throw error as ApiError;
+      const status = error.response?.status ?? 0;
+      const message = error.response?.data?.message || error.message || 'An error occurred';
+
+      // Return the error as part of the response
+      return {
+        success: false,
+        status,
+        error: message,
+      };
     }
-    throw new Error('An unexpected error occurred');
+
+    // Handle unexpected errors
+    return {
+      success: false,
+      status: 0,
+      error: 'An unexpected error occurred',
+    };
   }
 };

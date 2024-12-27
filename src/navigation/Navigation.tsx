@@ -26,7 +26,7 @@ const UnAuthStack = createStackNavigator();
 const AuthStack = createStackNavigator<AuthStackParamList>();
 
 const Navigation = () => {
-  const [user, setUser] = useState<TUser>({ id: 'test', type: '', username: '' });
+  const [user, setUser] = useState<TUser>({ id: '', type: '', username: '' });
 
   const initialContext = useMemo(
     () => ({
