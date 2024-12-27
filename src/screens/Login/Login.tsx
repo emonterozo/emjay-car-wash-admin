@@ -17,17 +17,30 @@ import GlobalContext from '@app/context';
 import { IMAGES } from '@app/constant';
 import { EyeOpenIcon, EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
 import { ErrorModal, LoadingAnimation, Toast } from '@app/components';
+import { COLORS, globalStyles } from 'src/styles/globalstyles';
 
 const Login = () => {
   const { user, setUser } = useContext(GlobalContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [screenStatus, setScreenStatus] = useState({
     isLoading: false,
-    hasError: false,
+    hasError: true,
   });
   const [input, setInput] = useState({
     username: '',
     password: '',
+  });
+  type ToastDetails = {
+    visibility: boolean;
+    duration: number;
+    message: string;
+    type: 'success' | 'error' | 'info';
+  };
+  const [toastDetails, setToastDetails] = useState<ToastDetails>({
+    visibility: false,
+    duration: 0,
+    message: '',
+    type: 'info',
   });
 
   const hasNoInput = () => input.username.length === 0 || input.password.length === 0;
@@ -67,19 +80,6 @@ const Login = () => {
     }
   };
 
-  type ToastDetails = {
-    visibility: boolean;
-    duration: number;
-    message: string;
-    type: 'success' | 'error' | 'info';
-  };
-  const [toastDetails, setToastDetails] = useState<ToastDetails>({
-    visibility: false,
-    duration: 0,
-    message: '',
-    type: 'info',
-  });
-
   const handleToast = (type: 'success' | 'error' | 'info') => {
     const message =
       type === 'success'
@@ -98,6 +98,27 @@ const Login = () => {
     setTimeout(() => {
       setToastDetails((prev) => ({ ...prev, visibility: false }));
     }, 3000);
+  };
+
+  const getButtonStyle = (pressed: boolean) => {
+    if (screenStatus.isLoading || hasNoInput()) {
+      return {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: COLORS.primary,
+      };
+    }
+
+    return {
+      backgroundColor: pressed ? COLORS.pressed : COLORS.primary,
+    };
+  };
+
+  const getButtonTextStyle = () => {
+    if (screenStatus.isLoading || hasNoInput()) {
+      return globalStyles.buttonTextColorDisabled;
+    }
+    return globalStyles.buttonTextColor;
   };
 
   return (
@@ -148,31 +169,13 @@ const Login = () => {
           <Pressable
             disabled={screenStatus.isLoading || hasNoInput()}
             style={({ pressed }) => [
-              styles.button,
-              screenStatus.isLoading || hasNoInput()
-                ? {
-                    backgroundColor: 'transparent',
-                    borderWidth: 1,
-                    borderColor: '#016FB9',
-                  }
-                : { backgroundColor: pressed ? 'rgba(1, 111, 185, 0.7)' : '#016FB9' },
+              globalStyles.buttonLarge,
+              { marginTop: 128 },
+              getButtonStyle(pressed),
             ]}
             onPress={() => login()}
           >
-            {({ pressed }) => (
-              <Text
-                style={[
-                  styles.buttonTextColorDefault,
-                  screenStatus.isLoading || hasNoInput()
-                    ? styles.buttonTextColorDisabled // Disabled text color
-                    : pressed
-                    ? styles.buttonTextColorDefault
-                    : styles.buttonTextColorDefault, // Enabled text color and pressed state
-                ]}
-              >
-                Sign In
-              </Text>
-            )}
+            <Text style={[globalStyles.buttonText, getButtonTextStyle()]}>Sign In</Text>
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -235,30 +238,6 @@ const styles = StyleSheet.create({
     fontWeight: 'regular',
     marginHorizontal: 33,
     color: '#5C5C5C',
-  },
-  button: {
-    marginTop: 128,
-    paddingHorizontal: 12,
-    paddingVertical: 16,
-    width: Dimensions.get('window').width - 48,
-    borderRadius: 49,
-    justifyContent: 'center',
-  },
-  buttonTextColorDefault: {
-    fontSize: 24,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
-    textAlign: 'center',
-    color: '#ffffffff',
-    lineHeight: 24,
-  },
-  buttonTextColorDisabled: {
-    fontSize: 24,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
-    textAlign: 'center',
-    color: '#016FB9',
-    lineHeight: 24,
   },
 });
 
