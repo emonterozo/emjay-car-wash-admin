@@ -2,9 +2,9 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 
 export const COLORS = {
-  primary: '#016FB9', 
+  primary: '#016FB9',
   secondary: '#FAFAFA',
-  pressed: '#1F93E1'
+  pressed: '#1F93E1',
 };
 
 export const FONTS = {

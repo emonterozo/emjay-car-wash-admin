@@ -1,4 +1,4 @@
-package com.emjaycarwash
+package com.quindigitalsolutions.emjayadminapp
 
 import android.app.Application
 import com.facebook.react.PackageList

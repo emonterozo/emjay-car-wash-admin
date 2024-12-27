@@ -1,4 +1,4 @@
-package com.emjaycarwash
+package com.quindigitalsolutions.emjayadminapp
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

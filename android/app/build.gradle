@@ -2,6 +2,16 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+apply from: project(':react-native-config').projectDir.getPath() + '/dotenv.gradle'
+
+project.ext.envConfigFiles = [
+    development: ".env.development",
+    staging :".env.staging",
+    production:'.env.production'
+]
+
+
+
 project.ext.vectoricons = [
     iconFontNames: [ 'MaterialCommunityIcons.ttf' ] // Specify font files
 ]
@@ -83,13 +93,29 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.emjaycarwash"
+    namespace "com.quindigitalsolutions.emjayadminapp"
     defaultConfig {
-        applicationId "com.emjaycarwash"
+        applicationId "com.quindigitalsolutions.emjayadminapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayadminapp'
+    }
+    flavorDimensions 'env'
+    productFlavors {
+        development {
+            dimension 'env'
+            applicationIdSuffix ".development"
+        }
+        staging {
+            dimension 'env'
+            applicationIdSuffix ".staging"
+        }
+        production {
+            dimension 'env'
+            applicationIdSuffix ""
+        }
     }
     signingConfigs {
         debug {
