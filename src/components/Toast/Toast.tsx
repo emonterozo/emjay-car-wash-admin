@@ -1,3 +1,4 @@
+import { font } from '@app/styles';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Animated, View, Text } from 'react-native';
 
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
     right: 20,
     zIndex: 1000,
     elevation: 5,
+    borderRadius: 8,
   },
   content: {
     flexDirection: 'row',
@@ -73,12 +75,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 24,
-    borderRadius: 8,
   },
   message: {
+    ...font.regular,
     fontSize: 12,
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    lineHeight: 12,
     textAlign: 'center',
     color: '#050303',
   },

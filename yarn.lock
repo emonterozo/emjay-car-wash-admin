@@ -1703,6 +1703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@d11/react-native-fast-image@npm:^8.9.0":
+  version: 8.9.0
+  resolution: "@d11/react-native-fast-image@npm:8.9.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 39274a7c92359bbb447fc2e890ef7c50fd59b34ba17bc57562421fc4d633edd905d946b79b8021f3bbe2d9c730ab89993f2d8bc1ba3ff688cdf638fc681db9e8
+  languageName: node
+  linkType: hard
+
 "@egjs/hammerjs@npm:^2.0.17":
   version: 2.0.17
   resolution: "@egjs/hammerjs@npm:2.0.17"
@@ -3665,6 +3675,7 @@ __metadata:
     "@babel/runtime": ^7.25.0
     "@commitlint/cli": ^19.6.0
     "@commitlint/config-conventional": ^19.6.0
+    "@d11/react-native-fast-image": ^8.9.0
     "@eva-design/eva": ^2.2.0
     "@react-native-community/cli": 15.0.1
     "@react-native-community/cli-platform-android": 15.0.1
