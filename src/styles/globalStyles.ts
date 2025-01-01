@@ -10,7 +10,7 @@ export const font: Record<'light' | 'regular' | 'bold', FontStyle> = {
   },
   regular: {
     fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'bold',
+    fontWeight: 'regular',
   },
   bold: {
     fontFamily: 'AeonikTRIAL-Bold',
