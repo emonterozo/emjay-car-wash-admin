@@ -19,3 +19,27 @@ export type LoginResponse = {
   };
   errors: ErrorProps[];
 };
+
+export type Price = {
+  size: string;
+  price: number;
+};
+
+export type Service = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  type: 'car' | 'motorcycle';
+  ratings: number;
+  reviews_count: number;
+  last_review: string | null;
+  price_list: Price[];
+};
+
+export type ServicesResponse = {
+  data: {
+    services: Service[];
+  };
+  errors: ErrorProps[];
+};

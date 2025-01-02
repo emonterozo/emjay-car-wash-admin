@@ -1,37 +1,115 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import FastImage from '@d11/react-native-fast-image';
+import { format } from 'date-fns';
 
-import { DASHBOARD_ITEMS } from '@app/constant';
+import { DASHBOARD_ITEMS, IMAGES } from '@app/constant';
 import {
-  AvatarIcon,
   ChevronRightIcon,
   CircleArrowRightIcon,
   DashboardUpdateIcon,
   HorizontalKebabIcon,
-  MenuIcon,
-  StarHalfFillIcon,
-  StarIcon,
 } from '@app/icons';
-import { useNavigation } from '@react-navigation/native';
+import { font } from '@app/styles';
+import { EmptyState, ErrorModal, LoadingAnimation, RatingStars } from '@app/components';
+import { getServicesRequest } from '@app/services';
+import GlobalContext from '@app/context';
+import { Service } from '../../types/services/types';
+import FilterOption from './FilterOption';
 
-const IMAGE =
-  'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/pexels-tima-miroshnichenko-6872601.jpg?alt=media&token=9688293b-ad76-4706-87a9-9446d42b576b';
+const FILTER_VALUE = {
+  top: {
+    field: 'ratings',
+    direction: 'desc',
+  },
+  low: {
+    field: 'ratings',
+    direction: 'asc',
+  },
+  most_recent: {
+    field: 'last_review',
+    direction: 'desc',
+  },
+};
 
 const Home = () => {
+  const { user } = useContext(GlobalContext);
   const navigation = useNavigation<any>();
+  const [screenStatus, setScreenStatus] = useState({
+    isLoading: false,
+    hasError: false,
+  });
+  const [services, setServices] = useState<Service[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<keyof typeof FILTER_VALUE>('top');
+  const [isFilterOptionVisible, setIsFilterOptionVisible] = useState(false);
+
+  const fetchService = async (filter: keyof typeof FILTER_VALUE) => {
+    setScreenStatus({ hasError: false, isLoading: true });
+    const response = await getServicesRequest(
+      user.token,
+      FILTER_VALUE[filter].field,
+      FILTER_VALUE[filter].direction as 'asc' | 'desc',
+      5,
+      0,
+    );
+
+    if (response.success && response.data) {
+      const { data, errors } = response.data;
+
+      if (errors.length > 0) {
+        setScreenStatus({ isLoading: false, hasError: true });
+      } else {
+        setServices(data.services);
+        setScreenStatus({ hasError: false, isLoading: false });
+      }
+    } else {
+      setScreenStatus({ isLoading: false, hasError: true });
+    }
+  };
+
+  useEffect(() => {
+    fetchService(selectedFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const formatDate = (date: string | null) => {
+    if (date) {
+      return format(new Date(date), 'MMMM dd, yyyy');
+    }
+
+    return 'No available data';
+  };
+
   const handlePressDashboardItem = (screen: string) => navigation.navigate(screen);
+
+  const closeModal = () => setScreenStatus({ hasError: false, isLoading: false });
+
+  const toggleFilter = () => setIsFilterOptionVisible(!isFilterOptionVisible);
+
+  const onSelectedFilter = (filter: string) => {
+    const selectedFilterValue = filter as keyof typeof FILTER_VALUE;
+    toggleFilter();
+    setSelectedFilter(selectedFilterValue);
+    fetchService(selectedFilterValue);
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal
+        isVisible={screenStatus.hasError}
+        onCancel={closeModal}
+        onRetry={() => fetchService(selectedFilter)}
+      />
       <View style={styles.heading}>
         <View style={styles.greetingContainer}>
           <Text style={styles.greeting}>Hello Admin</Text>
           <Text style={styles.subHeader}>Keep an eye on your sales with care.</Text>
         </View>
         <View style={styles.avatarContainer}>
-          <AvatarIcon />
-          <MenuIcon />
+          <Image source={IMAGES.AVATAR} style={styles.avatar} resizeMode="contain" />
         </View>
       </View>
       <ScrollView style={styles.scrollView} bounces={false} showsVerticalScrollIndicator={false}>
@@ -71,33 +149,55 @@ const Home = () => {
         </View>
         <View style={styles.topServicesHeader}>
           <Text style={styles.label}>Top Services</Text>
-          <TouchableOpacity>
-            <HorizontalKebabIcon />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity onPress={toggleFilter}>
+              <HorizontalKebabIcon />
+            </TouchableOpacity>
+            {isFilterOptionVisible && (
+              <FilterOption
+                top={19}
+                selectedFilter={selectedFilter}
+                onSelectedFilter={onSelectedFilter}
+              />
+            )}
+          </>
         </View>
-        <View style={styles.serviceContainer}>
-          {[1, 2, 3, 4, 5].map((item) => (
-            <View style={styles.row} key={item}>
-              <Image src={IMAGE} style={styles.serviceImage} resizeMode="cover" />
-              <View style={styles.serviceContent}>
-                <Text style={styles.service}>Auto Detailing</Text>
-                <View style={styles.ratings}>
-                  <StarIcon />
-                  <StarIcon />
-                  <StarIcon />
-                  <StarHalfFillIcon />
-                  <StarIcon fill="#888888" />
-                  <Text style={styles.count}>(100)</Text>
+
+        {services.length > 0 ? (
+          <>
+            <View style={styles.serviceContainer}>
+              {services.map((item) => (
+                <View style={styles.row} key={item.id}>
+                  <FastImage
+                    style={styles.serviceImage}
+                    source={{
+                      uri: item.image,
+                      priority: FastImage.priority.normal,
+                    }}
+                    resizeMode={FastImage.resizeMode.cover}
+                  />
+                  <View style={styles.serviceContent}>
+                    <Text style={styles.service}>{item.title}</Text>
+                    <View style={styles.ratings}>
+                      <RatingStars rating={item.ratings} />
+                      <Text style={styles.count}>{`(${item.reviews_count})`}</Text>
+                    </View>
+                    <Text style={styles.serviceDate}>{formatDate(item.last_review)}</Text>
+                  </View>
                 </View>
-                <Text style={styles.serviceDate}>July 5, 2024</Text>
-              </View>
+              ))}
             </View>
-          ))}
-        </View>
-        <TouchableOpacity style={styles.viewAllButton}>
-          <Text style={styles.viewAll}>View All</Text>
-          <CircleArrowRightIcon />
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.viewAllButton}>
+              <Text style={styles.viewAll}>View All</Text>
+              <CircleArrowRightIcon />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <EmptyState />
+            <View style={styles.emptyStateSeparator} />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -109,6 +209,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F2EF',
     paddingTop: 64,
     paddingBottom: 5,
+  },
+  avatar: {
+    width: 49,
+    height: 49,
   },
   heading: {
     flexDirection: 'row',
@@ -123,14 +227,12 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   greeting: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 24,
     color: '#050303',
   },
   subHeader: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     lineHeight: 20,
     color: '#696969',
@@ -164,8 +266,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   title: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
     lineHeight: 16,
     color: '#1F93E1',
@@ -186,8 +287,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
     color: '#DBDADA',
   },
@@ -195,14 +295,12 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   date: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
     color: '#C3C3C3',
   },
   description: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     lineHeight: 28,
     fontSize: 24,
     color: '#FAFAFA',
@@ -216,15 +314,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   headerText: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     lineHeight: 20,
     color: '#FAFAFA',
   },
   label: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     color: '#000000',
   },
@@ -235,20 +331,17 @@ const styles = StyleSheet.create({
     marginVertical: 24,
   },
   service: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     color: '#000000',
   },
   serviceDate: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
     color: '#777676',
   },
   count: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
     color: '#000000',
   },
@@ -270,8 +363,7 @@ const styles = StyleSheet.create({
     gap: 7,
   },
   viewAll: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     color: '#016FB9',
   },
@@ -280,6 +372,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     marginVertical: 24,
+  },
+  emptyStateSeparator: {
+    marginBottom: 30,
   },
 });
 

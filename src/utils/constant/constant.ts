@@ -8,6 +8,7 @@ import {
   SalesIcon,
   ServicesIcon,
 } from '@app/icons';
+import { SizeKey } from '../../types/constant/types';
 
 export const DASHBOARD_ITEMS = [
   {
@@ -62,12 +63,17 @@ export const DASHBOARD_ITEMS = [
 
 export const IMAGES = {
   EM_JAY: require('../../../assets/images/emjay.png'),
-  ADMIN: require('../../../assets/images/human.png'),
-  SUPER_VISOR: require('../../../assets/images/user.png'),
-  NO_INTERNET: require('../../../assets/images/no-wifi.png'),
-  SERVER_DOWN: require('../../../assets/images/network.png'),
+  AVATAR: require('../../../assets/images/avatar.png'),
   EMPTY_STATE: require('../../../assets/images/no-data.png'),
   SCAN: require('../../../assets/images/scan.png'),
+  HOME_ACTIVE: require('../../../assets/images/home-active.png'),
+  HOME_INACTIVE: require('../../../assets/images/home-inactive.png'),
+  MESSAGES_ACTIVE: require('../../../assets/images/messages-active.png'),
+  MESSAGES_INACTIVE: require('../../../assets/images/messages-inactive.png'),
+  TRANSACTIONS_ACTIVE: require('../../../assets/images/transactions-active.png'),
+  TRANSACTIONS_INACTIVE: require('../../../assets/images/transactions-inactive.png'),
+  SETTINGS_ACTIVE: require('../../../assets/images/settings-active.png'),
+  SETTINGS_INACTIVE: require('../../../assets/images/settings-inactive.png'),
 };
 
 export const MESSAGE = {
@@ -88,110 +94,12 @@ export const VEHICLE_TYPES = ['Car', 'Motorcycle'];
 export const CAR_SIZES = ['Small', 'Medium', 'Large', 'Extra Large', 'Extra Extra Large'];
 export const MOTORCYCLE_SIZES = ['Small', 'Medium', 'Large'];
 export const SIZE_ORDER = ['sm', 'md', 'lg', 'xl', 'xxl'];
-export const SIZE_DESCRIPTION = {
+export const SIZE_DESCRIPTION: Record<SizeKey, string> = {
   sm: 'Small',
   md: 'Medium',
   lg: 'Large',
   xl: 'Extra Large',
   xxl: 'Extra Extra Large',
 };
-
-export const MOCK_SERVICES = [
-  {
-    id: '1',
-    title: 'Complete Wash',
-    description: 'A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.',
-    type: 'car',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '11',
-    title: 'Complete Wash',
-    description: 'A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.',
-    type: 'motorcycle',
-    price_list: [
-      { category: 'sm', price: 80 },
-      { category: 'md', price: 100 },
-      { category: 'lg', price: 120 },
-    ],
-  },
-  {
-    id: '2',
-    title: 'Seat Cover Removal',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    type: 'car',
-    price_list: [{ category: 'All Size', price: 250 }],
-  },
-  {
-    id: '3',
-    title: 'Interior Cleaning',
-    description: 'Deep cleaning for the interior. Refresh your car’s interior with our service.',
-    type: 'car',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '4',
-    title: 'Wax & Polish',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    type: 'car',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '5',
-    title: 'Motor Buffing',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    type: 'motorcycle',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-    ],
-  },
-];
-
-export const MOCK_EMPLOYEES = [
-  {
-    id: 1,
-    full_name: 'John First',
-  },
-  {
-    id: 2,
-    full_name: 'Jane First',
-  },
-  {
-    id: 2,
-    full_name: 'John Second',
-  },
-  {
-    id: 3,
-    full_name: 'Jane Second',
-  },
-  {
-    id: 4,
-    full_name: 'John Third',
-  },
-  {
-    id: 5,
-    full_name: 'Jane Third',
-  },
-];
 
 export const ERR_NETWORK = 'ERR_NETWORK';

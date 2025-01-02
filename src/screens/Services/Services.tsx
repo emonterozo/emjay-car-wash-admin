@@ -1,52 +1,157 @@
-import React from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import FastImage from '@d11/react-native-fast-image';
 
+import FilterOption from './FilterOption';
+import { SizeKey } from '../../types/constant/types';
+import { Price, Service } from '../../types/services/types';
 import { FilterIcon, StarIcon } from '@app/icons';
-import { AppHeader } from '@app/components';
+import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
+import { getServicesRequest } from '@app/services';
+import GlobalContext from '@app/context';
+import { color, font } from '@app/styles';
+import { useMeasure } from '@app/hooks';
+import { SIZE_DESCRIPTION } from '@app/constant';
+import { formattedNumber } from '@app/helpers';
 
-const IMAGE =
-  'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/pexels-tima-miroshnichenko-6872601.jpg?alt=media&token=9688293b-ad76-4706-87a9-9446d42b576b';
+const renderSeparator = () => <View style={styles.separator} />;
 
 const Services = () => {
-  const renderSeparator = () => <View style={styles.separator} />;
+  const { user } = useContext(GlobalContext);
+  const navigation = useNavigation();
+  const touchableRef = useRef<View>(null);
+  const { layout, measure } = useMeasure(touchableRef);
+  const [isOptionVisible, setIsOptionVisible] = useState(false);
+  const [screenStatus, setScreenStatus] = useState({
+    isLoading: false,
+    hasError: false,
+  });
+  const [filter, setFilter] = useState({
+    type: 'Car',
+    size: 'Small',
+  });
+  const [services, setServices] = useState<Service[]>([]);
+  const [filteredServices, setFilteredServices] = useState<Service[]>([]);
+
+  const showPopover = () => {
+    measure();
+    setIsOptionVisible(!isOptionVisible);
+  };
+
+  const fetchService = async () => {
+    setScreenStatus({ hasError: false, isLoading: true });
+    const response = await getServicesRequest(user.token);
+    if (response.success && response.data) {
+      const { data, errors } = response.data;
+
+      if (errors.length > 0) {
+        setScreenStatus({ isLoading: false, hasError: true });
+      } else {
+        setServices(data.services);
+        setScreenStatus({ hasError: false, isLoading: false });
+      }
+    } else {
+      setScreenStatus({ isLoading: false, hasError: true });
+    }
+  };
+
+  useEffect(() => {
+    fetchService();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!isOptionVisible && services.length > 0) {
+      setFilteredServices(services.filter((service) => service.type === filter.type.toLowerCase()));
+    }
+  }, [isOptionVisible, services, filter]);
+
+  const onSelectedType = (type: string) => {
+    setFilter({
+      size: 'Small',
+      type,
+    });
+  };
+
+  const onSelectedSize = (size: string) => {
+    setFilter({
+      ...filter,
+      size,
+    });
+  };
+
+  const onCancel = () => {
+    setScreenStatus({ hasError: false, isLoading: false });
+    navigation.goBack();
+  };
+
+  const getServicePrice = (priceList: Price[]) => {
+    const sizeKey = Object.keys(SIZE_DESCRIPTION).find(
+      (key) => SIZE_DESCRIPTION[key as SizeKey] === filter.size,
+    );
+
+    const service = priceList.find((item) => item.size === sizeKey);
+
+    if (service) {
+      return formattedNumber(service?.price ?? 0);
+    }
+
+    return `${formattedNumber(priceList[0].price)} ${priceList[0].size}`;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <AppHeader title="Services" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal isVisible={screenStatus.hasError} onCancel={onCancel} onRetry={fetchService} />
       <View style={styles.heading}>
         <Text style={styles.label}>Available Lists of Services</Text>
-        <TouchableOpacity style={styles.filterContainer}>
-          <FilterIcon />
-          <Text style={styles.label}>Car/Small</Text>
-        </TouchableOpacity>
+        {filteredServices.length > 0 && (
+          <TouchableOpacity ref={touchableRef} style={styles.filterContainer} onPress={showPopover}>
+            <FilterIcon />
+            <Text style={styles.label}>{`${filter.type}/${filter.size}`}</Text>
+          </TouchableOpacity>
+        )}
+        {isOptionVisible && (
+          <FilterOption
+            top={layout?.height! + 5}
+            selectedType={filter.type}
+            selectedSize={filter.size}
+            onSelectedType={onSelectedType}
+            onSelectedSize={onSelectedSize}
+          />
+        )}
       </View>
       <FlatList
         bounces={false}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.list}
-        data={[1, 2, 3]}
-        renderItem={() => (
+        data={filteredServices}
+        renderItem={({ item }) => (
           <View style={styles.card}>
-            <Image src={IMAGE} style={styles.image} resizeMode="cover" />
+            <FastImage
+              style={styles.image}
+              source={{
+                uri: item.image,
+                priority: FastImage.priority.normal,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
             <View style={styles.ratingsContainer}>
               <StarIcon width={20} height={16} />
-              <Text style={styles.ratings}>4.5</Text>
+              <Text style={styles.ratings}>{item.ratings}</Text>
             </View>
             <View style={styles.descriptionContainer}>
-              <Text style={styles.name}>Auto Detailing</Text>
-              <View style={styles.row}>
-                <Text style={styles.title}>Description:</Text>
-                <Text style={styles.value}>Overall Detailing</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.title}>Price:</Text>
-                <Text style={styles.value}>₱50,000</Text>
-              </View>
+              <Text style={styles.name}>{item.title}</Text>
+              <Text style={styles.value}>{item.description}</Text>
+              <Text style={styles.value}>{getServicePrice(item.price_list)}</Text>
             </View>
           </View>
         )}
         ItemSeparatorComponent={renderSeparator}
+        ListEmptyComponent={<EmptyState />}
       />
     </SafeAreaView>
   );
@@ -55,7 +160,7 @@ const Services = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F2EF',
+    backgroundColor: color.background,
   },
   heading: {
     flexDirection: 'row',
@@ -66,8 +171,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
   },
   label: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     color: '#696969',
   },
@@ -77,33 +181,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   list: {
+    flexGrow: 1,
     paddingHorizontal: 25,
     paddingBottom: 25,
-    backgroundColor: '#F3F2EF',
+    backgroundColor: color.background,
   },
   name: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 24,
     color: '#000000',
-  },
-  title: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
-    fontSize: 20,
-    color: '#888888',
   },
   separator: {
     marginTop: 24,
   },
   value: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 20,
     color: '#050303',
+    flex: 1,
   },
   card: {
-    backgroundColor: '#F3F2EF',
+    backgroundColor: color.background,
     borderRadius: 24,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
@@ -115,11 +213,6 @@ const styles = StyleSheet.create({
     height: 201,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
   },
   descriptionContainer: {
     marginTop: 16,
@@ -140,8 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   ratings: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     color: '#050303',
     letterSpacing: 1,

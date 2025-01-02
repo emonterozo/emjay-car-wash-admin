@@ -1,23 +1,32 @@
 import React from 'react';
+import { StyleSheet, View, Modal } from 'react-native';
 import LottieView from 'lottie-react-native';
-import { StyleSheet } from 'react-native';
 
-type LoadingAnimationProps = {
+export type LoadingAnimationProps = {
   isLoading: boolean;
 };
 
-const LoadingAnimation = ({ isLoading }: LoadingAnimationProps) => {
-  return isLoading ? (
-    <LottieView
-      style={styles.loading}
-      source={require('../../../assets/lottie/loading.json')}
-      autoPlay
-      loop
-    />
-  ) : null;
+const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ isLoading }) => {
+  return (
+    <Modal visible={isLoading} animationType="slide" transparent={true}>
+      <View style={styles.modalContainer}>
+        <LottieView
+          style={styles.loading}
+          source={require('../../../assets/lottie/loading.json')}
+          autoPlay
+          loop
+        />
+      </View>
+    </Modal>
+  );
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   loading: {
     position: 'absolute',
     top: 0,

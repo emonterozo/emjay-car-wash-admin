@@ -28,8 +28,8 @@ const Login = () => {
     hasError: false,
   });
   const [input, setInput] = useState({
-    username: '',
-    password: '',
+    username: 'emjay_admin',
+    password: 'password',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
 
@@ -37,10 +37,10 @@ const Login = () => {
     setScreenStatus({ hasError: false, isLoading: true });
     const response = await loginRequest({ username: input.username, password: input.password });
     if (response.success && response.data) {
+      setScreenStatus({ hasError: false, isLoading: false });
       const { data, errors } = response.data;
 
       if (errors.length > 0) {
-        setScreenStatus({ hasError: false, isLoading: false });
         setIsToastVisible(true);
       } else {
         const { token, user } = data;
@@ -106,6 +106,7 @@ const Login = () => {
                 style={styles.input}
                 onChangeText={(text) => onChange('username', text)}
                 maxLength={20}
+                value={input.username}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -117,6 +118,7 @@ const Login = () => {
                 secureTextEntry={isPasswordSecure}
                 onChangeText={(text) => onChange('password', text)}
                 maxLength={64}
+                value={input.password}
               />
               <Pressable onPress={toggleSecureEntry}>
                 {isPasswordSecure ? <EyeCloseIcon /> : <EyeOpenIcon />}

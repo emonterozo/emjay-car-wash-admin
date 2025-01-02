@@ -3,7 +3,6 @@ import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/b
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Home, Message, Scan, Transaction, Settings } from '@app/screens';
-import { HomeIcon, MessageIcon, SettingIcon, TransactionsIcon } from '@app/icons';
 import { IMAGES } from '@app/constant';
 
 const Tab = createBottomTabNavigator();
@@ -11,11 +10,13 @@ const Tab = createBottomTabNavigator();
 const TAB_ITEMS = [
   {
     title: 'HOME',
-    icon: HomeIcon,
+    icon_active: <Image source={IMAGES.HOME_ACTIVE} resizeMode="contain" />,
+    icon_inactive: <Image source={IMAGES.HOME_INACTIVE} resizeMode="contain" />,
   },
   {
     title: 'MESSAGES',
-    icon: MessageIcon,
+    icon_active: <Image source={IMAGES.MESSAGES_ACTIVE} resizeMode="contain" />,
+    icon_inactive: <Image source={IMAGES.MESSAGES_INACTIVE} resizeMode="contain" />,
   },
   {
     title: '',
@@ -23,11 +24,13 @@ const TAB_ITEMS = [
   },
   {
     title: 'TRANSACTIONS',
-    icon: TransactionsIcon,
+    icon_active: <Image source={IMAGES.TRANSACTIONS_ACTIVE} resizeMode="contain" />,
+    icon_inactive: <Image source={IMAGES.TRANSACTIONS_INACTIVE} resizeMode="contain" />,
   },
   {
     title: 'SETTINGS',
-    icon: SettingIcon,
+    icon_active: <Image source={IMAGES.SETTINGS_ACTIVE} resizeMode="contain" />,
+    icon_inactive: <Image source={IMAGES.SETTINGS_INACTIVE} resizeMode="contain" />,
   },
 ];
 
@@ -59,7 +62,7 @@ const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
 
         return (
           <TouchableOpacity key={route.key} onPress={handlePress} style={styles.tabButton}>
-            {TAB_ITEMS[index].icon && React.createElement(TAB_ITEMS[index].icon)}
+            {isFocused ? TAB_ITEMS[index].icon_active : TAB_ITEMS[index].icon_inactive}
             <Text style={[styles.tabLabel, isFocused && styles.activeTabLabel]}>
               {TAB_ITEMS[index].title}
             </Text>

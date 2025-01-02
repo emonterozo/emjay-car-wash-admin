@@ -16,6 +16,8 @@ module.exports = {
           '@types/context': './src/types/context/types.ts',
           '@app/icons': './assets/icons',
           '@app/styles': './src/styles/globalStyles.ts',
+          '@app/hooks': './src/hooks',
+          '@app/helpers': './src/utils/helpers',
         },
       },
     ],
