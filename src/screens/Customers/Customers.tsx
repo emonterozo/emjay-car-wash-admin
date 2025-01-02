@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 
@@ -9,13 +9,22 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
 const Customers = () => {
-  const navigation = useNavigation();
   // Mock customer data
-  const customers = [
-    { id: '1', name: 'David Brown', contact: '09123456789', registrationDate: 'Jan. 1, 2025' },
-    { id: '2', name: 'John Smith', contact: '09223344556', registrationDate: 'Feb. 15, 2025' },
-    { id: '3', name: 'Sarah Lee', contact: '09334455667', registrationDate: 'Mar. 10, 2025' },
-  ];
+  const customers = useMemo(
+    () => [
+      { id: '1', name: 'David Brown', contact: '09123456789', registrationDate: 'Jan. 1, 2025' },
+      { id: '2', name: 'John Smith', contact: '09223344556', registrationDate: 'Feb. 15, 2025' },
+      { id: '3', name: 'Sarah Lee', contact: '09334455667', registrationDate: 'Mar. 10, 2025' },
+    ],
+    [],
+  );
+
+  const navigation = useNavigation();
+  const [count, setCount] = useState(customers.length);
+
+  useEffect(() => {
+    setCount(customers.length);
+  }, [customers]);
 
   const renderSeparator = () => <View style={styles.separator} />;
   const handleCardPress = (customerId) => {
@@ -47,9 +56,8 @@ const Customers = () => {
         <Text style={styles.textCustomerList}>Customer List</Text>
         <View style={styles.textRegisteredCustomerContainer}>
           <Text style={styles.textRegisteredCustomer}>
-            Total number of Registered Customers are
+            {`Total number of Registered Customers are ${count}`}
           </Text>
-          <Text style={styles.textRegisteredCustomer}>33</Text>
         </View>
       </View>
 

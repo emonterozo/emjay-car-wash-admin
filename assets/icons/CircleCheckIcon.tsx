@@ -1,6 +1,6 @@
 import * as React from "react";
 import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
-const CheckIcon = ({ width = 16, height = 16 }: IconProps) => (
+const CircleCheckIcon = ({ width = 16, height = 16 }: IconProps) => (
     <Svg width={16} height={16} viewBox={`0 0 ${width} ${height}`} fill="none">
     <Rect width={16} height={16} fill="url(#pattern0_600_68)" />
     <Defs>
@@ -21,4 +21,4 @@ const CheckIcon = ({ width = 16, height = 16 }: IconProps) => (
     </Defs>
   </Svg>
 );
-export default CheckIcon;
+export default CircleCheckIcon;

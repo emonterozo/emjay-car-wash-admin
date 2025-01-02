@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
 import { color, font } from '@app/styles';
-import { CheckIcon } from '@app/icons';
+import { CircleCheckIcon } from '@app/icons';
 
 type ServiceTransactionItemProps = {
   icon: React.ReactNode;
@@ -23,7 +23,7 @@ const ServiceTransactionItem: React.FC<ServiceTransactionItemProps> = ({
       <Text style={styles.textCarwash}>{serviceName}</Text>
       <View style={styles.servicesDetailsContainer}>
         <View style={styles.iconAndTextRow}>
-          <CheckIcon />
+          <CircleCheckIcon />
           <Text
             style={[
               styles.textServicePriceAndDate,

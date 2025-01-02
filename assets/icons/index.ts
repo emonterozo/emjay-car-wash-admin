@@ -29,5 +29,5 @@ export { default as CarSelectedIcon } from './CarSelectedIcon';
 export { default as CarUnselectedIcon } from './CarUnselectedIcon';
 export { default as MotorcycleSelectedIcon } from './MotorcycleSelectedIcon';
 export { default as MotorcycleUnselectedIcon } from './MotorcycleUnselectedIcon';
-export { default as CheckIcon } from './CheckIcon';
+export { default as CircleCheckIcon } from './CircleCheckIcon';
 export { default as WaterDropIcon } from './WaterDropIcon';
