@@ -45,18 +45,44 @@ export type ServicesResponse = {
 };
 
 export type Customer = {
-  id: string,
-  contact_number: string,
-  first_name: string,
-  last_name: string,
-  registered_on: string
-}
+  id: string;
+  contact_number: string;
+  first_name: string;
+  last_name: string;
+  registered_on: string;
+};
 
 export type CustomersResponse = {
   data: {
     customers: Customer[];
-    total: number,
+    total: number;
   };
   errors: ErrorProps[];
 };
 
+export type Transaction = {
+  size: string;
+  count: number;
+};
+
+export type CustomerInformation = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  contact_number: string;
+  address: string | null;
+  barangay: string | null;
+  city: string | null;
+  province: string | null;
+  registered_on: string;
+  recent_transactions: any[];
+  car_services_count: Transaction[];
+  moto_services_count: Transaction[];
+};
+
+export type CustomerInformationResponse = {
+  data: {
+    customer_services: CustomerInformation;
+  };
+  errors: ErrorProps[];
+};
