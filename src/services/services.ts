@@ -1,7 +1,13 @@
 import Config from 'react-native-config';
 
 import { apiRequest, ApiResponse } from './apiRequest';
-import { CustomersResponse, LoginPayload, LoginResponse, ServicesResponse } from '../types/services/types';
+import {
+  CustomerInformationResponse,
+  CustomersResponse,
+  LoginPayload,
+  LoginResponse,
+  ServicesResponse,
+} from '../types/services/types';
 
 const requestHeader = (token: string) => {
   return {
@@ -53,4 +59,15 @@ export const getCustomersRequest = (
   });
 };
 
-
+export const getCustomerInformationRequest = (
+  token: string,
+  id: string,
+): ApiResponse<CustomerInformationResponse> => {
+  return apiRequest<null, CustomerInformationResponse>(
+    `${Config.API_BASE_URL}/admin/customers/${id}`,
+    {
+      method: 'get',
+      headers: requestHeader(token),
+    },
+  );
+};

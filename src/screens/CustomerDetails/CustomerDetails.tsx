@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
+import { format } from 'date-fns';
 
-import { AppHeader, ServiceTransactionItem } from '@app/components';
+import { NavigationProp } from '../../types/navigation/types';
+
+import {
+  AppHeader,
+  EmptyState,
+  ErrorModal,
+  LoadingAnimation,
+  ServiceTransactionItem,
+} from '@app/components';
 import { color, font } from '@app/styles';
 import { CarIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
 import SizeDisplay from './SizeDisplay';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { CustomerDetailsRouteProp } from '../../types/navigation/types';
+import { getCustomerInformationRequest } from '@app/services';
+import GlobalContext from '@app/context';
+import { CustomerInformation } from 'src/types/services/types';
 
 const OPTIONS = [
   {
@@ -27,84 +39,124 @@ const size = {
   motorcycle: ['S', 'MD', 'LG'],
 };
 
-const value = {
-  car: [0, 10, 5, 3, 2],
-  motorcycle: [10, 10, 3],
-};
-
-
-
 const CustomerDetails = () => {
+  const { user } = useContext(GlobalContext);
+  const navigation = useNavigation<NavigationProp>();
   const { id } = useRoute<CustomerDetailsRouteProp>().params;
   const [selectedVehicle, setSelectedVehicle] = useState('car');
-  const servicesData = [
-    { icon: <WaterDropIcon />, serviceName: 'Car Wash', price: 'P3000', date: '20 Dec 24, 5:00' },
-    { icon: <WaterDropIcon />, serviceName: 'Oil Change', price: 'P1500', date: '22 Dec 24, 2:00' },
-    {
-      icon: <WaterDropIcon />,
-      serviceName: 'Tire Replacement',
-      price: 'P5000',
-      date: '25 Dec 24, 11:00',
-    },
-    {
-      icon: <WaterDropIcon />,
-      serviceName: 'Tire Replacement',
-      price: 'P5000',
-      date: '25 Dec 24, 11:00',
-    },
-    {
-      icon: <WaterDropIcon />,
-      serviceName: 'Tire Replacement',
-      price: 'P5000',
-      date: '25 Dec 24, 11:00',
-    },
-    {
-      icon: <WaterDropIcon />,
-      serviceName: 'Tire Replacement',
-      price: 'P5000',
-      date: '25 Dec 24, 11:00',
-    },
-    {
-      icon: <WaterDropIcon />,
-      serviceName: 'Tire Replacement',
-      price: 'P5000',
-      date: '25 Dec 24, 11:00',
-    },
-  ];
+  const [screenStatus, setScreenStatus] = useState({
+    isLoading: false,
+    hasError: false,
+  });
+  const [customerInformation, setCustomerInformation] = useState<CustomerInformation>();
+  const [servicesData, setServicesData] = useState<any[]>([]);
+  const [carServicesCountBySize, setCarServicesCountBySize] = useState<any[]>([]);
+  const [motoServicesCountBySize, setMotoServicesCountBySize] = useState<any[]>([]);
+  const [value, setValue] = useState({
+    car: [0, 0, 0, 0, 0],
+    motorcycle: [0, 0, 0],
+  });
+
+  const customerDetails = customerInformation
+    ? [
+        {
+          label: 'Full Name',
+          value: `${customerInformation.first_name} ${customerInformation.last_name}`,
+        },
+        { label: 'Date of Birth', value: 'May 20, 2003' },
+        { label: 'Contact number', value: `${customerInformation.contact_number}` },
+        {
+          label: 'Address',
+          value: Object.values({
+            address: customerInformation.address,
+            barangay: customerInformation.barangay,
+            city: customerInformation.city,
+            province: customerInformation.province,
+          }).every(Boolean)
+            ? `${customerInformation.address} ${customerInformation.barangay} ${customerInformation.city} ${customerInformation.province}`
+            : 'No available record',
+        },
+        {
+          label: 'Registration Date',
+          value: format(new Date(customerInformation.registered_on), 'MMMM dd, yyyy'),
+        },
+      ]
+    : [];
+
+  const transformServicesCountBySizeData = (customerServices: CustomerInformation) => {
+    const carCountData = customerServices.car_services_count.map((item, index) => ({
+      size: item.size,
+      count: value.car[index] || 0,
+    }));
+    setCarServicesCountBySize(carCountData);
+
+    const motoCountData = customerServices.moto_services_count.map((item, index) => ({
+      size: item.size,
+      count: value.motorcycle[index] || 0,
+    }));
+    setMotoServicesCountBySize(motoCountData);
+
+    setValue((prevValue) => ({
+      ...prevValue,
+      car: carCountData.map((item) => item.count),
+      motorcycle: motoCountData.map((item) => item.count),
+    }));
+  };
 
   const handleSelectVehicle = (vehicle: string) => {
     setSelectedVehicle(vehicle);
   };
 
+  useEffect(() => {
+    fetchCustomerDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchCustomerDetails = async () => {
+    setScreenStatus({ hasError: false, isLoading: true });
+    const response = await getCustomerInformationRequest(user.token, id);
+
+    if (response.success && response.data) {
+      const { data, errors } = response.data;
+
+      if (errors.length > 0) {
+        setScreenStatus({ isLoading: false, hasError: true });
+      } else {
+        setCustomerInformation(data.customer_services);
+        setServicesData(data.customer_services.recent_transactions || []);
+        transformServicesCountBySizeData(data.customer_services);
+        setScreenStatus({ hasError: false, isLoading: false });
+      }
+    } else {
+      setScreenStatus({ isLoading: false, hasError: true });
+    }
+  };
+
+  const onCancel = () => {
+    setScreenStatus({ hasError: false, isLoading: false });
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <AppHeader title="Customer" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchCustomerDetails}
+      />
       <Text style={[styles.heading, styles.textCustomerDetails]}>Customer Details</Text>
       <ScrollView bounces={false}>
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom21]}>
           Personal Information
         </Text>
         <View style={styles.personalInformationContainer}>
-          <Text style={[styles.textPersonalDetails, styles.textGray]}>
-            Full Name:
-            <Text style={[styles.textBlack]}> John Smith</Text>
-          </Text>
-          <Text style={[styles.textPersonalDetails, styles.textGray]}>
-            Date of Birth:
-            <Text style={[styles.textBlack]}> May 20, 2003</Text>
-          </Text>
-          <Text style={[styles.textPersonalDetails, styles.textGray]}>
-            Contact number:
-            <Text style={[styles.textBlack]}> 09876543210</Text>
-          </Text>
-          <Text style={[styles.textPersonalDetails, styles.textGray]}>
-            Address:
-            <Text style={[styles.textBlack]}> No available data</Text>
-          </Text>
-          <Text style={[styles.textPersonalDetails, styles.textGray]}>
-            Registration Date:
-            <Text style={[styles.textBlack]}> November 21, 2024</Text>
-          </Text>
+          {customerDetails.map((item, index) => (
+            <Text key={index} style={[styles.textPersonalDetails, styles.textGray]}>
+              {item.label}:<Text style={[styles.textBlack]}> {item.value}</Text>
+            </Text>
+          ))}
         </View>
         <View style={styles.horizontalSeparator} />
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom]}>
@@ -125,9 +177,17 @@ const CustomerDetails = () => {
           ))}
         </View>
         <View style={styles.countContainer}>
-          {selectedVehicle === 'car' && <SizeDisplay sizes={size.car} values={value.car} />}
+          {selectedVehicle === 'car' && (
+            <SizeDisplay
+              sizes={size.car}
+              values={carServicesCountBySize.map((item) => item.count)}
+            />
+          )}
           {selectedVehicle === 'motorcycle' && (
-            <SizeDisplay sizes={size.motorcycle} values={value.motorcycle} />
+            <SizeDisplay
+              sizes={size.motorcycle}
+              values={motoServicesCountBySize.map((item) => item.count)}
+            />
           )}
         </View>
         <View style={[styles.horizontalSeparator, styles.horizontalSeparatorMarginBottom]} />
@@ -135,15 +195,21 @@ const CustomerDetails = () => {
           Previous 7 Days Transactions
         </Text>
         <View style={styles.transactionsContainer}>
-          {servicesData.map((service, index) => (
-            <ServiceTransactionItem
-              key={index}
-              icon={<WaterDropIcon />}
-              serviceName={service.serviceName}
-              price={service.price}
-              date={service.date}
-            />
-          ))}
+          {servicesData.length === 0 ? (
+            <View style={styles.emptyState}>
+              <EmptyState />
+            </View>
+          ) : (
+            servicesData.map((_service, index) => (
+              <ServiceTransactionItem
+                key={index}
+                icon={<WaterDropIcon />}
+                serviceName={'Car Wash'}
+                price={'P3000'}
+                date={format(new Date('2024-12-23T08:00:00.000Z'), 'dd MMM yy, hh:mm a')}
+              />
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -229,6 +295,10 @@ const styles = StyleSheet.create({
   },
   transactionsContainer: {
     gap: 24,
+  },
+  emptyState: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
   },
 });
 
