@@ -97,7 +97,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
       <ErrorModal
         isVisible={screenStatus.hasError}
         onCancel={closeModal}

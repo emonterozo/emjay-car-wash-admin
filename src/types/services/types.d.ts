@@ -60,9 +60,16 @@ export type CustomersResponse = {
   errors: ErrorProps[];
 };
 
-export type Transaction = {
+export type ServiceCount = {
   size: string;
   count: number;
+};
+
+export type RecentTransaction = {
+  id: string;
+  service_name: string;
+  price: number;
+  date: string;
 };
 
 export type CustomerInformation = {
@@ -75,9 +82,9 @@ export type CustomerInformation = {
   city: string | null;
   province: string | null;
   registered_on: string;
-  recent_transactions: any[];
-  car_services_count: Transaction[];
-  moto_services_count: Transaction[];
+  recent_transactions: RecentTransaction[];
+  car_services_count: ServiceCount[];
+  moto_services_count: ServiceCount[];
 };
 
 export type CustomerInformationResponse = {

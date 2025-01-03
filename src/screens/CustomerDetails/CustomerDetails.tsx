@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 import { format } from 'date-fns';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { NavigationProp } from '../../types/navigation/types';
-
+import { NavigationProp, CustomerDetailsRouteProp } from '../../types/navigation/types';
 import {
   AppHeader,
   EmptyState,
@@ -15,11 +15,10 @@ import {
 import { color, font } from '@app/styles';
 import { CarIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
 import SizeDisplay from './SizeDisplay';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { CustomerDetailsRouteProp } from '../../types/navigation/types';
 import { getCustomerInformationRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { CustomerInformation } from 'src/types/services/types';
+import { CustomerInformation, RecentTransaction } from '../../types/services/types';
+import { formattedNumber } from '@app/helpers';
 
 const OPTIONS = [
   {
@@ -48,11 +47,11 @@ const CustomerDetails = () => {
     isLoading: false,
     hasError: false,
   });
-  const [customerInformation, setCustomerInformation] = useState<CustomerInformation>();
-  const [servicesData, setServicesData] = useState<any[]>([]);
-  const [carServicesCountBySize, setCarServicesCountBySize] = useState<any[]>([]);
-  const [motoServicesCountBySize, setMotoServicesCountBySize] = useState<any[]>([]);
-  const [value, setValue] = useState({
+  const [customerInformation, setCustomerInformation] = useState<CustomerInformation | undefined>(
+    undefined,
+  );
+  const [transactions, setTransactions] = useState<RecentTransaction[]>([]);
+  const [servicesCount, setServicesCount] = useState({
     car: [0, 0, 0, 0, 0],
     motorcycle: [0, 0, 0],
   });
@@ -81,27 +80,22 @@ const CustomerDetails = () => {
           value: format(new Date(customerInformation.registered_on), 'MMMM dd, yyyy'),
         },
       ]
-    : [];
-
-  const transformServicesCountBySizeData = (customerServices: CustomerInformation) => {
-    const carCountData = customerServices.car_services_count.map((item, index) => ({
-      size: item.size,
-      count: value.car[index] || 0,
-    }));
-    setCarServicesCountBySize(carCountData);
-
-    const motoCountData = customerServices.moto_services_count.map((item, index) => ({
-      size: item.size,
-      count: value.motorcycle[index] || 0,
-    }));
-    setMotoServicesCountBySize(motoCountData);
-
-    setValue((prevValue) => ({
-      ...prevValue,
-      car: carCountData.map((item) => item.count),
-      motorcycle: motoCountData.map((item) => item.count),
-    }));
-  };
+    : [
+        {
+          label: 'Full Name',
+          value: 'No available record',
+        },
+        { label: 'Date of Birth', value: 'No available record' },
+        { label: 'Contact number', value: 'No available record' },
+        {
+          label: 'Address',
+          value: 'No available record',
+        },
+        {
+          label: 'Registration Date',
+          value: 'No available record',
+        },
+      ];
 
   const handleSelectVehicle = (vehicle: string) => {
     setSelectedVehicle(vehicle);
@@ -123,8 +117,11 @@ const CustomerDetails = () => {
         setScreenStatus({ isLoading: false, hasError: true });
       } else {
         setCustomerInformation(data.customer_services);
-        setServicesData(data.customer_services.recent_transactions || []);
-        transformServicesCountBySizeData(data.customer_services);
+        setTransactions(data.customer_services.recent_transactions);
+        setServicesCount({
+          car: data.customer_services.car_services_count.map((item) => item.count),
+          motorcycle: data.customer_services.moto_services_count.map((item) => item.count),
+        });
         setScreenStatus({ hasError: false, isLoading: false });
       }
     } else {
@@ -177,17 +174,9 @@ const CustomerDetails = () => {
           ))}
         </View>
         <View style={styles.countContainer}>
-          {selectedVehicle === 'car' && (
-            <SizeDisplay
-              sizes={size.car}
-              values={carServicesCountBySize.map((item) => item.count)}
-            />
-          )}
+          {selectedVehicle === 'car' && <SizeDisplay sizes={size.car} values={servicesCount.car} />}
           {selectedVehicle === 'motorcycle' && (
-            <SizeDisplay
-              sizes={size.motorcycle}
-              values={motoServicesCountBySize.map((item) => item.count)}
-            />
+            <SizeDisplay sizes={size.motorcycle} values={servicesCount.motorcycle} />
           )}
         </View>
         <View style={[styles.horizontalSeparator, styles.horizontalSeparatorMarginBottom]} />
@@ -195,18 +184,18 @@ const CustomerDetails = () => {
           Previous 7 Days Transactions
         </Text>
         <View style={styles.transactionsContainer}>
-          {servicesData.length === 0 ? (
+          {transactions.length === 0 ? (
             <View style={styles.emptyState}>
               <EmptyState />
             </View>
           ) : (
-            servicesData.map((_service, index) => (
+            transactions.map((item) => (
               <ServiceTransactionItem
-                key={index}
+                key={item.id}
                 icon={<WaterDropIcon />}
-                serviceName={'Car Wash'}
-                price={'P3000'}
-                date={format(new Date('2024-12-23T08:00:00.000Z'), 'dd MMM yy, hh:mm a')}
+                serviceName={item.service_name}
+                price={formattedNumber(item.price)}
+                date={format(new Date(item.date), 'dd MMM yy, hh:mm a')}
               />
             ))
           )}
