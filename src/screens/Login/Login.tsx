@@ -28,8 +28,8 @@ const Login = () => {
     hasError: false,
   });
   const [input, setInput] = useState({
-    username: 'emjay_admin',
-    password: 'password',
+    username: '',
+    password: '',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
 

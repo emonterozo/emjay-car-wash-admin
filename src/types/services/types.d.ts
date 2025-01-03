@@ -81,6 +81,7 @@ export type CustomerInformation = {
   barangay: string | null;
   city: string | null;
   province: string | null;
+  birth_date: string;
   registered_on: string;
   recent_transactions: RecentTransaction[];
   car_services_count: ServiceCount[];
