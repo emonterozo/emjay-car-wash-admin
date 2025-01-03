@@ -62,7 +62,10 @@ const CustomerDetails = () => {
           label: 'Full Name',
           value: `${customerInformation.first_name} ${customerInformation.last_name}`,
         },
-        { label: 'Date of Birth', value: 'May 20, 2003' },
+        {
+          label: 'Date of Birth',
+          value: format(new Date(customerInformation.birth_date), 'MMMM dd, yyyy'),
+        },
         { label: 'Contact number', value: `${customerInformation.contact_number}` },
         {
           label: 'Address',
