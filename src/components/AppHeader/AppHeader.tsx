@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { ChevronLeftIcon } from '@app/icons';
 import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '../../types/navigation/types';
 
 type AppHeaderProps = {
   onBack?: () => void;
@@ -10,7 +11,7 @@ type AppHeaderProps = {
 };
 
 const AppHeader = ({ onBack, title }: AppHeaderProps) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
 
   const handlePressBack = () => {
     return onBack ? onBack() : navigation.goBack();

@@ -1,7 +1,7 @@
 import Config from 'react-native-config';
 
 import { apiRequest, ApiResponse } from './apiRequest';
-import { LoginPayload, LoginResponse, ServicesResponse } from '../types/services/types';
+import { CustomersResponse, LoginPayload, LoginResponse, ServicesResponse } from '../types/services/types';
 
 const requestHeader = (token: string) => {
   return {
@@ -34,3 +34,23 @@ export const getServicesRequest = (
     },
   });
 };
+
+export const getCustomersRequest = (
+  token: string,
+  field?: string,
+  direction?: 'asc' | 'desc',
+  limit?: number,
+  offset?: number,
+): ApiResponse<CustomersResponse> => {
+  return apiRequest<null, CustomersResponse>(`${Config.API_BASE_URL}/admin/customers`, {
+    method: 'get',
+    headers: requestHeader(token),
+    params: {
+      order_by: JSON.stringify({ field: field ?? 'registered_on', direction: direction ?? 'desc' }),
+      limit,
+      offset,
+    },
+  });
+};
+
+

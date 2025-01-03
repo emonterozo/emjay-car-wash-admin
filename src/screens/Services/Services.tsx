@@ -126,7 +126,7 @@ const Services = () => {
       </View>
       <FlatList
         bounces={false}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         data={filteredServices}
         renderItem={({ item }) => (
@@ -150,6 +150,7 @@ const Services = () => {
             </View>
           </View>
         )}
+        keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
       />

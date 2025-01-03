@@ -1,73 +1,122 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
-
-import { AppHeader } from '@app/components';
-import { font } from '@app/styles';
-import { IMAGES } from '@app/constant';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { format } from 'date-fns';
+
+import { NavigationProp } from '../../types/navigation/types';
+import { Customer } from '../../types/services/types';
+import {
+  AppHeader,
+  EmptyState,
+  ErrorModal,
+  LoadingAnimation,
+  ActivityIndicator,
+} from '@app/components';
+import { color, font } from '@app/styles';
+import { IMAGES } from '@app/constant';
+import { getCustomersRequest } from '@app/services';
+import GlobalContext from '@app/context';
+
+const renderSeparator = () => <View style={styles.separator} />;
+
+const LIMIT = 50;
 
 const Customers = () => {
-  // Mock customer data
-  const customers = useMemo(
-    () => [
-      { id: '1', name: 'David Brown', contact: '09123456789', registrationDate: 'Jan. 1, 2025' },
-      { id: '2', name: 'John Smith', contact: '09223344556', registrationDate: 'Feb. 15, 2025' },
-      { id: '3', name: 'Sarah Lee', contact: '09334455667', registrationDate: 'Mar. 10, 2025' },
-    ],
-    [],
-  );
+  const navigation = useNavigation<NavigationProp>();
+  const { user } = useContext(GlobalContext);
+  const [totalCount, setTotalCount] = useState(0);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [screenStatus, setScreenStatus] = useState({
+    isLoading: false,
+    hasError: false,
+  });
+  const [isFetching, setIsFetching] = useState(false);
 
-  const navigation = useNavigation();
-  const [count, setCount] = useState(customers.length);
+  const handleCardPress = (id: string) => {
+    navigation.navigate('CustomerDetails', { id });
+  };
+
+  const fetchCustomers = async () => {
+    setScreenStatus({ hasError: false, isLoading: true });
+    const response = await getCustomersRequest(user.token, '_id', 'asc', LIMIT, 0);
+
+    if (response.success && response.data) {
+      const { data, errors } = response.data;
+
+      if (errors.length > 0) {
+        setScreenStatus({ isLoading: false, hasError: true });
+      } else {
+        setCustomers(data.customers);
+        setTotalCount(data.total);
+        setScreenStatus({ hasError: false, isLoading: false });
+      }
+    } else {
+      setScreenStatus({ isLoading: false, hasError: true });
+    }
+  };
 
   useEffect(() => {
-    setCount(customers.length);
-  }, [customers]);
+    fetchCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const renderSeparator = () => <View style={styles.separator} />;
-  const handleCardPress = (customerId) => {
-    navigation.navigate('CustomerDetails', { id: customerId });
+  const onCancel = () => {
+    setScreenStatus({ hasError: false, isLoading: false });
+    navigation.goBack();
   };
-  const renderCustomer = ({ item }) => {
-    return (
-      <TouchableOpacity onPress={() => handleCardPress(item.id)}>
-        <View style={styles.cardContainer}>
-          <View style={styles.card}>
-            <View>
-              <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="center" />
-            </View>
-            <View>
-              <Text style={styles.textName}>{item.name}</Text>
-              <Text style={styles.textContact}>{item.contact}</Text>
-              <Text style={styles.textRegistration}>{item.registrationDate}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
+
+  const onEndReached = async () => {
+    if (customers.length < totalCount) {
+      setIsFetching(true);
+      const response = await getCustomersRequest(user.token, '_id', 'asc', LIMIT, customers.length);
+
+      if (response.success && response.data?.data) {
+        const { data } = response.data;
+        setCustomers((prev) => [...prev, ...data.customers]);
+        setTotalCount(data.total);
+      }
+      setIsFetching(false);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <AppHeader title="Customers" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal isVisible={screenStatus.hasError} onCancel={onCancel} onRetry={fetchCustomers} />
       <View style={styles.heading}>
         <Text style={styles.textCustomerList}>Customer List</Text>
-        <View style={styles.textRegisteredCustomerContainer}>
+        {customers.length > 0 && (
           <Text style={styles.textRegisteredCustomer}>
-            {`Total number of Registered Customers are ${count}`}
+            {`Total number of Registered Customers are ${totalCount}`}
           </Text>
-        </View>
+        )}
       </View>
-
       <FlatList
         bounces={false}
         showsVerticalScrollIndicator={true}
+        contentContainerStyle={styles.list}
         data={customers}
-        renderItem={renderCustomer}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item.id)}>
+            <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
+            <View style={styles.details}>
+              <Text style={styles.textName}>{`${item.first_name} ${item.last_name}`}</Text>
+              <View style={styles.textInfoContainer}>
+                <Text style={styles.textInfo}>{item.contact_number}</Text>
+                <Text style={styles.textInfo}>
+                  {format(new Date(item.registered_on), 'MMMM dd, yyyy')}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
+        ListEmptyComponent={<EmptyState />}
+        onEndReached={onEndReached}
+        ListFooterComponent={<ActivityIndicator isLoading={isFetching} />}
       />
     </SafeAreaView>
   );
@@ -87,22 +136,19 @@ const styles = StyleSheet.create({
   separator: {
     marginTop: 24,
   },
-  textRegisteredCustomerContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
   textRegisteredCustomer: {
     ...font.regular,
     fontSize: 16,
     color: '#696969',
     lineHeight: 16,
   },
-  cardContainer: {
-    width: '100%',
-    alignItems: 'center',
+  list: {
+    flexGrow: 1,
+    paddingHorizontal: 25,
+    paddingBottom: 25,
+    backgroundColor: color.background,
   },
   card: {
-    width: Dimensions.get('window').width - 49,
     backgroundColor: '#F3F2EF',
     borderRadius: 24,
     shadowColor: '#000000',
@@ -113,7 +159,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    padding: 5,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
   image: {
     height: 105,
@@ -126,25 +173,25 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginBottom: 16,
   },
+  details: {
+    flex: 1,
+    gap: 8,
+  },
   textName: {
-    ...font.bold,
+    ...font.regular,
     fontSize: 24,
     color: '#000000',
     lineHeight: 24,
     marginBottom: 8,
   },
-  textContact: {
+  textInfo: {
     ...font.regular,
-    fontSize: 16,
-    color: '#777676',
-    lineHeight: 16,
-    marginBottom: 4,
-  },
-  textRegistration: {
-    ...font.light,
     fontSize: 16,
     color: '#7F7A7A',
     lineHeight: 16,
+  },
+  textInfoContainer: {
+    gap: 4,
   },
 });
 

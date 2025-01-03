@@ -1,20 +1,42 @@
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 
 import { AppHeader, ServiceTransactionItem } from '@app/components';
 import { color, font } from '@app/styles';
-import {
-  CarSelectedIcon,
-  CarUnselectedIcon,
-  MotorcycleSelectedIcon,
-  MotorcycleUnselectedIcon,
-  WaterDropIcon,
-} from '@app/icons';
-import { ScrollView } from 'react-native-gesture-handler';
+import { CarIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
+import SizeDisplay from './SizeDisplay';
+import { useRoute } from '@react-navigation/native';
+import { CustomerDetailsRouteProp } from '../../types/navigation/types';
+
+const OPTIONS = [
+  {
+    key: 'car',
+    active: <CarIcon fill={color.primary} />,
+    inactive: <CarIcon fill="#888888" />,
+  },
+  {
+    key: 'motorcycle',
+    active: <MotorcycleIcon fill={color.primary} />,
+    inactive: <MotorcycleIcon fill="#888888" />,
+  },
+];
+
+const size = {
+  car: ['S', 'MD', 'LG', 'XL', 'XXL'],
+  motorcycle: ['S', 'MD', 'LG'],
+};
+
+const value = {
+  car: [0, 10, 5, 3, 2],
+  motorcycle: [10, 10, 3],
+};
+
+
 
 const CustomerDetails = () => {
-  const [selectedVehicle, setSelectedVehicle] = useState('car'); // 'car' is the default
+  const { id } = useRoute<CustomerDetailsRouteProp>().params;
+  const [selectedVehicle, setSelectedVehicle] = useState('car');
   const servicesData = [
     { icon: <WaterDropIcon />, serviceName: 'Car Wash', price: 'P3000', date: '20 Dec 24, 5:00' },
     { icon: <WaterDropIcon />, serviceName: 'Oil Change', price: 'P1500', date: '22 Dec 24, 2:00' },
@@ -50,15 +72,15 @@ const CustomerDetails = () => {
     },
   ];
 
-  const handleSelectVehicle = (vehicle) => {
-    setSelectedVehicle(vehicle); // Update selected vehicle
+  const handleSelectVehicle = (vehicle: string) => {
+    setSelectedVehicle(vehicle);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <AppHeader title="Customer" />
       <Text style={[styles.heading, styles.textCustomerDetails]}>Customer Details</Text>
-      <ScrollView>
+      <ScrollView bounces={false}>
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom21]}>
           Personal Information
         </Text>
@@ -77,71 +99,46 @@ const CustomerDetails = () => {
           </Text>
           <Text style={[styles.textPersonalDetails, styles.textGray]}>
             Address:
-            <Text style={[styles.textBlack]}> Blk 31 Lot 18 HH2, Marilao, Bulacan.</Text>
+            <Text style={[styles.textBlack]}> No available data</Text>
           </Text>
           <Text style={[styles.textPersonalDetails, styles.textGray]}>
             Registration Date:
             <Text style={[styles.textBlack]}> November 21, 2024</Text>
           </Text>
         </View>
-
         <View style={styles.horizontalSeparator} />
-
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom]}>
-          Car Wash Services Count
+          {`${selectedVehicle === 'car' ? 'Car' : 'Motorcycle'} Wash Services Count`}
         </Text>
-
         <View style={styles.cardContainer}>
-          <TouchableOpacity style={styles.card} onPress={() => handleSelectVehicle('car')}>
-            {selectedVehicle === 'car' ? <CarSelectedIcon /> : <CarUnselectedIcon />}
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.card} onPress={() => handleSelectVehicle('motorcycle')}>
-            {selectedVehicle === 'motorcycle' ? (
-              <MotorcycleSelectedIcon />
-            ) : (
-              <MotorcycleUnselectedIcon />
-            )}
-          </TouchableOpacity>
+          {OPTIONS.map((option) => (
+            <TouchableOpacity
+              style={[
+                styles.card,
+                option.key === selectedVehicle && { shadowColor: color.primary },
+              ]}
+              key={option.key}
+              onPress={() => handleSelectVehicle(option.key)}
+            >
+              {option.key === selectedVehicle ? option.active : option.inactive}
+            </TouchableOpacity>
+          ))}
         </View>
-
-        <View style={styles.sizeContainer}>
-          <View style={styles.textSizeValueRow}>
-            <Text style={styles.textSizeValue}>0</Text>
-            <Text style={styles.textSizeValue}>10</Text>
-            <Text style={styles.textSizeValue}>10</Text>
-            <Text style={styles.textSizeValue}>5</Text>
-            <Text style={styles.textSizeValue}>5</Text>
-          </View>
-
-          <View style={styles.horizontalSeparator} />
-          <View style={styles.circleIndicatorRow}>
-            <View style={styles.circleIndicator} />
-            <View style={styles.circleIndicator} />
-            <View style={styles.circleIndicator} />
-            <View style={styles.circleIndicator} />
-            <View style={styles.circleIndicator} />
-          </View>
-
-          <View style={styles.textSizeValueRow}>
-            <Text style={styles.textSizeDescription}>S</Text>
-            <Text style={styles.textSizeDescription}>MD</Text>
-            <Text style={styles.textSizeDescription}>LG</Text>
-            <Text style={styles.textSizeDescription}>XL</Text>
-            <Text style={styles.textSizeDescription}>XXL</Text>
-          </View>
+        <View style={styles.countContainer}>
+          {selectedVehicle === 'car' && <SizeDisplay sizes={size.car} values={value.car} />}
+          {selectedVehicle === 'motorcycle' && (
+            <SizeDisplay sizes={size.motorcycle} values={value.motorcycle} />
+          )}
         </View>
-
         <View style={[styles.horizontalSeparator, styles.horizontalSeparatorMarginBottom]} />
-
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom]}>
           Previous 7 Days Transactions
         </Text>
-
         <View style={styles.transactionsContainer}>
           {servicesData.map((service, index) => (
             <ServiceTransactionItem
               key={index}
-              icon={service.icon}
+              icon={<WaterDropIcon />}
               serviceName={service.serviceName}
               price={service.price}
               date={service.date}
@@ -208,6 +205,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     gap: 16,
     paddingHorizontal: 25,
     marginBottom: 16,
@@ -216,46 +214,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F2EF',
     borderRadius: 24,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 5,
-    padding: 40,
-    alignItems: 'center',
+    padding: 35,
+    justifyContent: 'center',
+    height: 120,
   },
-  sizeContainer: {
+  countContainer: {
     alignItems: 'center',
     paddingHorizontal: 25,
-    gap: 3,
-    flexDirection: 'column',
-  },
-  circleIndicator: {
-    height: 12,
-    width: 12,
-    borderRadius: 10,
-    backgroundColor: color.primary,
-  },
-  circleIndicatorRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    alignItems: 'center',
-  },
-  textSizeValueRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    alignItems: 'center',
-  },
-  textSizeValue: {
-    ...font.regular,
-    fontSize: 16,
-    color: color.primary,
-  },
-  textSizeDescription: {
-    ...font.regular,
-    fontSize: 12,
-    color: color.black,
+    marginTop: 16,
   },
   transactionsContainer: {
     gap: 24,

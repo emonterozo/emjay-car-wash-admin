@@ -6,3 +6,4 @@ export { default as AppHeader } from './AppHeader/AppHeader';
 export { default as ServiceTransactionItem } from './ServiceTransactionItem/ServiceTransactionItem';
 export { default as EmptyState } from './EmptyState/EmptyState';
 export { default as RatingStars } from './RatingStars/RatingStars';
+export { default as ActivityIndicator } from './ActivityIndicator/ActivityIndicator';

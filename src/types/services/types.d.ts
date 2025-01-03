@@ -43,3 +43,20 @@ export type ServicesResponse = {
   };
   errors: ErrorProps[];
 };
+
+export type Customer = {
+  id: string,
+  contact_number: string,
+  first_name: string,
+  last_name: string,
+  registered_on: string
+}
+
+export type CustomersResponse = {
+  data: {
+    customers: Customer[];
+    total: number,
+  };
+  errors: ErrorProps[];
+};
+
