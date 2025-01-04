@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   value: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#888888',
   },
   selectionRow: {

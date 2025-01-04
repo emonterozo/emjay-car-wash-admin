@@ -1,6 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, View, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import { format } from 'date-fns';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -139,6 +147,7 @@ const CustomerDetails = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Customer" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
@@ -287,9 +296,11 @@ const styles = StyleSheet.create({
   },
   transactionsContainer: {
     gap: 24,
+    marginBottom: 10,
   },
   emptyState: {
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
     paddingHorizontal: 20,
   },
 });

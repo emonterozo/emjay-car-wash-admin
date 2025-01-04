@@ -1,6 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from '@d11/react-native-fast-image';
 import { format } from 'date-fns';
@@ -12,7 +20,7 @@ import {
   DashboardUpdateIcon,
   HorizontalKebabIcon,
 } from '@app/icons';
-import { font } from '@app/styles';
+import { color, font } from '@app/styles';
 import { EmptyState, ErrorModal, LoadingAnimation, RatingStars } from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
@@ -97,6 +105,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
       <ErrorModal
         isVisible={screenStatus.hasError}
@@ -322,6 +331,7 @@ const styles = StyleSheet.create({
   label: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#000000',
   },
   topServicesHeader: {
@@ -333,16 +343,19 @@ const styles = StyleSheet.create({
   service: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#000000',
   },
   serviceDate: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#777676',
   },
   count: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#000000',
   },
   row: {

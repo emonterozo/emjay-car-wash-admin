@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from '@d11/react-native-fast-image';
 
@@ -103,6 +103,7 @@ const Services = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Services" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal isVisible={screenStatus.hasError} onCancel={onCancel} onRetry={fetchService} />
@@ -174,6 +175,7 @@ const styles = StyleSheet.create({
   label: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#696969',
   },
   filterContainer: {
@@ -190,6 +192,7 @@ const styles = StyleSheet.create({
   name: {
     ...font.regular,
     fontSize: 24,
+    lineHeight: 24,
     color: '#000000',
   },
   separator: {
@@ -198,6 +201,7 @@ const styles = StyleSheet.create({
   value: {
     ...font.regular,
     fontSize: 20,
+    lineHeight: 20,
     color: '#050303',
     flex: 1,
   },

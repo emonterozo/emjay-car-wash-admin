@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
   Pressable,
+  StatusBar,
 } from 'react-native';
 
 import GlobalContext from '@app/context';
@@ -80,6 +81,7 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#FAFAFA" barStyle="dark-content" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal isVisible={screenStatus.hasError} onCancel={toggleModal} onRetry={login} />
       <Toast

@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ChevronLeftIcon } from '@app/icons';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '../../types/navigation/types';
+import { font } from '@app/styles';
 
 type AppHeaderProps = {
   onBack?: () => void;
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 50,
+    paddingVertical: 20,
   },
   back: {
     position: 'absolute',
@@ -45,11 +46,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   title: {
+    ...font.regular,
     flex: 1,
     textAlign: 'center',
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
     fontSize: 24,
+    lineHeight: 24,
     color: '#050303',
   },
 });

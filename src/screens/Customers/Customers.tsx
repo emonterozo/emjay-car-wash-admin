@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 
@@ -82,6 +82,7 @@ const Customers = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Customers" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal isVisible={screenStatus.hasError} onCancel={onCancel} onRetry={fetchCustomers} />
