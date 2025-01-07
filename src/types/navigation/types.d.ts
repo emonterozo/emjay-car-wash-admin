@@ -14,14 +14,7 @@ export type AuthStackParamList = {
   CustomerDetails: { id: string };
   BottomTab: undefined;
   Employee: undefined;
-  EmployeeDetails: {
-    id: string;
-    fullName: string;
-    title: string;
-    status: string;
-    dateStarted: string;
-    contact: string;
-  };
+  EmployeeDetails: { id: string };
   Expenses: undefined;
   Ongoing: undefined;
   Publish: undefined;
@@ -36,6 +29,7 @@ export type AuthStackParamList = {
     lastName?: string;
     freeCarwashList?: CarwashList[];
   };
+  AddEmployee: undefined;
   PreTransaction: { id: string };
 };
 

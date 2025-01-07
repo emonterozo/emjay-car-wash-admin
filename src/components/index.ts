@@ -7,3 +7,4 @@ export { default as ServiceTransactionItem } from './ServiceTransactionItem/Serv
 export { default as EmptyState } from './EmptyState/EmptyState';
 export { default as RatingStars } from './RatingStars/RatingStars';
 export { default as ActivityIndicator } from './ActivityIndicator/ActivityIndicator';
+export { default as FloatingActionButton } from './FloatingActionButton/FloatingActionButton';

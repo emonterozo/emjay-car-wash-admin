@@ -16,6 +16,7 @@ import {
   CustomerDetails,
   PreTransaction,
   AddOngoing,
+  AddEmployee,
 } from '@app/screens';
 import GlobalContext from '@app/context';
 import { AuthStackParamList } from '../types/navigation/types';
@@ -54,6 +55,7 @@ const Navigation = () => {
             <AuthStack.Screen name="Services" component={Services} />
             <AuthStack.Screen name="PreTransaction" component={PreTransaction} />
             <AuthStack.Screen name="AddOngoing" component={AddOngoing} />
+            <AuthStack.Screen name="AddEmployee" component={AddEmployee} />
           </AuthStack.Navigator>
         ) : (
           <UnAuthStack.Navigator screenOptions={{ headerShown: false }}>
