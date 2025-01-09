@@ -1,0 +1,177 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+
+import { MaterialCommunityIcon } from '..';
+import { font, color } from '@app/styles';
+
+export type Option = {
+  id: string;
+  icon?: React.ReactElement;
+  label: string;
+};
+
+export type DropdownProps = {
+  label: string;
+  labelColor?: string;
+  placeholderTextColor?: string;
+  placeholder?: string;
+  disabledColor?: string;
+  textColor?: string;
+  selected: Option | undefined;
+  options: Option[];
+  onSelected: (selected: Option) => void;
+  error?: boolean;
+  optionMinWidth?: number;
+};
+
+const Dropdown = ({
+  label,
+  labelColor = '#050303',
+  placeholderTextColor = '#696969',
+  disabledColor = '#D9D9D9',
+  textColor = '#050303',
+  placeholder,
+  selected,
+  options,
+  onSelected,
+  error,
+  optionMinWidth,
+}: DropdownProps) => {
+  const borderColor = useSharedValue(disabledColor);
+  const [isOptionOpen, setIsOptionOpen] = useState(false);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      borderColor: withTiming(borderColor.value, { duration: 200 }),
+    };
+  });
+
+  const handlePressOpen = () => {
+    borderColor.value = !isOptionOpen ? color.primary : disabledColor;
+    setIsOptionOpen(!isOptionOpen);
+  };
+
+  const handlePressSelected = (option: Option) => {
+    borderColor.value = disabledColor;
+    setIsOptionOpen(false);
+    onSelected(option);
+  };
+
+  useEffect(() => {
+    borderColor.value = error ? '#FF7070' : disabledColor;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  return (
+    <View style={styles.content}>
+      <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
+      <TouchableWithoutFeedback onPress={handlePressOpen}>
+        <Animated.View
+          style={[styles.container, { backgroundColor: disabledColor }, animatedStyle]}
+        >
+          {selected?.icon}
+          {selected ? (
+            <Text style={[styles.label, { color: textColor }]}>{selected?.label}</Text>
+          ) : (
+            <Text
+              style={[
+                styles.text,
+                {
+                  color: placeholderTextColor,
+                },
+              ]}
+            >
+              {placeholder}
+            </Text>
+          )}
+          <MaterialCommunityIcon
+            name={isOptionOpen ? 'chevron-up' : 'chevron-down'}
+            color="#888888"
+            size={30}
+          />
+        </Animated.View>
+      </TouchableWithoutFeedback>
+      {isOptionOpen && (
+        <View
+          style={[
+            styles.optionsContainer,
+            {
+              shadowColor: color.black,
+              backgroundColor: color.background,
+              minWidth: optionMinWidth,
+            },
+          ]}
+        >
+          {options.map((option) => (
+            <TouchableOpacity key={option.id} onPress={() => handlePressSelected(option)}>
+              <View style={styles.option}>
+                {option.icon}
+                <Text style={styles.optionText}>{option.label}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  content: {
+    gap: 16,
+  },
+  label: {
+    ...font.light,
+    fontSize: 16,
+    lineHeight: 16,
+    flex: 1,
+  },
+  container: {
+    height: 54,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingHorizontal: 23,
+    gap: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  text: {
+    ...font.light,
+    fontSize: 16,
+    lineHeight: 16,
+    flex: 1,
+    paddingVertical: 18,
+  },
+  option: {
+    gap: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+  },
+  optionsContainer: {
+    borderRadius: 18,
+    position: 'absolute',
+    zIndex: 999,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 18,
+    gap: 12,
+    maxWidth: '100%',
+    right: 0,
+    top: 90,
+  },
+  optionText: {
+    ...font.light,
+    fontSize: 16,
+    lineHeight: 16,
+    flex: 1,
+    color: '#696969',
+  },
+});
+
+export default Dropdown;

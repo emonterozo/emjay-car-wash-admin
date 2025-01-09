@@ -74,6 +74,10 @@ export const IMAGES = {
   TRANSACTIONS_INACTIVE: require('../../../assets/images/transactions-inactive.png'),
   SETTINGS_ACTIVE: require('../../../assets/images/settings-active.png'),
   SETTINGS_INACTIVE: require('../../../assets/images/settings-inactive.png'),
+  CALENDAR_ACTIVE: require('../../../assets/images/calendar-active.png'),
+  CALENDAR_INACTIVE: require('../../../assets/images/calendar-inactive.png'),
+  ACTIVE_STATUS: require('../../../assets/images/active-status.png'),
+  TERMINATED_STATUS: require('../../../assets/images/terminated-status.png'),
 };
 
 export const MESSAGE = {

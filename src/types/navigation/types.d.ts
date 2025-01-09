@@ -29,8 +29,8 @@ export type AuthStackParamList = {
     lastName?: string;
     freeCarwashList?: CarwashList[];
   };
-  AddEmployee: undefined;
   PreTransaction: { id: string };
+  EmployeeForm: { id: string | undefined };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -42,3 +42,5 @@ export type PreTransactionsRouteProp = RouteProp<AuthStackParamList, 'PreTransac
 export type AddOngoingRouteProp = RouteProp<AuthStackParamList, 'AddOngoing'>;
 
 export type EmployeeDetailsRouteProp = RouteProp<AuthStackParamList, 'EmployeeDetails'>;
+
+export type EmployeeFormRouteProp = RouteProp<AuthStackParamList, 'EmployeeForm'>;
