@@ -146,8 +146,8 @@ const Services = () => {
             </View>
             <View style={styles.descriptionContainer}>
               <Text style={styles.name}>{item.title}</Text>
-              <Text style={styles.value}>{item.description}</Text>
-              <Text style={styles.value}>{getServicePrice(item.price_list)}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.price}>{getServicePrice(item.price_list)}</Text>
             </View>
           </View>
         )}
@@ -198,12 +198,19 @@ const styles = StyleSheet.create({
   separator: {
     marginTop: 24,
   },
-  value: {
+  description: {
     ...font.regular,
     fontSize: 20,
     lineHeight: 20,
-    color: '#050303',
     flex: 1,
+    color: '#888888',
+  },
+  price: {
+    ...font.regular,
+    fontSize: 20,
+    lineHeight: 20,
+    flex: 1,
+    color: color.primary,
   },
   card: {
     backgroundColor: color.background,
@@ -220,10 +227,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
   },
   descriptionContainer: {
-    marginTop: 16,
-    marginHorizontal: 16,
-    gap: 8,
-    marginBottom: 50,
+    padding: 16,
+    gap: 10,
+    marginVertical: 15,
   },
   ratingsContainer: {
     position: 'absolute',

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Image,
 } from 'react-native';
 import { format } from 'date-fns';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -27,6 +28,7 @@ import { getCustomerInformationRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { CustomerInformation, RecentTransaction } from '../../types/services/types';
 import { formattedNumber } from '@app/helpers';
+import { IMAGES } from '@app/constant';
 
 const OPTIONS = [
   {
@@ -157,6 +159,11 @@ const CustomerDetails = () => {
       />
       <Text style={[styles.heading, styles.textCustomerDetails]}>Customer Details</Text>
       <ScrollView bounces={false}>
+        <Image
+          source={customerInformation?.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+          style={styles.image}
+          resizeMode="contain"
+        />
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom21]}>
           Personal Information
         </Text>
@@ -203,7 +210,7 @@ const CustomerDetails = () => {
           ) : (
             transactions.map((item) => (
               <ServiceTransactionItem
-                key={item.id}
+                key={`${item.id}-${item.date}`}
                 icon={<WaterDropIcon />}
                 serviceName={item.service_name}
                 price={formattedNumber(item.price)}
@@ -225,7 +232,6 @@ const styles = StyleSheet.create({
   heading: {
     alignItems: 'center',
     marginTop: 16,
-    marginBottom: 35,
     paddingHorizontal: 25,
   },
   textCustomerDetails: {
@@ -302,6 +308,13 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     paddingHorizontal: 20,
+  },
+  image: {
+    width: 187,
+    height: 187,
+    alignSelf: 'center',
+    marginTop: 41,
+    marginBottom: 41,
   },
 });
 

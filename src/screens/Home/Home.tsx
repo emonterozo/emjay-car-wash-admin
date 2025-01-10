@@ -216,8 +216,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F2EF',
-    paddingTop: 64,
-    paddingBottom: 5,
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   avatar: {
     width: 49,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
   salesContainer: {
     height: 207,
-    backgroundColor: '#016FB9',
+    backgroundColor: color.primary,
     borderRadius: 24,
     padding: 19,
     marginTop: 24,
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
   viewAll: {
     ...font.regular,
     fontSize: 16,
-    color: '#016FB9',
+    color: color.primary,
   },
   viewAllButton: {
     flexDirection: 'row',

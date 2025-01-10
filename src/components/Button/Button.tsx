@@ -20,6 +20,7 @@ type ButtonProps = {
   variant: 'primary' | 'secondary';
   buttonStyle?: ButtonStyle;
   textStyle?: TextStyle;
+  onPress?: () => void;
 };
 
 const Button = ({
@@ -35,6 +36,7 @@ const Button = ({
     fontSize: 16,
     fontWeight: 'regular',
   },
+  onPress,
 }: ButtonProps) => {
   const getButtonStyle = (pressed: boolean) => {
     let style = {
@@ -71,7 +73,10 @@ const Button = ({
   };
 
   return (
-    <Pressable style={({ pressed }) => [getButtonStyle(pressed), buttonStyle, styles.button]}>
+    <Pressable
+      style={({ pressed }) => [getButtonStyle(pressed), buttonStyle, styles.button]}
+      onPress={onPress}
+    >
       {({ pressed }) => (
         <Text
           style={[

@@ -73,12 +73,12 @@ const styles = StyleSheet.create({
   },
   label: {
     ...font.regular,
-    fontSize: 20,
-    lineHeight: 20,
+    fontSize: 16,
+    lineHeight: 16,
     color: '#888888',
   },
   value: {
-    ...font.regular,
+    ...font.light,
     fontSize: 16,
     lineHeight: 16,
     color: '#888888',
@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
   },
   selectedLabel: {
     ...font.regular,
-    fontSize: 20,
-    lineHeight: 20,
+    fontSize: 16,
+    lineHeight: 16,
     color: color.primary,
   },
 });

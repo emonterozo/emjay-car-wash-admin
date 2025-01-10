@@ -101,7 +101,11 @@ const Customers = () => {
         data={customers}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item.id)}>
-            <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
+            <Image
+              source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+              style={styles.image}
+              resizeMode="contain"
+            />
             <View style={styles.details}>
               <Text style={styles.textName}>{`${item.first_name} ${item.last_name}`}</Text>
               <View style={styles.textInfoContainer}>
@@ -164,8 +168,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   image: {
-    height: 105,
-    width: 105,
+    height: 90,
+    width: 90,
   },
   textCustomerList: {
     ...font.regular,

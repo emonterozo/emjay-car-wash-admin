@@ -16,6 +16,7 @@ export type DropdownProps = {
   labelColor?: string;
   placeholderTextColor?: string;
   placeholder?: string;
+  enableColor?: string;
   disabledColor?: string;
   textColor?: string;
   selected: Option | undefined;
@@ -23,12 +24,14 @@ export type DropdownProps = {
   onSelected: (selected: Option) => void;
   error?: boolean;
   optionMinWidth?: number;
+  isDisabled?: boolean;
 };
 
 const Dropdown = ({
   label,
   labelColor = '#050303',
   placeholderTextColor = '#696969',
+  enableColor = '#ECECEC',
   disabledColor = '#D9D9D9',
   textColor = '#050303',
   placeholder,
@@ -37,8 +40,13 @@ const Dropdown = ({
   onSelected,
   error,
   optionMinWidth,
+  isDisabled,
 }: DropdownProps) => {
-  const borderColor = useSharedValue(disabledColor);
+  const getDropdownColor = () => {
+    return isDisabled ? disabledColor : enableColor;
+  };
+
+  const borderColor = useSharedValue(getDropdownColor());
   const [isOptionOpen, setIsOptionOpen] = useState(false);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -48,27 +56,27 @@ const Dropdown = ({
   });
 
   const handlePressOpen = () => {
-    borderColor.value = !isOptionOpen ? color.primary : disabledColor;
+    borderColor.value = !isOptionOpen ? color.primary : getDropdownColor();
     setIsOptionOpen(!isOptionOpen);
   };
 
   const handlePressSelected = (option: Option) => {
-    borderColor.value = disabledColor;
+    borderColor.value = getDropdownColor();
     setIsOptionOpen(false);
     onSelected(option);
   };
 
   useEffect(() => {
-    borderColor.value = error ? '#FF7070' : disabledColor;
+    borderColor.value = error ? '#FF7070' : getDropdownColor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   return (
     <View style={styles.content}>
       <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
-      <TouchableWithoutFeedback onPress={handlePressOpen}>
+      <TouchableWithoutFeedback onPress={handlePressOpen} disabled={isDisabled}>
         <Animated.View
-          style={[styles.container, { backgroundColor: disabledColor }, animatedStyle]}
+          style={[styles.container, { backgroundColor: getDropdownColor() }, animatedStyle]}
         >
           {selected?.icon}
           {selected ? (

@@ -21,10 +21,12 @@ export type CalendarPickerTriggerProps = {
   labelColor?: string;
   placeholderTextColor?: string;
   placeholder?: string;
+  enableColor?: string;
   disabledColor?: string;
   textColor?: string;
   error?: boolean;
   value: string | undefined;
+  isDisabled?: boolean;
 };
 
 // Days of the week
@@ -56,13 +58,19 @@ const CalendarPickerTrigger = ({
   label,
   labelColor = '#050303',
   placeholderTextColor = '#696969',
+  enableColor = '#ECECEC',
   disabledColor = '#D9D9D9',
   textColor = '#050303',
   placeholder,
   error,
   value,
+  isDisabled,
 }: CalendarPickerTriggerProps) => {
-  const borderColor = useSharedValue(disabledColor);
+  const getColor = () => {
+    return isDisabled ? disabledColor : enableColor;
+  };
+
+  const borderColor = useSharedValue(getColor());
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -77,22 +85,20 @@ const CalendarPickerTrigger = ({
   };
 
   const handlePressSelected = () => {
-    borderColor.value = disabledColor;
+    borderColor.value = getColor();
     setIsCalendarOpen(false);
   };
 
   useEffect(() => {
-    borderColor.value = error ? '#FF7070' : disabledColor;
+    borderColor.value = error ? '#FF7070' : getColor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   return (
     <View style={styles.content}>
       <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
-      <TouchableWithoutFeedback onPress={handlePressOpen}>
-        <Animated.View
-          style={[styles.container, { backgroundColor: disabledColor }, animatedStyle]}
-        >
+      <TouchableWithoutFeedback onPress={handlePressOpen} disabled={isDisabled}>
+        <Animated.View style={[styles.container, { backgroundColor: getColor() }, animatedStyle]}>
           <Image
             source={isCalendarOpen ? IMAGES.CALENDAR_ACTIVE : IMAGES.CALENDAR_INACTIVE}
             resizeMode="contain"

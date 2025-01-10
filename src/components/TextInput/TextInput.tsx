@@ -16,6 +16,7 @@ import { font, color } from '@app/styles';
 type TextInputProps = {
   label: string;
   labelColor?: string;
+  enableColor?: string;
   disabledColor?: string;
   textColor?: string;
   startIcon?: React.ReactElement;
@@ -27,6 +28,7 @@ const TextInput = ({
   label,
   labelColor = '#050303',
   placeholderTextColor = '#696969',
+  enableColor = '#ECECEC',
   disabledColor = '#D9D9D9',
   textColor = '#050303',
   onFocus,
@@ -34,9 +36,14 @@ const TextInput = ({
   placeholder,
   startIcon,
   error,
+  readOnly,
   ...prop
 }: TextInputProps) => {
-  const borderColor = useSharedValue(disabledColor);
+  const getTextInputColor = () => {
+    return readOnly ? disabledColor : enableColor;
+  };
+
+  const borderColor = useSharedValue(getTextInputColor());
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -52,21 +59,23 @@ const TextInput = ({
   };
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    borderColor.value = disabledColor;
+    borderColor.value = getTextInputColor();
     if (onBlur) {
       onBlur(e);
     }
   };
 
   useEffect(() => {
-    borderColor.value = error ? '#FF7070' : disabledColor;
+    borderColor.value = error ? '#FF7070' : getTextInputColor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   return (
     <View style={styles.content}>
       <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
-      <Animated.View style={[styles.container, { backgroundColor: disabledColor }, animatedStyle]}>
+      <Animated.View
+        style={[styles.container, { backgroundColor: getTextInputColor() }, animatedStyle]}
+      >
         {startIcon}
         <RNInput
           style={[
@@ -79,6 +88,7 @@ const TextInput = ({
           placeholderTextColor={placeholderTextColor}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          readOnly={readOnly}
           {...prop}
         />
       </Animated.View>

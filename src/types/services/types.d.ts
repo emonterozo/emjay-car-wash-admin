@@ -49,6 +49,7 @@ export type Customer = {
   contact_number: string;
   first_name: string;
   last_name: string;
+  gender: string;
   registered_on: string;
 };
 
@@ -76,6 +77,7 @@ export type CustomerInformation = {
   id: string;
   first_name: string;
   last_name: string;
+  gender: string;
   contact_number: string;
   address: string | null;
   barangay: string | null;

@@ -78,6 +78,8 @@ export const IMAGES = {
   CALENDAR_INACTIVE: require('../../../assets/images/calendar-inactive.png'),
   ACTIVE_STATUS: require('../../../assets/images/active-status.png'),
   TERMINATED_STATUS: require('../../../assets/images/terminated-status.png'),
+  AVATAR_BOY: require('../../../assets/images/avatar-boy.png'),
+  AVATAR_GIRL: require('../../../assets/images/avatar-girl.png'),
 };
 
 export const MESSAGE = {
