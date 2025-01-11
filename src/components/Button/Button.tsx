@@ -18,6 +18,7 @@ type TextStyle = {
 type ButtonProps = {
   title: string;
   variant: 'primary' | 'secondary';
+  secondaryBackgroundColor?: string;
   buttonStyle?: ButtonStyle;
   textStyle?: TextStyle;
   onPress?: () => void;
@@ -26,6 +27,7 @@ type ButtonProps = {
 const Button = ({
   title,
   variant,
+  secondaryBackgroundColor = color.background,
   buttonStyle = {
     paddingHorizontal: 23,
     paddingVertical: 18,
@@ -50,7 +52,7 @@ const Button = ({
       };
     } else {
       style = {
-        backgroundColor: pressed ? color.primary : color.background,
+        backgroundColor: pressed ? color.primary : secondaryBackgroundColor,
         borderColor: pressed ? color.primary : '#9A9A9A',
       };
     }

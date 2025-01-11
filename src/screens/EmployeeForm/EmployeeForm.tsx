@@ -9,6 +9,7 @@ import { Option } from '../../components/Dropdown/Dropdown';
 
 const EmployeeForm = () => {
   const [selected, setSelected] = useState<Option | undefined>(undefined);
+  const [error, setError] = useState(false);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -19,7 +20,7 @@ const EmployeeForm = () => {
       </View>
       <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
         <TextInput label="First Name" placeholder="Enter First Name" />
-        <TextInput label="Last Name" placeholder="Enter Last Name" />
+        <TextInput label="Last Name" placeholder="Enter Last Name" error={error} />
         <Dropdown
           label="Employee Gender"
           placeholder="Select Gender"
@@ -68,14 +69,23 @@ const EmployeeForm = () => {
             setSelected(selectedOption);
           }}
           optionMinWidth={212}
+          //isDisabled
+          error={error}
         />
         <CalendarPickerTrigger
           label="Date Started"
           placeholder="Select Date Started"
           value={undefined}
+          error={error}
         />
         <View style={styles.buttonContainer}>
-          <Button title="Cancel" variant="secondary" buttonStyle={styles.button} />
+          <Button
+            title="Cancel"
+            variant="secondary"
+            buttonStyle={styles.button}
+            textStyle={styles.textStyle}
+            onPress={() => setError(true)}
+          />
           <Button
             title="Add"
             variant="primary"
@@ -127,5 +137,4 @@ const styles = StyleSheet.create({
     fontWeight: 'regular',
   },
 });
-
 export default EmployeeForm;

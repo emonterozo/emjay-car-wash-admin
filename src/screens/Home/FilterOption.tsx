@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     marginTop: 5,
-    borderColor: '#B0B0B0',
+    borderColor: '#DCDCDC',
     borderWidth: 1,
   },
 });

@@ -1,60 +1,47 @@
 import React from 'react';
-import { StyleSheet, View, Modal, Pressable, Text, Dimensions } from 'react-native';
+import { StyleSheet, View, Modal, Text, Dimensions, Image } from 'react-native';
 
-import { NetworkErrorIcon } from '@app/icons';
-import { color, font } from '@app/styles';
+import { font } from '@app/styles';
+import { ERROR_TYPE, IMAGES } from '@app/constant';
+import { Button } from '..';
 
 export type ErrorModalProps = {
   isVisible: boolean;
+  type: keyof typeof ERROR_TYPE;
   onRetry: () => void;
   onCancel: () => void;
 };
 
-const titleText = 'Something went wrong';
-const descriptionText =
-  "We're actively resolving the issue. Please refresh the page and try again.";
-
-const ErrorModal: React.FC<ErrorModalProps> = ({ isVisible, onCancel, onRetry }) => {
+const ErrorModal: React.FC<ErrorModalProps> = ({ isVisible, type, onCancel, onRetry }) => {
   return (
     <Modal visible={isVisible} animationType="slide" onRequestClose={onCancel} transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalViewContainer}>
-          <NetworkErrorIcon />
-
+          <Image
+            source={type === 'error' ? IMAGES.ERROR : IMAGES.NO_CONNECTION}
+            style={styles.image}
+            resizeMode="contain"
+          />
           <View style={styles.textContainer}>
-            <Text style={styles.titleText}>{titleText}</Text>
-            <Text style={styles.descriptionText}>{descriptionText}</Text>
+            <Text style={styles.titleText}>{ERROR_TYPE[type].title}</Text>
+            <Text style={styles.descriptionText}>{ERROR_TYPE[type].description}</Text>
           </View>
-
           <View style={styles.buttonContainer}>
-            <Pressable
+            <Button
+              title="Cancel"
+              variant="secondary"
+              secondaryBackgroundColor="white"
+              buttonStyle={styles.button}
+              textStyle={styles.textStyle}
               onPress={onCancel}
-              style={({ pressed }) => [
-                {
-                  backgroundColor: pressed ? color.primary : 'white',
-                  borderColor: pressed ? color.primary : '#9A9A9A',
-                  borderWidth: 1,
-                },
-                styles.buttonCardContainer,
-              ]}
-            >
-              {({ pressed }) => (
-                <Text style={[styles.buttonCancelText, pressed && { color: color.background }]}>
-                  Cancel
-                </Text>
-              )}
-            </Pressable>
-            <Pressable
+            />
+            <Button
+              title="Try Again"
+              variant="primary"
+              buttonStyle={styles.button}
+              textStyle={styles.textStyle}
               onPress={onRetry}
-              style={({ pressed }) => [
-                {
-                  backgroundColor: pressed ? color.primary_pressed_state : color.primary,
-                },
-                styles.buttonCardContainer,
-              ]}
-            >
-              <Text style={styles.buttonTryAgainText}>Try Again</Text>
-            </Pressable>
+            />
           </View>
         </View>
       </View>
@@ -85,7 +72,7 @@ const styles = StyleSheet.create({
   titleText: {
     ...font.bold,
     fontSize: 19.12,
-    color: 'black',
+    color: '#050303',
     textAlign: 'center',
   },
   descriptionText: {
@@ -100,28 +87,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  buttonCardContainer: {
+  button: {
     paddingHorizontal: 9.56,
     paddingVertical: 12.75,
     borderRadius: 47.8,
-    width: 148.18,
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
   },
-  buttonCancelText: {
+  textStyle: {
     ...font.regular,
     fontSize: 19.12,
     textAlign: 'center',
-    color: color.primary,
     lineHeight: 19.72,
   },
-  buttonTryAgainText: {
-    ...font.regular,
-    fontSize: 19.12,
-    color: 'white',
-    textAlign: 'center',
-    lineHeight: 19.72,
+  image: {
+    width: 207,
+    height: 207,
   },
 });
 

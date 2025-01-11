@@ -6,14 +6,14 @@ import FastImage from '@d11/react-native-fast-image';
 
 import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
-import { Price, Service } from '../../types/services/types';
+import { Price, ScreenStatusProps, Service } from '../../types/services/types';
 import { FilterIcon, StarIcon } from '@app/icons';
 import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { color, font } from '@app/styles';
 import { useMeasure } from '@app/hooks';
-import { SIZE_DESCRIPTION } from '@app/constant';
+import { ERR_NETWORK, SIZE_DESCRIPTION } from '@app/constant';
 import { formattedNumber } from '@app/helpers';
 
 const renderSeparator = () => <View style={styles.separator} />;
@@ -24,9 +24,10 @@ const Services = () => {
   const touchableRef = useRef<View>(null);
   const { layout, measure } = useMeasure(touchableRef);
   const [isOptionVisible, setIsOptionVisible] = useState(false);
-  const [screenStatus, setScreenStatus] = useState({
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
+    type: 'error',
   });
   const [filter, setFilter] = useState({
     type: 'Car',
@@ -41,19 +42,23 @@ const Services = () => {
   };
 
   const fetchService = async () => {
-    setScreenStatus({ hasError: false, isLoading: true });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getServicesRequest(user.token);
     if (response.success && response.data) {
       const { data, errors } = response.data;
 
       if (errors.length > 0) {
-        setScreenStatus({ isLoading: false, hasError: true });
+        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
       } else {
         setServices(data.services);
-        setScreenStatus({ hasError: false, isLoading: false });
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
       }
     } else {
-      setScreenStatus({ isLoading: false, hasError: true });
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
     }
   };
 
@@ -83,7 +88,7 @@ const Services = () => {
   };
 
   const onCancel = () => {
-    setScreenStatus({ hasError: false, isLoading: false });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     navigation.goBack();
   };
 
@@ -106,7 +111,12 @@ const Services = () => {
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Services" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
-      <ErrorModal isVisible={screenStatus.hasError} onCancel={onCancel} onRetry={fetchService} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchService}
+      />
       <View style={styles.heading}>
         <Text style={styles.label}>Available Lists of Services</Text>
         {filteredServices.length > 0 && (

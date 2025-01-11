@@ -1,3 +1,11 @@
+import { ERROR_TYPE } from '@app/constant';
+
+export type ScreenStatusProps = {
+  isLoading: boolean;
+  hasError: boolean;
+  type: keyof typeof ERROR_TYPE;
+};
+
 export type ErrorProps = {
   field: string;
   message: string;

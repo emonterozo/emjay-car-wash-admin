@@ -26,9 +26,13 @@ import { CarIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
 import SizeDisplay from './SizeDisplay';
 import { getCustomerInformationRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { CustomerInformation, RecentTransaction } from '../../types/services/types';
+import {
+  CustomerInformation,
+  RecentTransaction,
+  ScreenStatusProps,
+} from '../../types/services/types';
 import { formattedNumber } from '@app/helpers';
-import { IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 
 const OPTIONS = [
   {
@@ -53,9 +57,10 @@ const CustomerDetails = () => {
   const navigation = useNavigation<NavigationProp>();
   const { id } = useRoute<CustomerDetailsRouteProp>().params;
   const [selectedVehicle, setSelectedVehicle] = useState('car');
-  const [screenStatus, setScreenStatus] = useState({
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
+    type: 'error',
   });
   const [customerInformation, setCustomerInformation] = useState<CustomerInformation | undefined>(
     undefined,
@@ -120,14 +125,14 @@ const CustomerDetails = () => {
   }, []);
 
   const fetchCustomerDetails = async () => {
-    setScreenStatus({ hasError: false, isLoading: true });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getCustomerInformationRequest(user.token, id);
 
     if (response.success && response.data) {
       const { data, errors } = response.data;
 
       if (errors.length > 0) {
-        setScreenStatus({ isLoading: false, hasError: true });
+        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
       } else {
         setCustomerInformation(data.customer_services);
         setTransactions(data.customer_services.recent_transactions);
@@ -135,15 +140,19 @@ const CustomerDetails = () => {
           car: data.customer_services.car_services_count.map((item) => item.count),
           motorcycle: data.customer_services.moto_services_count.map((item) => item.count),
         });
-        setScreenStatus({ hasError: false, isLoading: false });
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
       }
     } else {
-      setScreenStatus({ isLoading: false, hasError: true });
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
     }
   };
 
   const onCancel = () => {
-    setScreenStatus({ hasError: false, isLoading: false });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     navigation.goBack();
   };
 
@@ -153,6 +162,7 @@ const CustomerDetails = () => {
       <AppHeader title="Customer" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
+        type={screenStatus.type}
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
         onRetry={fetchCustomerDetails}

@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import FastImage from '@d11/react-native-fast-image';
 import { format } from 'date-fns';
 
-import { DASHBOARD_ITEMS, IMAGES } from '@app/constant';
+import { DASHBOARD_ITEMS, ERR_NETWORK, IMAGES } from '@app/constant';
 import {
   ChevronRightIcon,
   CircleArrowRightIcon,
@@ -21,10 +21,10 @@ import {
   HorizontalKebabIcon,
 } from '@app/icons';
 import { color, font } from '@app/styles';
-import { EmptyState, ErrorModal, LoadingAnimation, RatingStars } from '@app/components';
+import { EmptyState, ErrorState, LoadingAnimation, RatingStars } from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { Service } from '../../types/services/types';
+import { ScreenStatusProps, Service } from '../../types/services/types';
 import FilterOption from './FilterOption';
 
 const FILTER_VALUE = {
@@ -45,16 +45,17 @@ const FILTER_VALUE = {
 const Home = () => {
   const { user } = useContext(GlobalContext);
   const navigation = useNavigation<any>();
-  const [screenStatus, setScreenStatus] = useState({
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
+    type: 'error',
   });
   const [services, setServices] = useState<Service[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<keyof typeof FILTER_VALUE>('top');
   const [isFilterOptionVisible, setIsFilterOptionVisible] = useState(false);
 
   const fetchService = async (filter: keyof typeof FILTER_VALUE) => {
-    setScreenStatus({ hasError: false, isLoading: true });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getServicesRequest(
       user.token,
       FILTER_VALUE[filter].field,
@@ -67,13 +68,17 @@ const Home = () => {
       const { data, errors } = response.data;
 
       if (errors.length > 0) {
-        setScreenStatus({ isLoading: false, hasError: true });
+        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
       } else {
         setServices(data.services);
-        setScreenStatus({ hasError: false, isLoading: false });
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
       }
     } else {
-      setScreenStatus({ isLoading: false, hasError: true });
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
     }
   };
 
@@ -92,8 +97,6 @@ const Home = () => {
 
   const handlePressDashboardItem = (screen: string) => navigation.navigate(screen);
 
-  const closeModal = () => setScreenStatus({ hasError: false, isLoading: false });
-
   const toggleFilter = () => setIsFilterOptionVisible(!isFilterOptionVisible);
 
   const onSelectedFilter = (filter: string) => {
@@ -107,11 +110,6 @@ const Home = () => {
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
-      <ErrorModal
-        isVisible={screenStatus.hasError}
-        onCancel={closeModal}
-        onRetry={() => fetchService(selectedFilter)}
-      />
       <View style={styles.heading}>
         <View style={styles.greetingContainer}>
           <Text style={styles.greeting}>Hello Admin</Text>
@@ -203,7 +201,11 @@ const Home = () => {
           </>
         ) : (
           <>
-            <EmptyState />
+            {screenStatus.hasError ? (
+              <ErrorState type={screenStatus.type} onRetry={() => fetchService(selectedFilter)} />
+            ) : (
+              <EmptyState />
+            )}
             <View style={styles.emptyStateSeparator} />
           </>
         )}

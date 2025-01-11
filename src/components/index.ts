@@ -12,3 +12,4 @@ export { default as TextInput } from './TextInput/TextInput';
 export { default as Dropdown } from './Dropdown/Dropdown';
 export { default as CalendarPickerTrigger } from './CalendarPickerTrigger/CalendarPickerTrigger';
 export { default as Button } from './Button/Button';
+export { default as ErrorState } from './ErrorState/ErrorState';
