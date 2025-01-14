@@ -82,6 +82,8 @@ export const IMAGES = {
   AVATAR_GIRL: require('../../../assets/images/avatar-girl.png'),
   ERROR: require('../../../assets/images/error.png'),
   NO_CONNECTION: require('../../../assets/images/no-connection.png'),
+  MALE: require('../../../assets/images/male.png'),
+  FEMALE: require('../../../assets/images/female.png'),
 };
 
 export const ERROR_TYPE = {

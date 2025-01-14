@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, StatusBar, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import type { Option } from '../../components/Dropdown/Dropdown';
 import { color, font } from '@app/styles';
 import { AppHeader, CalendarPickerTrigger, Dropdown, TextInput, Button } from '@app/components';
 import { IMAGES } from '@app/constant';
-import { Option } from '../../components/Dropdown/Dropdown';
+import { getCurrentDateAtMidnightUTC } from '@app/helpers';
 
 const EmployeeForm = () => {
   const [selected, setSelected] = useState<Option | undefined>(undefined);
   const [error, setError] = useState(false);
+  const [date, setDate] = useState(getCurrentDateAtMidnightUTC());
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -19,36 +21,40 @@ const EmployeeForm = () => {
         <Text style={styles.text}>Adding Form</Text>
       </View>
       <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
-        <TextInput label="First Name" placeholder="Enter First Name" />
+        <TextInput label="First Name" placeholder="Enter First Name" error={error} />
         <TextInput label="Last Name" placeholder="Enter Last Name" error={error} />
+        <CalendarPickerTrigger
+          date={date}
+          label="Date of Birth"
+          placeholder="Select Date of Birth"
+          value={undefined}
+          error={error}
+          onSelectedDate={(dd) => setDate(dd)}
+        />
         <Dropdown
-          label="Employee Gender"
+          label="Gender"
           placeholder="Select Gender"
           selected={selected}
           options={[
             {
               id: '1',
-              icon: <Image source={IMAGES.ACTIVE_STATUS} resizeMode="contain" />,
+              icon: <Image source={IMAGES.MALE} resizeMode="contain" />,
               label: 'Male',
             },
             {
               id: '2',
-              icon: <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" />,
+              icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
               label: 'Female',
             },
           ]}
           onSelected={(selectedOption) => {
             setSelected(selectedOption);
           }}
-          optionMinWidth={212}
+          optionMinWidth={196}
+          error={error}
         />
-        <CalendarPickerTrigger
-          label="Date of Birth"
-          placeholder="Select Date of Birth"
-          value={undefined}
-        />
-        <TextInput label="Contact Number" placeholder="Enter Contact Number" />
-        <TextInput label="Employee Title" placeholder="Enter Employee Title" />
+        <TextInput label="Contact Number" placeholder="Enter Contact Number" error={error} />
+        <TextInput label="Employee Title" placeholder="Enter Employee Title" error={error} />
         <Dropdown
           label="Employee Status"
           placeholder="Select Status"
@@ -69,14 +75,15 @@ const EmployeeForm = () => {
             setSelected(selectedOption);
           }}
           optionMinWidth={212}
-          //isDisabled
           error={error}
         />
         <CalendarPickerTrigger
+          date={date}
           label="Date Started"
           placeholder="Select Date Started"
           value={undefined}
           error={error}
+          onSelectedDate={(dd) => setDate(dd)}
         />
         <View style={styles.buttonContainer}>
           <Button

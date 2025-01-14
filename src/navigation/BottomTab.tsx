@@ -65,6 +65,7 @@ const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
                 setScanPosition(e.nativeEvent.layout.x);
               }
             }}
+            disabled={route.name === 'Scan'}
           >
             {isFocused ? TAB_ITEMS[index].icon_active : TAB_ITEMS[index].icon_inactive}
             <Text style={[styles.tabLabel, isFocused && styles.activeTabLabel]}>
@@ -73,7 +74,10 @@ const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
           </TouchableOpacity>
         );
       })}
-      <TouchableOpacity style={[styles.scanButton, { left: scanPosition }]}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Scan')}
+        style={[styles.scanButton, { left: scanPosition }]}
+      >
         <Image source={IMAGES.SCAN} resizeMode="contain" />
         <Text style={[styles.scanLabel]}>Scan</Text>
       </TouchableOpacity>
