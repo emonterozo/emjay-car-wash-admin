@@ -10,6 +10,7 @@ import {
   Linking,
   StatusBar,
   Image,
+  Linking,
 } from 'react-native';
 import { format } from 'date-fns';
 import { useNavigation, useRoute } from '@react-navigation/native';
