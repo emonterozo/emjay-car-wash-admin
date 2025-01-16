@@ -88,9 +88,7 @@ const Customers = () => {
       <View style={styles.heading}>
         <Text style={styles.textCustomerList}>Customer List</Text>
         {customers.length > 0 && (
-          <Text style={styles.textRegisteredCustomer}>
-            {`Total number of Registered Customers are ${totalCount}`}
-          </Text>
+          <Text style={styles.textRegisteredCustomer}>{`Registered Customer: ${totalCount}`}</Text>
         )}
       </View>
       <FlatList
