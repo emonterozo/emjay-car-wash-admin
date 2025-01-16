@@ -120,6 +120,8 @@ const Login = () => {
                 style={styles.input}
                 onChangeText={(text) => onChange('username', text)}
                 maxLength={20}
+                multiline={false}
+                numberOfLines={1}
                 value={input.username}
               />
             </View>
