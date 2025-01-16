@@ -1,3 +1,11 @@
+import { ERROR_TYPE } from '@app/constant';
+
+export type ScreenStatusProps = {
+  isLoading: boolean;
+  hasError: boolean;
+  type: keyof typeof ERROR_TYPE;
+};
+
 export type ErrorProps = {
   field: string;
   message: string;
@@ -49,6 +57,7 @@ export type Customer = {
   contact_number: string;
   first_name: string;
   last_name: string;
+  gender: string;
   registered_on: string;
 };
 
@@ -60,24 +69,33 @@ export type CustomersResponse = {
   errors: ErrorProps[];
 };
 
-export type Transaction = {
+export type ServiceCount = {
   size: string;
   count: number;
+};
+
+export type RecentTransaction = {
+  id: string;
+  service_name: string;
+  price: number;
+  date: string;
 };
 
 export type CustomerInformation = {
   id: string;
   first_name: string;
   last_name: string;
+  gender: string;
   contact_number: string;
   address: string | null;
   barangay: string | null;
   city: string | null;
   province: string | null;
+  birth_date: string;
   registered_on: string;
-  recent_transactions: any[];
-  car_services_count: Transaction[];
-  moto_services_count: Transaction[];
+  recent_transactions: RecentTransaction[];
+  car_services_count: ServiceCount[];
+  moto_services_count: ServiceCount[];
 };
 
 export type CustomerInformationResponse = {

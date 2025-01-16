@@ -1,19 +1,19 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from '@d11/react-native-fast-image';
 
 import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
-import { Price, Service } from '../../types/services/types';
+import { Price, ScreenStatusProps, Service } from '../../types/services/types';
 import { FilterIcon, StarIcon } from '@app/icons';
 import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { color, font } from '@app/styles';
 import { useMeasure } from '@app/hooks';
-import { SIZE_DESCRIPTION } from '@app/constant';
+import { ERR_NETWORK, SIZE_DESCRIPTION } from '@app/constant';
 import { formattedNumber } from '@app/helpers';
 
 const renderSeparator = () => <View style={styles.separator} />;
@@ -24,9 +24,10 @@ const Services = () => {
   const touchableRef = useRef<View>(null);
   const { layout, measure } = useMeasure(touchableRef);
   const [isOptionVisible, setIsOptionVisible] = useState(false);
-  const [screenStatus, setScreenStatus] = useState({
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
+    type: 'error',
   });
   const [filter, setFilter] = useState({
     type: 'Car',
@@ -41,19 +42,23 @@ const Services = () => {
   };
 
   const fetchService = async () => {
-    setScreenStatus({ hasError: false, isLoading: true });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getServicesRequest(user.token);
     if (response.success && response.data) {
       const { data, errors } = response.data;
 
       if (errors.length > 0) {
-        setScreenStatus({ isLoading: false, hasError: true });
+        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
       } else {
         setServices(data.services);
-        setScreenStatus({ hasError: false, isLoading: false });
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
       }
     } else {
-      setScreenStatus({ isLoading: false, hasError: true });
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
     }
   };
 
@@ -83,7 +88,7 @@ const Services = () => {
   };
 
   const onCancel = () => {
-    setScreenStatus({ hasError: false, isLoading: false });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     navigation.goBack();
   };
 
@@ -103,9 +108,15 @@ const Services = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Services" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
-      <ErrorModal isVisible={screenStatus.hasError} onCancel={onCancel} onRetry={fetchService} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchService}
+      />
       <View style={styles.heading}>
         <Text style={styles.label}>Available Lists of Services</Text>
         {filteredServices.length > 0 && (
@@ -145,8 +156,8 @@ const Services = () => {
             </View>
             <View style={styles.descriptionContainer}>
               <Text style={styles.name}>{item.title}</Text>
-              <Text style={styles.value}>{item.description}</Text>
-              <Text style={styles.value}>{getServicePrice(item.price_list)}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.price}>{getServicePrice(item.price_list)}</Text>
             </View>
           </View>
         )}
@@ -174,6 +185,7 @@ const styles = StyleSheet.create({
   label: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#696969',
   },
   filterContainer: {
@@ -190,16 +202,25 @@ const styles = StyleSheet.create({
   name: {
     ...font.regular,
     fontSize: 24,
+    lineHeight: 24,
     color: '#000000',
   },
   separator: {
     marginTop: 24,
   },
-  value: {
+  description: {
     ...font.regular,
     fontSize: 20,
-    color: '#050303',
+    lineHeight: 20,
     flex: 1,
+    color: '#888888',
+  },
+  price: {
+    ...font.regular,
+    fontSize: 20,
+    lineHeight: 20,
+    flex: 1,
+    color: color.primary,
   },
   card: {
     backgroundColor: color.background,
@@ -216,10 +237,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
   },
   descriptionContainer: {
-    marginTop: 16,
-    marginHorizontal: 16,
-    gap: 8,
-    marginBottom: 50,
+    padding: 16,
+    gap: 10,
+    marginVertical: 15,
   },
   ratingsContainer: {
     position: 'absolute',

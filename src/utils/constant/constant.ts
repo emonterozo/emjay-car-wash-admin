@@ -74,6 +74,27 @@ export const IMAGES = {
   TRANSACTIONS_INACTIVE: require('../../../assets/images/transactions-inactive.png'),
   SETTINGS_ACTIVE: require('../../../assets/images/settings-active.png'),
   SETTINGS_INACTIVE: require('../../../assets/images/settings-inactive.png'),
+  CALENDAR_ACTIVE: require('../../../assets/images/calendar-active.png'),
+  CALENDAR_INACTIVE: require('../../../assets/images/calendar-inactive.png'),
+  ACTIVE_STATUS: require('../../../assets/images/active-status.png'),
+  TERMINATED_STATUS: require('../../../assets/images/terminated-status.png'),
+  AVATAR_BOY: require('../../../assets/images/avatar-boy.png'),
+  AVATAR_GIRL: require('../../../assets/images/avatar-girl.png'),
+  ERROR: require('../../../assets/images/error.png'),
+  NO_CONNECTION: require('../../../assets/images/no-connection.png'),
+  MALE: require('../../../assets/images/male.png'),
+  FEMALE: require('../../../assets/images/female.png'),
+};
+
+export const ERROR_TYPE = {
+  error: {
+    title: 'Something went wrong',
+    description: "We're actively resolving the issue. Please refresh the page and try again.",
+  },
+  connection: {
+    title: 'No Internet Connection',
+    description: 'No internet connections found. Check your connections and try again.',
+  },
 };
 
 export const MESSAGE = {
@@ -102,4 +123,4 @@ export const SIZE_DESCRIPTION: Record<SizeKey, string> = {
   xxl: 'Extra Extra Large',
 };
 
-export const ERR_NETWORK = 'ERR_NETWORK';
+export const ERR_NETWORK = 'Network Error';

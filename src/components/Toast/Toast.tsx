@@ -62,9 +62,9 @@ const Toast = ({ isVisible, message, type = 'info', duration = 3000, onClose }: 
 const styles = StyleSheet.create({
   toast: {
     position: 'absolute',
-    bottom: 50,
-    left: 20,
-    right: 20,
+    bottom: 25,
+    left: 15,
+    right: 15,
     zIndex: 1000,
     elevation: 5,
     borderRadius: 8,

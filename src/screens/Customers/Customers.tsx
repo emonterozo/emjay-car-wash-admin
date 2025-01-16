@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 
 import { NavigationProp } from '../../types/navigation/types';
-import { Customer } from '../../types/services/types';
+import { Customer, ScreenStatusProps } from '../../types/services/types';
 import {
   AppHeader,
   EmptyState,
@@ -14,7 +14,7 @@ import {
   ActivityIndicator,
 } from '@app/components';
 import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { getCustomersRequest } from '@app/services';
 import GlobalContext from '@app/context';
 
@@ -27,9 +27,10 @@ const Customers = () => {
   const { user } = useContext(GlobalContext);
   const [totalCount, setTotalCount] = useState(0);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [screenStatus, setScreenStatus] = useState({
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
+    type: 'error',
   });
   const [isFetching, setIsFetching] = useState(false);
 
@@ -38,21 +39,25 @@ const Customers = () => {
   };
 
   const fetchCustomers = async () => {
-    setScreenStatus({ hasError: false, isLoading: true });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getCustomersRequest(user.token, '_id', 'asc', LIMIT, 0);
 
     if (response.success && response.data) {
       const { data, errors } = response.data;
 
       if (errors.length > 0) {
-        setScreenStatus({ isLoading: false, hasError: true });
+        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
       } else {
         setCustomers(data.customers);
         setTotalCount(data.total);
-        setScreenStatus({ hasError: false, isLoading: false });
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
       }
     } else {
-      setScreenStatus({ isLoading: false, hasError: true });
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
     }
   };
 
@@ -62,7 +67,7 @@ const Customers = () => {
   }, []);
 
   const onCancel = () => {
-    setScreenStatus({ hasError: false, isLoading: false });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     navigation.goBack();
   };
 
@@ -82,9 +87,15 @@ const Customers = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Customers" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
-      <ErrorModal isVisible={screenStatus.hasError} onCancel={onCancel} onRetry={fetchCustomers} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchCustomers}
+      />
       <View style={styles.heading}>
         <Text style={styles.textCustomerList}>Customer List</Text>
         {customers.length > 0 && (
@@ -98,7 +109,11 @@ const Customers = () => {
         data={customers}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item.id)}>
-            <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
+            <Image
+              source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+              style={styles.image}
+              resizeMode="contain"
+            />
             <View style={styles.details}>
               <Text style={styles.textName}>{`${item.first_name} ${item.last_name}`}</Text>
               <View style={styles.textInfoContainer}>
@@ -161,8 +176,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   image: {
-    height: 105,
-    width: 105,
+    height: 90,
+    width: 90,
   },
   textCustomerList: {
     ...font.regular,

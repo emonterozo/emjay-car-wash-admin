@@ -11,33 +11,37 @@ import {
   TextInput,
   View,
   Pressable,
+  StatusBar,
 } from 'react-native';
 
 import GlobalContext from '@app/context';
-import { IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { EyeOpenIcon, EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
 import { ErrorModal, LoadingAnimation, Toast } from '@app/components';
 import { color, font } from '@app/styles';
 import { loginRequest } from '@app/services';
+import { verticalScale } from '@app/metrics';
+import { ScreenStatusProps } from '../../types/services/types';
 
 const Login = () => {
   const { setUser } = useContext(GlobalContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-  const [screenStatus, setScreenStatus] = useState({
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
+    type: 'error',
   });
   const [input, setInput] = useState({
-    username: 'emjay_admin',
-    password: 'password',
+    username: '',
+    password: '',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
 
   const login = async () => {
-    setScreenStatus({ hasError: false, isLoading: true });
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await loginRequest({ username: input.username, password: input.password });
     if (response.success && response.data) {
-      setScreenStatus({ hasError: false, isLoading: false });
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
       const { data, errors } = response.data;
 
       if (errors.length > 0) {
@@ -52,7 +56,11 @@ const Login = () => {
         });
       }
     } else {
-      setScreenStatus({ isLoading: false, hasError: true });
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
     }
   };
 
@@ -80,8 +88,14 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#FAFAFA" barStyle="dark-content" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
-      <ErrorModal isVisible={screenStatus.hasError} onCancel={toggleModal} onRetry={login} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={toggleModal}
+        onRetry={login}
+      />
       <Toast
         isVisible={isToastVisible}
         message="Oops! Seems like you input wrong details. Please try again."
@@ -106,6 +120,8 @@ const Login = () => {
                 style={styles.input}
                 onChangeText={(text) => onChange('username', text)}
                 maxLength={20}
+                multiline={false}
+                numberOfLines={1}
                 value={input.username}
               />
             </View>
@@ -118,6 +134,8 @@ const Login = () => {
                 secureTextEntry={isPasswordSecure}
                 onChangeText={(text) => onChange('password', text)}
                 maxLength={64}
+                multiline={false}
+                numberOfLines={1}
                 value={input.password}
               />
               <Pressable onPress={toggleSecureEntry}>
@@ -157,7 +175,7 @@ const styles = StyleSheet.create({
     width: 245,
     height: 147,
     alignSelf: 'center',
-    marginTop: 127,
+    marginTop: verticalScale(30),
   },
   header: {
     ...font.bold,
@@ -192,15 +210,18 @@ const styles = StyleSheet.create({
     ...font.regular,
     marginHorizontal: 33,
     color: '#5C5C5C',
+    textAlignVertical: 'center',
+    minHeight: 40,
   },
   button: {
-    marginTop: 128,
+    marginTop: verticalScale(130),
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderRadius: 49,
     justifyContent: 'center',
     alignItems: 'center',
     width: Dimensions.get('window').width - 48,
+    marginBottom: 10,
   },
   buttonText: {
     ...font.regular,

@@ -1,4 +1,3 @@
-export { default as NetworkErrorIcon } from './NetworkErrorIcon';
 export { default as EyeOpenIcon } from './EyeOpenIcon';
 export { default as EyeCloseIcon } from './EyeCloseIcon';
 export { default as LockIcon } from './LockIcon';
@@ -30,3 +29,4 @@ export { default as CheckIcon } from './CheckIcon';
 export { default as CarIcon } from './CarIcon';
 export { default as MotorcycleIcon } from './MotorcycleIcon';
 export { default as EllipseIcon } from './EllipseIcon';
+export { default as EditIcon } from './EditIcon';
