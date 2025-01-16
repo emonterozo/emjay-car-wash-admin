@@ -84,6 +84,9 @@ export const IMAGES = {
   NO_CONNECTION: require('../../../assets/images/no-connection.png'),
   MALE: require('../../../assets/images/male.png'),
   FEMALE: require('../../../assets/images/female.png'),
+  CUSTOMER_NOT_EXIST: require('../../../assets/images/customer-not-exist.png'),
+  NO_CAMERA: require('../../../assets/images/no-camera.png'),
+  PERMISSION_DENIED: require('../../../assets/images/permission-denied.png'),
 };
 
 export const ERROR_TYPE = {
@@ -97,17 +100,29 @@ export const ERROR_TYPE = {
   },
 };
 
-export const MESSAGE = {
+type ImageKeys = keyof typeof IMAGES;
+export const MESSAGE: Record<
+  string,
+  { title: string; description: string; button: string; image: ImageKeys }
+> = {
   no_camera: {
     title: 'No Camera Detected',
     description: 'Unable to find a camera. Please check your device.',
     button: 'Go Back',
+    image: 'NO_CAMERA',
   },
-  no_permission: {
+  permission_denied: {
     title: 'Permission Denied',
     description:
       'Camera access is required to proceed. Please grant permission in your device settings.',
     button: 'Open Settings',
+    image: 'PERMISSION_DENIED',
+  },
+  customer_not_exist: {
+    title: 'Customer Does Not Exist',
+    description: "We couldn't find your account. Please try again later.",
+    button: 'Go Back',
+    image: 'CUSTOMER_NOT_EXIST',
   },
 };
 

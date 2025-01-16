@@ -32,8 +32,8 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: '',
-    password: '',
+    username: 'emjay_admin',
+    password: 'password',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
 
@@ -120,6 +120,8 @@ const Login = () => {
                 style={styles.input}
                 onChangeText={(text) => onChange('username', text)}
                 maxLength={20}
+                multiline={false}
+                numberOfLines={1}
                 value={input.username}
               />
             </View>
@@ -132,6 +134,8 @@ const Login = () => {
                 secureTextEntry={isPasswordSecure}
                 onChangeText={(text) => onChange('password', text)}
                 maxLength={64}
+                multiline={false}
+                numberOfLines={1}
                 value={input.password}
               />
               <Pressable onPress={toggleSecureEntry}>
@@ -206,6 +210,8 @@ const styles = StyleSheet.create({
     ...font.regular,
     marginHorizontal: 33,
     color: '#5C5C5C',
+    textAlignVertical: 'center',
+    minHeight: 40,
   },
   button: {
     marginTop: verticalScale(130),
