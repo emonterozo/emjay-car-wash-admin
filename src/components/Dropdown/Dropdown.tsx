@@ -4,6 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 
 import { MaterialCommunityIcon } from '..';
 import { font, color } from '@app/styles';
+import { isStringEmpty } from '@app/helpers';
 
 export type Option = {
   id: string;
@@ -22,9 +23,10 @@ export type DropdownProps = {
   selected: Option | undefined;
   options: Option[];
   onSelected: (selected: Option) => void;
-  error?: boolean;
+  error?: string;
   optionMinWidth?: number;
   isDisabled?: boolean;
+  onToggleOpen?: () => void;
 };
 
 const Dropdown = ({
@@ -41,6 +43,7 @@ const Dropdown = ({
   error,
   optionMinWidth,
   isDisabled,
+  onToggleOpen,
 }: DropdownProps) => {
   const getDropdownColor = () => {
     return isDisabled ? disabledColor : enableColor;
@@ -58,6 +61,9 @@ const Dropdown = ({
   const handlePressOpen = () => {
     borderColor.value = !isOptionOpen ? color.primary : getDropdownColor();
     setIsOptionOpen(!isOptionOpen);
+    if (onToggleOpen) {
+      onToggleOpen();
+    }
   };
 
   const handlePressSelected = (option: Option) => {
@@ -67,7 +73,9 @@ const Dropdown = ({
   };
 
   useEffect(() => {
-    borderColor.value = error ? '#FF7070' : getDropdownColor();
+    if (error) {
+      borderColor.value = isStringEmpty(error) ? getDropdownColor() : '#FF7070';
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 

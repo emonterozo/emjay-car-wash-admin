@@ -6,6 +6,10 @@ export const formattedNumber = (amount: number) => {
   }).format(amount)}`;
 };
 
+export const isStringEmpty = (value: string) => {
+  return value.length === 0;
+};
+
 export const getCurrentDateAtMidnightUTC = () => {
   const now = new Date();
   now.setUTCHours(0, 0, 0, 0);

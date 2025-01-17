@@ -8,10 +8,13 @@ import {
   AccessibilityProps,
   NativeSyntheticEvent,
   TextInputFocusEventData,
+  Image,
 } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { font, color } from '@app/styles';
+import { isStringEmpty } from '@app/helpers';
+import { IMAGES } from '@app/constant';
 
 type TextInputProps = {
   label: string;
@@ -20,7 +23,8 @@ type TextInputProps = {
   disabledColor?: string;
   textColor?: string;
   startIcon?: React.ReactElement;
-  error?: boolean;
+  error?: string;
+  isErrorMessageVisible?: boolean;
 } & RNTextInputProps &
   AccessibilityProps;
 
@@ -37,6 +41,7 @@ const TextInput = ({
   startIcon,
   error,
   readOnly,
+  isErrorMessageVisible = true,
   ...prop
 }: TextInputProps) => {
   const getTextInputColor = () => {
@@ -66,32 +71,42 @@ const TextInput = ({
   };
 
   useEffect(() => {
-    borderColor.value = error ? '#FF7070' : getTextInputColor();
+    if (error) {
+      borderColor.value = isStringEmpty(error) ? getTextInputColor() : '#FF7070';
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
   return (
-    <View style={styles.content}>
-      <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
-      <Animated.View
-        style={[styles.container, { backgroundColor: getTextInputColor() }, animatedStyle]}
-      >
-        {startIcon}
-        <RNInput
-          style={[
-            styles.input,
-            {
-              color: textColor,
-            },
-          ]}
-          placeholder={placeholder}
-          placeholderTextColor={placeholderTextColor}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          readOnly={readOnly}
-          {...prop}
-        />
-      </Animated.View>
+    <View>
+      <View style={styles.content}>
+        <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
+        <Animated.View
+          style={[styles.container, { backgroundColor: getTextInputColor() }, animatedStyle]}
+        >
+          {startIcon}
+          <RNInput
+            style={[
+              styles.input,
+              {
+                color: textColor,
+              },
+            ]}
+            placeholder={placeholder}
+            placeholderTextColor={placeholderTextColor}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            readOnly={readOnly}
+            {...prop}
+          />
+        </Animated.View>
+      </View>
+      {error && isErrorMessageVisible && (
+        <View style={styles.errorContainer}>
+          <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" style={styles.image} />
+          <Text style={styles.error}>{error}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -120,6 +135,23 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     flex: 1,
     paddingVertical: 18,
+  },
+  errorContainer: {
+    marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  error: {
+    ...font.regular,
+    fontSize: 12,
+    lineHeight: 12,
+    color: '#FF7070',
+    flex: 1,
+  },
+  image: {
+    width: 16,
+    height: 16,
   },
 });
 

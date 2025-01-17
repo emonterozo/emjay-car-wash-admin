@@ -30,7 +30,22 @@ export type AuthStackParamList = {
     freeCarwashList?: CarwashList[];
   };
   PreTransaction: { id: string };
-  EmployeeForm: { id: string | undefined };
+  EmployeeForm:
+    | { type: 'Add'; user?: never }
+    | {
+        type: 'Update';
+        user: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          birth_date: Date;
+          gender: string;
+          contact_number: string;
+          employee_title: string;
+          employee_status: string;
+          date_started: Date;
+        };
+      };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];

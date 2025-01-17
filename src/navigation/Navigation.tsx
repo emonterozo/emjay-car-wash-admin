@@ -55,7 +55,11 @@ const Navigation = () => {
             <AuthStack.Screen name="Services" component={Services} />
             <AuthStack.Screen name="PreTransaction" component={PreTransaction} />
             <AuthStack.Screen name="AddOngoing" component={AddOngoing} />
-            <AuthStack.Screen name="EmployeeForm" component={EmployeeForm} />
+            <AuthStack.Screen
+              name="EmployeeForm"
+              component={EmployeeForm}
+              options={{ gestureEnabled: false }}
+            />
           </AuthStack.Navigator>
         ) : (
           <UnAuthStack.Navigator screenOptions={{ headerShown: false }}>

@@ -5,7 +5,11 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { font, color } from '@app/styles';
 import { IMAGES } from '@app/constant';
 import CalendarPicker from '../CalendarPicker/CalendarPicker';
-import { getCurrentDateAtMidnightUTC, getMinimumDateAtMidnightUTC } from '@app/helpers';
+import {
+  getCurrentDateAtMidnightUTC,
+  getMinimumDateAtMidnightUTC,
+  isStringEmpty,
+} from '@app/helpers';
 
 export type CalendarPickerTriggerProps = {
   date: Date;
@@ -16,12 +20,13 @@ export type CalendarPickerTriggerProps = {
   enableColor?: string;
   disabledColor?: string;
   textColor?: string;
-  error?: boolean;
+  error?: string;
   value: string | undefined;
   isDisabled?: boolean;
   onSelectedDate: (date: Date) => void;
   maxDate?: Date;
   minDate?: Date;
+  onPressOpen?: () => void;
 };
 
 const CalendarPickerTrigger = ({
@@ -39,6 +44,7 @@ const CalendarPickerTrigger = ({
   onSelectedDate,
   maxDate = getCurrentDateAtMidnightUTC(),
   minDate = getMinimumDateAtMidnightUTC(),
+  onPressOpen,
 }: CalendarPickerTriggerProps) => {
   const getColor = () => {
     return isDisabled ? disabledColor : enableColor;
@@ -56,6 +62,9 @@ const CalendarPickerTrigger = ({
   const handlePressOpen = () => {
     borderColor.value = color.primary;
     setIsCalendarOpen(true);
+    if (onPressOpen) {
+      onPressOpen();
+    }
   };
 
   const handlePressSelected = (selectedDate: Date) => {
@@ -65,7 +74,9 @@ const CalendarPickerTrigger = ({
   };
 
   useEffect(() => {
-    borderColor.value = error ? '#FF7070' : getColor();
+    if (error) {
+      borderColor.value = isStringEmpty(error) ? getColor() : '#FF7070';
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
@@ -80,7 +91,7 @@ const CalendarPickerTrigger = ({
       <TouchableWithoutFeedback onPress={handlePressOpen} disabled={isDisabled}>
         <Animated.View style={[styles.container, { backgroundColor: getColor() }, animatedStyle]}>
           <Image
-            source={isCalendarOpen ? IMAGES.CALENDAR_ACTIVE : IMAGES.CALENDAR_INACTIVE}
+            source={value ? IMAGES.CALENDAR_ACTIVE : IMAGES.CALENDAR_INACTIVE}
             resizeMode="contain"
           />
           {value ? (

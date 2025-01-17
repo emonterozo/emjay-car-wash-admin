@@ -71,7 +71,7 @@ const Employee = () => {
   };
 
   const handleAddEmployee = () => {
-    navigation.navigate('EmployeeForm', { id: undefined });
+    navigation.navigate('EmployeeForm', { type: 'Add' });
   };
 
   const getTextStatusStyle = (status: string) =>
