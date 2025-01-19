@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { MaterialCommunityIcon } from '..';
 import { font, color } from '@app/styles';
 import { isStringEmpty } from '@app/helpers';
+import { IMAGES } from '@app/constant';
 
 export type Option = {
   id: string;
@@ -108,6 +116,12 @@ const Dropdown = ({
           />
         </Animated.View>
       </TouchableWithoutFeedback>
+      {error && (
+        <View style={styles.errorContainer}>
+          <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" style={styles.image} />
+          <Text style={styles.error}>{error}</Text>
+        </View>
+      )}
       {isOptionOpen && (
         <View
           style={[
@@ -135,7 +149,7 @@ const Dropdown = ({
 
 const styles = StyleSheet.create({
   content: {
-    gap: 16,
+    gap: 8,
   },
   label: {
     ...font.light,
@@ -187,6 +201,22 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     flex: 1,
     color: '#696969',
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  error: {
+    ...font.regular,
+    fontSize: 12,
+    lineHeight: 12,
+    color: '#FF7070',
+    flex: 1,
+  },
+  image: {
+    width: 16,
+    height: 16,
   },
 });
 

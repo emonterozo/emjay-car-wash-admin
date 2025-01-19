@@ -15,6 +15,7 @@ type EmployeeInfoProps = {
   id: string;
   first_name: string;
   last_name: string;
+  gender: string;
   title: string;
   status: string;
 };
@@ -23,20 +24,23 @@ const EMPLOYEE_DATA: EmployeeInfoProps[] = [
     id: '1',
     first_name: 'John',
     last_name: 'Doe',
+    gender: 'MALE',
     title: 'Car Wash Attendant',
     status: 'Active',
   },
   {
     id: '2',
-    first_name: 'John',
+    first_name: 'Jenny',
     last_name: 'Ma',
+    gender: 'FEMALE',
     title: 'Car Wash Attendant',
     status: 'Terminated',
   },
   {
     id: '3',
-    first_name: 'John',
+    first_name: 'Jessa',
     last_name: 'No',
+    gender: 'FEMALE',
     title: 'Car Wash Attendant',
     status: 'Active',
   },
@@ -44,6 +48,7 @@ const EMPLOYEE_DATA: EmployeeInfoProps[] = [
     id: '4',
     first_name: 'Johnny',
     last_name: 'Bravo',
+    gender: 'MALE',
     title: 'Car Wash Attendant',
     status: 'Terminated',
   },
@@ -51,13 +56,15 @@ const EMPLOYEE_DATA: EmployeeInfoProps[] = [
     id: '5',
     first_name: 'Johnloyd',
     last_name: 'Cruz',
+    gender: 'MALE',
     title: 'Car Wash Attendant',
     status: 'Active',
   },
   {
     id: '6',
-    first_name: 'Jonathan',
+    first_name: 'Joan',
     last_name: 'Ho',
+    gender: 'FEMALE',
     title: 'Car Wash Attendant',
     status: 'Terminated',
   },
@@ -77,9 +84,20 @@ const Employee = () => {
   const getTextStatusStyle = (status: string) =>
     status === 'Terminated' ? styles.textStatusRed : styles.textStatusGreen;
 
-  const renderEmployeeList = ({ id, first_name, last_name, title, status }: EmployeeInfoProps) => (
+  const renderEmployeeList = ({
+    id,
+    first_name,
+    last_name,
+    title,
+    status,
+    gender,
+  }: EmployeeInfoProps) => (
     <TouchableOpacity style={styles.card} onPress={() => handleCardPress(id)}>
-      <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
+      <Image
+        source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+        style={styles.image}
+        resizeMode="contain"
+      />
       <View>
         <Text style={styles.textName}>
           {first_name} {last_name}

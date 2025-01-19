@@ -4,15 +4,23 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
 import { format } from 'date-fns';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import type { Option } from '../../components/Dropdown/Dropdown';
 import { color, font } from '@app/styles';
-import { AppHeader, CalendarPickerTrigger, Dropdown, TextInput, Button } from '@app/components';
+import {
+  AppHeader,
+  CalendarPickerTrigger,
+  Dropdown,
+  TextInput,
+  Button,
+  YesNoModal,
+  Toast,
+} from '@app/components';
 import { IMAGES } from '@app/constant';
 import { getCurrentDateAtMidnightUTC } from '@app/helpers';
 import { useNativeBackHandler } from '@app/hooks';
-import { EmployeeFormRouteProp } from '../../types/navigation/types';
+import { EmployeeFormRouteProp, NavigationProp } from '../../types/navigation/types';
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required('First name is required'),
@@ -48,16 +56,21 @@ type Errors = {
   [key in keyof FormValues]?: string;
 };
 
+type ToastMessage = {
+  message: string;
+  toastType: 'success' | 'error';
+};
+
 const GENDER_OPTIONS = [
   {
     id: '1',
     icon: <Image source={IMAGES.MALE} resizeMode="contain" />,
-    label: 'Male',
+    label: 'MALE',
   },
   {
     id: '2',
     icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
-    label: 'Female',
+    label: 'FEMALE',
   },
 ];
 
@@ -75,29 +88,74 @@ const STATUS_OPTIONS = [
 ];
 
 const EmployeeForm = () => {
-  const { type } = useRoute<EmployeeFormRouteProp>().params;
-  const [formValues, setFormValues] = useState<FormValues>({
-    firstName: '',
-    lastName: '',
-    birthDate: undefined,
-    gender: undefined,
-    contactNumber: undefined,
-    employeeTitle: '',
-    employeeStatus: undefined,
-    dateStarted: undefined,
-  });
+  const navigation = useNavigation<NavigationProp>();
+  const { type, user } = useRoute<EmployeeFormRouteProp>().params;
+  const initialFormValues: FormValues =
+    type === 'Add'
+      ? {
+          firstName: '',
+          lastName: '',
+          birthDate: undefined,
+          gender: undefined,
+          contactNumber: undefined,
+          employeeTitle: '',
+          employeeStatus: undefined,
+          dateStarted: undefined,
+        }
+      : {
+          firstName: user.first_name,
+          lastName: user.last_name,
+          birthDate: user.birth_date ? new Date(user.birth_date) : undefined,
+          gender: GENDER_OPTIONS.find((option) => option.label === user.gender),
+          contactNumber: user.contact_number,
+          employeeTitle: user.employee_title,
+          employeeStatus: STATUS_OPTIONS.find((option) => option.label === user.employee_status),
+          dateStarted: user.date_started ? new Date(user.date_started) : undefined,
+        };
+
+  const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [errors, setErrors] = useState<Errors>({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [message, setMessage] = useState<string>('');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+
+  const onToastClose = () => setIsToastVisible(false);
+
+  const isNotModified = (obj1: any, obj2: any): boolean => {
+    if (Object.is(obj1, obj2)) {return true;}
+    if (typeof obj1 !== typeof obj2) {return false;}
+    if (typeof obj1 !== 'object' || obj1 === null || obj2 === null) {return false;}
+
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {return false;}
+
+    return keys1.every((key) => isNotModified(obj1[key], obj2[key]));
+  };
 
   useNativeBackHandler(() => {
-    return true;
+    if (!isNotModified(formValues, initialFormValues)) {
+      toggleYesNoModal();
+      return true;
+    } else {
+      return false;
+    }
   });
 
   const handleSubmit = () => {
+    let status: 'success' | 'error' = 'success';
     validationSchema
       .validate(formValues, { abortEarly: false })
       .then((_validData) => {
         setErrors({});
         //console.log('Form is valid:', validData);
+        status = 'success';
+        const toastData: ToastMessage = getToastMessage(type, status);
+        setMessage(toastData.message);
+        setToastType(toastData.toastType);
+        setIsToastVisible(true);
       })
       .catch((err) => {
         const errorMessages: Errors = err.inner.reduce((acc: Errors, curr: ValidationError) => {
@@ -105,7 +163,26 @@ const EmployeeForm = () => {
           return acc;
         }, {});
         setErrors(errorMessages);
+        status = 'error';
+        const toastData: ToastMessage = getToastMessage(type, status);
+        setMessage(toastData.message);
+        setToastType(toastData.toastType);
+        setIsToastVisible(true);
       });
+  };
+
+  const toggleYesNoModal = () => setIsModalVisible(!isModalVisible);
+
+  const handleYes = () => {
+    toggleYesNoModal();
+    navigation.goBack();
+  };
+
+  const handleCancel = () => {
+    if (!isNotModified(formValues, initialFormValues)) {toggleYesNoModal();}
+    else {
+      navigation.goBack();
+    }
   };
 
   const handleInputChange = (key: string, value: string) => {
@@ -132,12 +209,59 @@ const EmployeeForm = () => {
     });
   };
 
+  const getToastMessage = (
+    formType: 'Add' | 'Update',
+    status: 'success' | 'error',
+  ): ToastMessage => {
+    if (formType === 'Add') {
+      if (status === 'success') {
+        return {
+          message: 'Employee added successfully! You can add more if needed',
+          toastType: 'success',
+        };
+      } else {
+        return {
+          message: 'Please complete the required fields before adding.',
+          toastType: 'error',
+        };
+      }
+    } else if (formType === 'Update') {
+      if (status === 'success') {
+        return {
+          message: 'Employee details have been successfully updated!',
+          toastType: 'success',
+        };
+      } else {
+        return {
+          message: 'Please complete the required fields before updating.',
+          toastType: 'error',
+        };
+      }
+    }
+    return { message: 'Please complete the required fields before adding.', toastType: 'error' };
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Add Employee" />
+      <AppHeader title={type === 'Update' ? 'Update Employee' : 'Add Employee'} />
+      <View style={styles.viewContainer}>
+        <YesNoModal
+          type={type}
+          isVisible={isModalVisible}
+          onNo={toggleYesNoModal}
+          onYes={handleYes}
+        />
+      </View>
+      <Toast
+        isVisible={isToastVisible}
+        message={message}
+        duration={3000}
+        type={toastType}
+        onClose={onToastClose}
+      />
       <View style={styles.heading}>
-        <Text style={styles.text}>Adding Form</Text>
+        <Text style={styles.text}> {type === 'Update' ? 'Update Form' : 'Adding Form'}</Text>
       </View>
       <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
         <TextInput
@@ -148,6 +272,7 @@ const EmployeeForm = () => {
           onChangeText={(value) => handleInputChange('firstName', value)}
           onFocus={() => removeError('firstName')}
           readOnly={type === 'Update'}
+          maxLength={64}
         />
         <TextInput
           label="Last Name"
@@ -156,6 +281,8 @@ const EmployeeForm = () => {
           value={formValues.lastName}
           onChangeText={(value) => handleInputChange('lastName', value)}
           onFocus={() => removeError('lastName')}
+          readOnly={type === 'Update'}
+          maxLength={64}
         />
         <CalendarPickerTrigger
           date={formValues.birthDate ?? date}
@@ -165,6 +292,7 @@ const EmployeeForm = () => {
           error={errors.birthDate}
           onSelectedDate={(selectedDate) => handleCalendarChange('birthDate', selectedDate)}
           onPressOpen={() => removeError('birthDate')}
+          isDisabled={type === 'Update'}
         />
         <Dropdown
           label="Gender"
@@ -175,6 +303,7 @@ const EmployeeForm = () => {
           optionMinWidth={196}
           error={errors.gender}
           onToggleOpen={() => removeError('gender')}
+          isDisabled={type === 'Update'}
         />
         <TextInput
           label="Contact Number"
@@ -192,6 +321,7 @@ const EmployeeForm = () => {
           value={formValues.employeeTitle}
           onChangeText={(value) => handleInputChange('employeeTitle', value)}
           onFocus={() => removeError('employeeTitle')}
+          maxLength={64}
         />
         <Dropdown
           label="Employee Status"
@@ -211,6 +341,7 @@ const EmployeeForm = () => {
           error={errors.dateStarted}
           onSelectedDate={(selectedDate) => handleCalendarChange('dateStarted', selectedDate)}
           onPressOpen={() => removeError('dateStarted')}
+          isDisabled={type === 'Update'}
         />
         <View style={styles.buttonContainer}>
           <Button
@@ -218,10 +349,10 @@ const EmployeeForm = () => {
             variant="secondary"
             buttonStyle={styles.button}
             textStyle={styles.textStyle}
-            onPress={() => {}}
+            onPress={handleCancel}
           />
           <Button
-            title="Add"
+            title={type === 'Add' ? 'Add' : 'Update'}
             variant="primary"
             buttonStyle={styles.button}
             textStyle={styles.textStyle}
@@ -237,6 +368,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F2EF',
+  },
+  viewContainer: {
+    flex: 1,
   },
   heading: {
     alignItems: 'flex-start',

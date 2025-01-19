@@ -87,6 +87,7 @@ export const IMAGES = {
   CUSTOMER_NOT_EXIST: require('../../../assets/images/customer-not-exist.png'),
   NO_CAMERA: require('../../../assets/images/no-camera.png'),
   PERMISSION_DENIED: require('../../../assets/images/permission-denied.png'),
+  CANCEL: require('../../../assets/images/cancel.png'),
 };
 
 export const ERROR_TYPE = {
@@ -97,6 +98,18 @@ export const ERROR_TYPE = {
   connection: {
     title: 'No Internet Connection',
     description: 'No internet connections found. Check your connections and try again.',
+  },
+};
+
+export const CONFIRM_TYPE = {
+  Add: {
+    title: 'Are you sure you want to cancel adding employee?',
+    description: 'By doing this, you will cancel adding the employee and lose any unsaved changes.',
+  },
+  Update: {
+    title: 'Are you sure you want to cancel updating employee?',
+    description:
+      'By doing this, you will cancel updating the employee and lose any unsaved changes.',
   },
 };
 

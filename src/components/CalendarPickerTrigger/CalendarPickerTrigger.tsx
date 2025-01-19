@@ -110,6 +110,12 @@ const CalendarPickerTrigger = ({
           )}
         </Animated.View>
       </TouchableWithoutFeedback>
+      {error && (
+        <View style={styles.errorContainer}>
+          <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" style={styles.image} />
+          <Text style={styles.error}>{error}</Text>
+        </View>
+      )}
       <CalendarPicker
         date={date}
         isVisible={isCalendarOpen}
@@ -124,7 +130,7 @@ const CalendarPickerTrigger = ({
 
 const styles = StyleSheet.create({
   content: {
-    gap: 16,
+    gap: 8,
   },
   label: {
     ...font.light,
@@ -147,6 +153,22 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     flex: 1,
     paddingVertical: 18,
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  error: {
+    ...font.regular,
+    fontSize: 12,
+    lineHeight: 12,
+    color: '#FF7070',
+    flex: 1,
+  },
+  image: {
+    width: 16,
+    height: 16,
   },
 });
 
