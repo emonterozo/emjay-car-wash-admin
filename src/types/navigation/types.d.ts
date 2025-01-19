@@ -38,12 +38,12 @@ export type AuthStackParamList = {
           id: string;
           first_name: string;
           last_name: string;
-          birth_date: Date;
+          birth_date: string;
           gender: string;
           contact_number: string;
           employee_title: string;
           employee_status: string;
-          date_started: Date;
+          date_started: string;
         };
       };
 };

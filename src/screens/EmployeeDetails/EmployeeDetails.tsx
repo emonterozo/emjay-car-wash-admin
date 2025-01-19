@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
+  Image,
 } from 'react-native';
 import { format } from 'date-fns';
 
@@ -16,25 +17,30 @@ import { color, font } from '@app/styles';
 import { EditIcon, WaterDropIcon } from '@app/icons';
 import { RecentTransaction } from 'src/types/services/types';
 import { formattedNumber } from '@app/helpers';
+import { IMAGES } from '@app/constant';
+import { NavigationProp } from 'src/types/navigation/types';
+import { useNavigation } from '@react-navigation/native';
 
 type EmployeeInformationProps = {
   first_name: string;
   last_name: string;
-  date_of_birth: string;
+  gender: string;
+  date_of_birth: Date;
   contact_number: string;
   title: string;
   status: string;
-  date_started: string;
+  date_started: Date;
 };
 
 const employeeInformation: EmployeeInformationProps = {
-  first_name: 'John',
-  last_name: 'Doe',
-  date_of_birth: '2000-12-23T08:00:00.000Z',
+  first_name: 'Dona',
+  last_name: 'Mo',
+  gender: 'FEMALE',
+  date_of_birth: new Date('2000-12-23T08:00:00.000Z'),
   contact_number: '09876543210',
   title: 'Car Wash Attendant',
   status: 'Terminated',
-  date_started: '2024-12-23T08:00:00.000Z',
+  date_started: new Date('2024-12-23T08:00:00.000Z'),
 };
 
 const employeeDetails = employeeInformation
@@ -85,9 +91,27 @@ const employeeDetails = employeeInformation
     ];
 
 const EmployeeDetails = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [transactions] = useState<RecentTransaction[]>([]);
   const isField = 'Employee Status';
   const isFieldValue = 'Active';
+
+  const handleUpdateEmployee = () => {
+    navigation.navigate('EmployeeForm', {
+      type: 'Update',
+      user: {
+        id: '123',
+        first_name: employeeInformation.first_name,
+        last_name: employeeInformation.last_name,
+        birth_date: employeeInformation.date_of_birth.toISOString(),
+        gender: employeeInformation.gender,
+        contact_number: employeeInformation.contact_number,
+        employee_title: employeeInformation.title,
+        employee_status: employeeInformation.status,
+        date_started: employeeInformation.date_started.toISOString(),
+      },
+    });
+  };
 
   const getTextStyle = (label: string, value: string) => {
     if (label === isField) {
@@ -102,11 +126,16 @@ const EmployeeDetails = () => {
       <AppHeader title="Employee Details" />
       <View style={styles.heading}>
         <Text style={styles.employeeDetails}>Employee Details</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleUpdateEmployee}>
           <EditIcon />
         </TouchableOpacity>
       </View>
       <ScrollView bounces={false}>
+        <Image
+          source={employeeInformation?.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+          style={styles.image}
+          resizeMode="contain"
+        />
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom21]}>
           Personal Information
         </Text>
@@ -211,6 +240,13 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     paddingHorizontal: 20,
+  },
+  image: {
+    width: 187,
+    height: 187,
+    alignSelf: 'center',
+    marginTop: 41,
+    marginBottom: 41,
   },
 });
 
