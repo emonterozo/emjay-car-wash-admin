@@ -17,13 +17,11 @@ export type LoginPayload = {
 };
 
 export type LoginResponse = {
-  data: {
-    token: string;
-    user: {
-      id: string;
-      type: string;
-      username: string;
-    };
+  accessToken: string;
+  user: {
+    id: string;
+    type: string;
+    username: string;
   };
   errors: ErrorProps[];
 };
@@ -46,9 +44,7 @@ export type Service = {
 };
 
 export type ServicesResponse = {
-  data: {
-    services: Service[];
-  };
+  services: Service[];
   errors: ErrorProps[];
 };
 
@@ -62,10 +58,8 @@ export type Customer = {
 };
 
 export type CustomersResponse = {
-  data: {
-    customers: Customer[];
-    total: number;
-  };
+  customers: Customer[];
+  totalCount: number;
   errors: ErrorProps[];
 };
 
@@ -94,13 +88,11 @@ export type CustomerInformation = {
   birth_date: string;
   registered_on: string;
   recent_transactions: RecentTransaction[];
-  car_services_count: ServiceCount[];
-  moto_services_count: ServiceCount[];
+  car_wash_service_count: ServiceCount[];
+  moto_wash_service_count: ServiceCount[];
 };
 
 export type CustomerInformationResponse = {
-  data: {
-    customer_services: CustomerInformation;
-  };
+  customer: CustomerInformation;
   errors: ErrorProps[];
 };

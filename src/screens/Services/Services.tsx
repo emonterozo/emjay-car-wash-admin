@@ -43,16 +43,10 @@ const Services = () => {
 
   const fetchService = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getServicesRequest(user.token);
+    const response = await getServicesRequest(user.accessToken);
     if (response.success && response.data) {
-      const { data, errors } = response.data;
-
-      if (errors.length > 0) {
-        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
-      } else {
-        setServices(data.services);
-        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-      }
+      setServices(response.data.services);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
         isLoading: false,

@@ -127,22 +127,17 @@ const CustomerDetails = () => {
 
   const fetchCustomerDetails = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getCustomerInformationRequest(user.token, id);
+    const response = await getCustomerInformationRequest(user.accessToken, id);
 
     if (response.success && response.data) {
-      const { data, errors } = response.data;
-
-      if (errors.length > 0) {
-        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
-      } else {
-        setCustomerInformation(data.customer_services);
-        setTransactions(data.customer_services.recent_transactions);
-        setServicesCount({
-          car: data.customer_services.car_services_count.map((item) => item.count),
-          motorcycle: data.customer_services.moto_services_count.map((item) => item.count),
-        });
-        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-      }
+      const { customer } = response.data;
+      setCustomerInformation(customer);
+      setTransactions(customer.recent_transactions);
+      setServicesCount({
+        car: customer.car_wash_service_count.map((item) => item.count),
+        motorcycle: customer.moto_wash_service_count.map((item) => item.count),
+      });
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
         isLoading: false,

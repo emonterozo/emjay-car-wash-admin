@@ -34,7 +34,7 @@ export const apiRequest = async <Req, Res>(
     return {
       success: true,
       status: response.status,
-      data: response.data as Res,
+      ...(response.data as Res),
     };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

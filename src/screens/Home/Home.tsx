@@ -57,7 +57,7 @@ const Home = () => {
   const fetchService = async (filter: keyof typeof FILTER_VALUE) => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getServicesRequest(
-      user.token,
+      user.accessToken,
       FILTER_VALUE[filter].field,
       FILTER_VALUE[filter].direction as 'asc' | 'desc',
       5,
@@ -65,14 +65,8 @@ const Home = () => {
     );
 
     if (response.success && response.data) {
-      const { data, errors } = response.data;
-
-      if (errors.length > 0) {
-        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
-      } else {
-        setServices(data.services);
-        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-      }
+      setServices(response.data.services);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
         isLoading: false,

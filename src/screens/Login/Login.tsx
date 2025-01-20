@@ -40,27 +40,29 @@ const Login = () => {
   const login = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await loginRequest({ username: input.username, password: input.password });
-    if (response.success && response.data) {
-      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-      const { data, errors } = response.data;
 
-      if (errors.length > 0) {
-        setIsToastVisible(true);
-      } else {
-        const { token, user } = data;
-        setUser({
-          id: user.id,
-          username: user.username,
-          type: user.type,
-          token: token,
-        });
-      }
-    } else {
-      setScreenStatus({
-        isLoading: false,
-        type: response.error === ERR_NETWORK ? 'connection' : 'error',
-        hasError: true,
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    if (response.success && response.data) {
+      const { user, accessToken } = response.data;
+      setUser({
+        id: user.id,
+        username: user.username,
+        type: user.type,
+        accessToken: accessToken,
       });
+    } else {
+      switch (response.status) {
+        case 401:
+          setIsToastVisible(true);
+          break;
+        default:
+          setScreenStatus({
+            isLoading: false,
+            type: response.error === ERR_NETWORK ? 'connection' : 'error',
+            hasError: true,
+          });
+          break;
+      }
     }
   };
 

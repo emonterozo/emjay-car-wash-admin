@@ -40,18 +40,12 @@ const Customers = () => {
 
   const fetchCustomers = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getCustomersRequest(user.token, '_id', 'asc', LIMIT, 0);
+    const response = await getCustomersRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
 
     if (response.success && response.data) {
-      const { data, errors } = response.data;
-
-      if (errors.length > 0) {
-        setScreenStatus({ ...screenStatus, isLoading: false, hasError: true });
-      } else {
-        setCustomers(data.customers);
-        setTotalCount(data.total);
-        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-      }
+      setCustomers(response.data.customers);
+      setTotalCount(response.data.totalCount);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
         isLoading: false,
@@ -74,12 +68,17 @@ const Customers = () => {
   const onEndReached = async () => {
     if (customers.length < totalCount) {
       setIsFetching(true);
-      const response = await getCustomersRequest(user.token, '_id', 'asc', LIMIT, customers.length);
+      const response = await getCustomersRequest(
+        user.accessToken,
+        '_id',
+        'asc',
+        LIMIT,
+        customers.length,
+      );
 
-      if (response.success && response.data?.data) {
-        const { data } = response.data;
-        setCustomers((prev) => [...prev, ...data.customers]);
-        setTotalCount(data.total);
+      if (response.success && response.data) {
+        setCustomers((prev) => [...prev, ...response.data?.customers!]);
+        setTotalCount(response.data.totalCount);
       }
       setIsFetching(false);
     }

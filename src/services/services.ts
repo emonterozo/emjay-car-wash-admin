@@ -9,10 +9,10 @@ import {
   ServicesResponse,
 } from '../types/services/types';
 
-const requestHeader = (token: string) => {
+const requestHeader = (accessToken: string) => {
   return {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${accessToken}`,
   };
 };
 
@@ -24,7 +24,7 @@ export const loginRequest = (payload: LoginPayload): ApiResponse<LoginResponse> 
 };
 
 export const getServicesRequest = (
-  token: string,
+  accessToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
@@ -32,7 +32,7 @@ export const getServicesRequest = (
 ): ApiResponse<ServicesResponse> => {
   return apiRequest<null, ServicesResponse>(`${Config.API_BASE_URL}/services`, {
     method: 'get',
-    headers: requestHeader(token),
+    headers: requestHeader(accessToken),
     params: {
       order_by: JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' }),
       limit,
@@ -42,7 +42,7 @@ export const getServicesRequest = (
 };
 
 export const getCustomersRequest = (
-  token: string,
+  accessToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
@@ -50,7 +50,7 @@ export const getCustomersRequest = (
 ): ApiResponse<CustomersResponse> => {
   return apiRequest<null, CustomersResponse>(`${Config.API_BASE_URL}/admin/customers`, {
     method: 'get',
-    headers: requestHeader(token),
+    headers: requestHeader(accessToken),
     params: {
       order_by: JSON.stringify({ field: field ?? 'registered_on', direction: direction ?? 'desc' }),
       limit,
@@ -60,14 +60,14 @@ export const getCustomersRequest = (
 };
 
 export const getCustomerInformationRequest = (
-  token: string,
+  accessToken: string,
   id: string,
 ): ApiResponse<CustomerInformationResponse> => {
   return apiRequest<null, CustomerInformationResponse>(
     `${Config.API_BASE_URL}/admin/customers/${id}`,
     {
       method: 'get',
-      headers: requestHeader(token),
+      headers: requestHeader(accessToken),
     },
   );
 };
