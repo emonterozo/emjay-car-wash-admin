@@ -4,6 +4,8 @@ import { apiRequest, ApiResponse } from './apiRequest';
 import {
   CustomerInformationResponse,
   CustomersResponse,
+  EmployeeInformationResponse,
+  EmployeesResponse,
   LoginPayload,
   LoginResponse,
   ServicesResponse,
@@ -65,6 +67,37 @@ export const getCustomerInformationRequest = (
 ): ApiResponse<CustomerInformationResponse> => {
   return apiRequest<null, CustomerInformationResponse>(
     `${Config.API_BASE_URL}/admin/customers/${id}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+  );
+};
+
+export const getEmployeesRequest = (
+  accessToken: string,
+  field?: string,
+  direction?: 'asc' | 'desc',
+  limit?: number,
+  offset?: number,
+): ApiResponse<EmployeesResponse> => {
+  return apiRequest<null, EmployeesResponse>(`${Config.API_BASE_URL}/admin/employees`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: {
+      order_by: JSON.stringify({ field: field ?? 'last_name', direction: direction ?? 'desc' }),
+      limit,
+      offset,
+    },
+  });
+};
+
+export const getEmployeeInformationRequest = (
+  accessToken: string,
+  id: string,
+): ApiResponse<EmployeeInformationResponse> => {
+  return apiRequest<null, EmployeeInformationResponse>(
+    `${Config.API_BASE_URL}/admin/employees/${id}`,
     {
       method: 'get',
       headers: requestHeader(accessToken),

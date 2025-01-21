@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
@@ -11,106 +11,138 @@ import {
   Image,
 } from 'react-native';
 import { format } from 'date-fns';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { AppHeader, EmptyState, ServiceTransactionItem } from '@app/components';
+import { EmployeeDetailsRouteProp, NavigationProp } from 'src/types/navigation/types';
+import {
+  AppHeader,
+  EmptyState,
+  ErrorModal,
+  LoadingAnimation,
+  ServiceTransactionItem,
+} from '@app/components';
 import { color, font } from '@app/styles';
 import { EditIcon, WaterDropIcon } from '@app/icons';
-import { RecentTransaction } from 'src/types/services/types';
+import { getEmployeeInformationRequest } from '@app/services';
+import GlobalContext from '@app/context';
+import {
+  EmployeeInformation,
+  RecentTransaction,
+  ScreenStatusProps,
+} from 'src/types/services/types';
 import { formattedNumber } from '@app/helpers';
-import { IMAGES } from '@app/constant';
-import { NavigationProp } from 'src/types/navigation/types';
-import { useNavigation } from '@react-navigation/native';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 
-type EmployeeInformationProps = {
-  first_name: string;
-  last_name: string;
-  gender: string;
-  date_of_birth: Date;
-  contact_number: string;
-  title: string;
-  status: string;
-  date_started: Date;
-};
-
-const employeeInformation: EmployeeInformationProps = {
-  first_name: 'Dona',
-  last_name: 'Mo',
-  gender: 'FEMALE',
-  date_of_birth: new Date('2000-12-23T08:00:00.000Z'),
-  contact_number: '09876543210',
-  title: 'Car Wash Attendant',
-  status: 'Terminated',
-  date_started: new Date('2024-12-23T08:00:00.000Z'),
-};
-
-const employeeDetails = employeeInformation
-  ? [
-      {
-        label: 'Full Name',
-        value: `${employeeInformation.first_name} ${employeeInformation.last_name}`,
-      },
-      {
-        label: 'Date of Birth',
-        value: format(new Date(employeeInformation.date_of_birth), 'MMMM dd, yyyy'),
-      },
-      { label: 'Contact number', value: `${employeeInformation.contact_number}` },
-      {
-        label: 'Employee Title',
-        value: `${employeeInformation.title}`,
-      },
-      {
-        label: 'Employee Status',
-        value: `${employeeInformation.status}`,
-      },
-      {
-        label: 'Date Started',
-        value: format(new Date(employeeInformation.date_started), 'MMMM dd, yyyy'),
-      },
-    ]
-  : [
-      {
-        label: 'Full Name',
-        value: 'No available record',
-      },
-      {
-        label: 'Date of Birth',
-        value: 'No available record',
-      },
-      {
-        label: 'Contact number',
-        value: 'No available record',
-      },
-      {
-        label: 'Employee Title',
-        value: 'No available record',
-      },
-      {
-        label: 'Date Started',
-        value: 'No available record',
-      },
-    ];
+const isField = 'Employee Status';
+const isFieldValue = 'ACTIVE';
 
 const EmployeeDetails = () => {
+  const { user } = useContext(GlobalContext);
   const navigation = useNavigation<NavigationProp>();
-  const [transactions] = useState<RecentTransaction[]>([]);
-  const isField = 'Employee Status';
-  const isFieldValue = 'Active';
+  const { id } = useRoute<EmployeeDetailsRouteProp>().params;
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
+  const [employeeInformation, setEmployeeInformation] = useState<EmployeeInformation | undefined>(
+    undefined,
+  );
+  const [transactions, setTransactions] = useState<RecentTransaction[]>([]);
+
+  const employeeDetails = employeeInformation
+    ? [
+        {
+          label: 'Full Name',
+          value: `${employeeInformation.first_name} ${employeeInformation.last_name}`,
+        },
+        {
+          label: 'Date of Birth',
+          value: format(new Date(employeeInformation.birth_date), 'MMMM dd, yyyy'),
+        },
+        { label: 'Contact number', value: `${employeeInformation.contact_number}` },
+        {
+          label: 'Employee Title',
+          value: `${employeeInformation.employee_title}`,
+        },
+        {
+          label: 'Employee Status',
+          value: `${employeeInformation.employee_status}`,
+        },
+        {
+          label: 'Date Started',
+          value: format(new Date(employeeInformation.date_started), 'MMMM dd, yyyy'),
+        },
+      ]
+    : [
+        {
+          label: 'Full Name',
+          value: 'No available record',
+        },
+        {
+          label: 'Date of Birth',
+          value: 'No available record',
+        },
+        {
+          label: 'Contact number',
+          value: 'No available record',
+        },
+        {
+          label: 'Employee Title',
+          value: 'No available record',
+        },
+        {
+          label: 'Date Started',
+          value: 'No available record',
+        },
+      ];
 
   const handleUpdateEmployee = () => {
+    if (!employeeInformation) {
+      return;
+    }
     navigation.navigate('EmployeeForm', {
       type: 'Update',
       user: {
-        id: '123',
+        id: id,
         first_name: employeeInformation.first_name,
         last_name: employeeInformation.last_name,
-        birth_date: employeeInformation.date_of_birth.toISOString(),
+        birth_date: employeeInformation.birth_date,
         gender: employeeInformation.gender,
         contact_number: employeeInformation.contact_number,
-        employee_title: employeeInformation.title,
-        employee_status: employeeInformation.status,
-        date_started: employeeInformation.date_started.toISOString(),
+        employee_title: employeeInformation.employee_title,
+        employee_status: employeeInformation.employee_status,
+        date_started: employeeInformation.date_started,
       },
     });
+  };
+
+  useEffect(() => {
+    fetchEmployeeDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchEmployeeDetails = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getEmployeeInformationRequest(user.accessToken, id);
+
+    if (response.success && response.data) {
+      const { employee } = response.data;
+      setEmployeeInformation(employee);
+      setTransactions(employee.recent_transactions);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  const onCancel = () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    navigation.goBack();
   };
 
   const getTextStyle = (label: string, value: string) => {
@@ -124,6 +156,13 @@ const EmployeeDetails = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Employee Details" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchEmployeeDetails}
+      />
       <View style={styles.heading}>
         <Text style={styles.employeeDetails}>Employee Details</Text>
         <TouchableOpacity onPress={handleUpdateEmployee}>
