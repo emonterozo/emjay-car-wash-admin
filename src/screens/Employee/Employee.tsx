@@ -1,77 +1,38 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, StyleSheet, StatusBar, Image } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, Image, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { NavigationProp } from '../../types/navigation/types';
-import { AppHeader, EmptyState, FloatingActionButton } from '@app/components';
+import { Employees, ScreenStatusProps } from 'src/types/services/types';
+import {
+  ActivityIndicator,
+  AppHeader,
+  EmptyState,
+  ErrorModal,
+  FloatingActionButton,
+  LoadingAnimation,
+} from '@app/components';
 import { color, font } from '@app/styles';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import { IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { getEmployeesRequest } from '@app/services';
+import GlobalContext from '@app/context';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
-type EmployeeInfoProps = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  gender: string;
-  title: string;
-  status: string;
-};
-const EMPLOYEE_DATA: EmployeeInfoProps[] = [
-  {
-    id: '1',
-    first_name: 'John',
-    last_name: 'Doe',
-    gender: 'MALE',
-    title: 'Car Wash Attendant',
-    status: 'Active',
-  },
-  {
-    id: '2',
-    first_name: 'Jenny',
-    last_name: 'Ma',
-    gender: 'FEMALE',
-    title: 'Car Wash Attendant',
-    status: 'Terminated',
-  },
-  {
-    id: '3',
-    first_name: 'Jessa',
-    last_name: 'No',
-    gender: 'FEMALE',
-    title: 'Car Wash Attendant',
-    status: 'Active',
-  },
-  {
-    id: '4',
-    first_name: 'Johnny',
-    last_name: 'Bravo',
-    gender: 'MALE',
-    title: 'Car Wash Attendant',
-    status: 'Terminated',
-  },
-  {
-    id: '5',
-    first_name: 'Johnloyd',
-    last_name: 'Cruz',
-    gender: 'MALE',
-    title: 'Car Wash Attendant',
-    status: 'Active',
-  },
-  {
-    id: '6',
-    first_name: 'Joan',
-    last_name: 'Ho',
-    gender: 'FEMALE',
-    title: 'Car Wash Attendant',
-    status: 'Terminated',
-  },
-];
+const LIMIT = 50;
 
 const Employee = () => {
   const navigation = useNavigation<NavigationProp>();
+  const { user } = useContext(GlobalContext);
+  const [totalCount, setTotalCount] = useState(0);
+  const [employees, setEmployees] = useState<Employees[]>([]);
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
+  const [isFetching, setIsFetching] = useState(false);
 
   const handleCardPress = (id: string) => {
     navigation.navigate('EmployeeDetails', { id });
@@ -81,17 +42,63 @@ const Employee = () => {
     navigation.navigate('EmployeeForm', { type: 'Add' });
   };
 
+  const fetchEmployees = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getEmployeesRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
+
+    if (response.success && response.data) {
+      setEmployees(response.data.employees);
+      setTotalCount(response.data.totalCount);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onCancel = () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    navigation.goBack();
+  };
+
+  const onEndReached = async () => {
+    if (employees.length < totalCount) {
+      setIsFetching(true);
+      const response = await getEmployeesRequest(
+        user.accessToken,
+        '_id',
+        'asc',
+        LIMIT,
+        employees.length,
+      );
+
+      if (response.success && response.data) {
+        setEmployees((prev) => [...prev, ...response.data?.employees!]);
+        setTotalCount(response.data.totalCount);
+      }
+      setIsFetching(false);
+    }
+  };
+
   const getTextStatusStyle = (status: string) =>
     status === 'Terminated' ? styles.textStatusRed : styles.textStatusGreen;
 
   const renderEmployeeList = ({
-    id,
     first_name,
     last_name,
-    title,
-    status,
     gender,
-  }: EmployeeInfoProps) => (
+    employee_title,
+    employee_status,
+    id,
+  }: Employees) => (
     <TouchableOpacity style={styles.card} onPress={() => handleCardPress(id)}>
       <Image
         source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
@@ -103,9 +110,9 @@ const Employee = () => {
           {first_name} {last_name}
         </Text>
         <View style={styles.textInfoContainer}>
-          <Text style={styles.textTitle}>{title}</Text>
+          <Text style={styles.textTitle}>{employee_title}</Text>
           <Text style={[styles.textStatus, styles.textStatusGray]}>
-            Status: <Text style={getTextStatusStyle(status)}>{status}</Text>
+            Status: <Text style={getTextStatusStyle(employee_status)}>{employee_status}</Text>
           </Text>
         </View>
       </View>
@@ -116,18 +123,27 @@ const Employee = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Employees" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchEmployees}
+      />
       <View style={styles.heading}>
         <Text style={styles.employeeList}>Employee List</Text>
       </View>
 
       <FlatList
-        data={EMPLOYEE_DATA}
+        data={employees}
         renderItem={({ item }) => renderEmployeeList(item)}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
+        onEndReached={onEndReached}
+        ListFooterComponent={<ActivityIndicator isLoading={isFetching} />}
       />
       <FloatingActionButton onPress={handleAddEmployee} />
     </SafeAreaView>

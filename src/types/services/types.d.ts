@@ -63,6 +63,21 @@ export type CustomersResponse = {
   errors: ErrorProps[];
 };
 
+export type Employees = {
+  first_name: string;
+  last_name: string;
+  gender: 'MALE' | 'FEMALE';
+  employee_title: string;
+  employee_status: 'ACTIVE' | 'TERMINATED';
+  id: string;
+};
+
+export type EmployeesResponse = {
+  employees: Employee[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
 export type ServiceCount = {
   size: string;
   count: number;
@@ -94,5 +109,23 @@ export type CustomerInformation = {
 
 export type CustomerInformationResponse = {
   customer: CustomerInformation;
+  errors: ErrorProps[];
+};
+
+export type EmployeeInformation = {
+  first_name: string;
+  last_name: string;
+  gender: 'MALE' | 'FEMALE';
+  birth_date: string;
+  contact_number: string;
+  employee_title: string;
+  employee_status: 'ACTIVE' | 'TERMINATED';
+  date_started: string;
+  id: string;
+  recent_transactions: RecentTransaction[];
+};
+
+export type EmployeeInformationResponse = {
+  employee: EmployeeInformation;
   errors: ErrorProps[];
 };
