@@ -22,65 +22,6 @@ const renderSeparator = () => <View style={styles.separator} />;
 
 const LIMIT = 50;
 
-// type EmployeeInfoProps = {
-//   id: string;
-//   first_name: string;
-//   last_name: string;
-//   gender: string;
-//   title: string;
-//   status: string;
-// };
-// const EMPLOYEE_DATA: EmployeeInfoProps[] = [
-//   {
-//     id: '1',
-//     first_name: 'John',
-//     last_name: 'Doe',
-//     gender: 'MALE',
-//     title: 'Car Wash Attendant',
-//     status: 'Active',
-//   },
-//   {
-//     id: '2',
-//     first_name: 'Jenny',
-//     last_name: 'Ma',
-//     gender: 'FEMALE',
-//     title: 'Car Wash Attendant',
-//     status: 'Terminated',
-//   },
-//   {
-//     id: '3',
-//     first_name: 'Jessa',
-//     last_name: 'No',
-//     gender: 'FEMALE',
-//     title: 'Car Wash Attendant',
-//     status: 'Active',
-//   },
-//   {
-//     id: '4',
-//     first_name: 'Johnny',
-//     last_name: 'Bravo',
-//     gender: 'MALE',
-//     title: 'Car Wash Attendant',
-//     status: 'Terminated',
-//   },
-//   {
-//     id: '5',
-//     first_name: 'Johnloyd',
-//     last_name: 'Cruz',
-//     gender: 'MALE',
-//     title: 'Car Wash Attendant',
-//     status: 'Active',
-//   },
-//   {
-//     id: '6',
-//     first_name: 'Joan',
-//     last_name: 'Ho',
-//     gender: 'FEMALE',
-//     title: 'Car Wash Attendant',
-//     status: 'Terminated',
-//   },
-// ];
-
 const Employee = () => {
   const navigation = useNavigation<NavigationProp>();
   const { user } = useContext(GlobalContext);
