@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, StatusBar, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Yup from 'yup';
@@ -14,13 +14,18 @@ import {
   Dropdown,
   TextInput,
   Button,
-  YesNoModal,
+  ConfirmationModal,
   Toast,
+  LoadingAnimation,
+  ErrorModal,
 } from '@app/components';
-import { IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { getCurrentDateAtMidnightUTC } from '@app/helpers';
 import { useNativeBackHandler } from '@app/hooks';
 import { EmployeeFormRouteProp, NavigationProp } from '../../types/navigation/types';
+import { ScreenStatusProps } from 'src/types/services/types';
+import { addEmployeeRequest, updateEmployeeRequest } from '@app/services';
+import GlobalContext from '@app/context';
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required('First name is required'),
@@ -78,18 +83,21 @@ const STATUS_OPTIONS = [
   {
     id: '1',
     icon: <Image source={IMAGES.ACTIVE_STATUS} resizeMode="contain" />,
-    label: 'Active',
+    label: 'ACTIVE',
   },
   {
     id: '2',
     icon: <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" />,
-    label: 'Terminated',
+    label: 'TERMINATED',
   },
 ];
 
+let formStatus: 'success' | 'error' = 'success';
+
 const EmployeeForm = () => {
+  const { user } = useContext(GlobalContext);
   const navigation = useNavigation<NavigationProp>();
-  const { type, user } = useRoute<EmployeeFormRouteProp>().params;
+  const { type, employee } = useRoute<EmployeeFormRouteProp>().params;
   const initialFormValues: FormValues =
     type === 'Add'
       ? {
@@ -103,14 +111,16 @@ const EmployeeForm = () => {
           dateStarted: undefined,
         }
       : {
-          firstName: user.first_name,
-          lastName: user.last_name,
-          birthDate: user.birth_date ? new Date(user.birth_date) : undefined,
-          gender: GENDER_OPTIONS.find((option) => option.label === user.gender),
-          contactNumber: user.contact_number,
-          employeeTitle: user.employee_title,
-          employeeStatus: STATUS_OPTIONS.find((option) => option.label === user.employee_status),
-          dateStarted: user.date_started ? new Date(user.date_started) : undefined,
+          firstName: employee.first_name,
+          lastName: employee.last_name,
+          birthDate: employee.birth_date ? new Date(employee.birth_date) : undefined,
+          gender: GENDER_OPTIONS.find((option) => option.label === employee.gender),
+          contactNumber: employee.contact_number,
+          employeeTitle: employee.employee_title,
+          employeeStatus: STATUS_OPTIONS.find(
+            (option) => option.label === employee.employee_status,
+          ),
+          dateStarted: employee.date_started ? new Date(employee.date_started) : undefined,
         };
 
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
@@ -119,25 +129,38 @@ const EmployeeForm = () => {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [message, setMessage] = useState<string>('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
 
   const onToastClose = () => setIsToastVisible(false);
 
   const isNotModified = (obj1: any, obj2: any): boolean => {
-    if (Object.is(obj1, obj2)) {return true;}
-    if (typeof obj1 !== typeof obj2) {return false;}
-    if (typeof obj1 !== 'object' || obj1 === null || obj2 === null) {return false;}
+    if (Object.is(obj1, obj2)) {
+      return true;
+    }
+    if (typeof obj1 !== typeof obj2) {
+      return false;
+    }
+    if (typeof obj1 !== 'object' || obj1 === null || obj2 === null) {
+      return false;
+    }
 
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
 
-    if (keys1.length !== keys2.length) {return false;}
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
 
     return keys1.every((key) => isNotModified(obj1[key], obj2[key]));
   };
 
   useNativeBackHandler(() => {
     if (!isNotModified(formValues, initialFormValues)) {
-      toggleYesNoModal();
+      toggleConfirmModal();
       return true;
     } else {
       return false;
@@ -145,17 +168,16 @@ const EmployeeForm = () => {
   });
 
   const handleSubmit = () => {
-    let status: 'success' | 'error' = 'success';
     validationSchema
       .validate(formValues, { abortEarly: false })
-      .then((_validData) => {
+      .then(async (_validData) => {
         setErrors({});
-        //console.log('Form is valid:', validData);
-        status = 'success';
-        const toastData: ToastMessage = getToastMessage(type, status);
-        setMessage(toastData.message);
-        setToastType(toastData.toastType);
-        setIsToastVisible(true);
+
+        if (type === 'Add') {
+          await handleAddEmployee();
+        } else {
+          await handleUpdateEmployee();
+        }
       })
       .catch((err) => {
         const errorMessages: Errors = err.inner.reduce((acc: Errors, curr: ValidationError) => {
@@ -163,24 +185,25 @@ const EmployeeForm = () => {
           return acc;
         }, {});
         setErrors(errorMessages);
-        status = 'error';
-        const toastData: ToastMessage = getToastMessage(type, status);
+        formStatus = 'error';
+        const toastData: ToastMessage = getToastMessage(type, formStatus);
         setMessage(toastData.message);
         setToastType(toastData.toastType);
         setIsToastVisible(true);
       });
   };
 
-  const toggleYesNoModal = () => setIsModalVisible(!isModalVisible);
+  const toggleConfirmModal = () => setIsModalVisible(!isModalVisible);
 
   const handleYes = () => {
-    toggleYesNoModal();
+    toggleConfirmModal();
     navigation.goBack();
   };
 
   const handleCancel = () => {
-    if (!isNotModified(formValues, initialFormValues)) {toggleYesNoModal();}
-    else {
+    if (!isNotModified(formValues, initialFormValues)) {
+      toggleConfirmModal();
+    } else {
       navigation.goBack();
     }
   };
@@ -241,15 +264,137 @@ const EmployeeForm = () => {
     return { message: 'Please complete the required fields before adding.', toastType: 'error' };
   };
 
+  const handleAddEmployee = async () => {
+    const {
+      firstName,
+      lastName,
+      birthDate,
+      gender,
+      contactNumber,
+      employeeTitle,
+      employeeStatus,
+      dateStarted,
+    } = formValues;
+    const genderValue = gender?.label;
+    const employeeStatusValue = employeeStatus?.label;
+    const formattedBirthDate = birthDate ? birthDate.toISOString().split('T')[0] : undefined;
+    const formattedDateStarted = dateStarted ? dateStarted.toISOString().split('T')[0] : undefined;
+
+    if (!genderValue || (genderValue !== 'MALE' && genderValue !== 'FEMALE')) {
+      return;
+    }
+
+    if (!contactNumber) {
+      return;
+    }
+
+    if (
+      !employeeStatusValue ||
+      (employeeStatusValue !== 'ACTIVE' && employeeStatusValue !== 'TERMINATED')
+    ) {
+      return;
+    }
+
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+
+    const response = await addEmployeeRequest(
+      user.accessToken,
+      firstName,
+      lastName,
+      formattedBirthDate,
+      genderValue,
+      contactNumber,
+      employeeTitle,
+      employeeStatusValue,
+      formattedDateStarted,
+    );
+
+    if (response.success && response.data) {
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+      const toastData: ToastMessage = getToastMessage(type, 'success');
+      setMessage(toastData.message);
+      setToastType(toastData.toastType);
+      setIsToastVisible(true);
+      setTimeout(() => {
+        navigation.goBack();
+      }, 3000);
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  const handleUpdateEmployee = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const employeeIDValue = employee?.id;
+    const contactNumberValue = formValues?.contactNumber;
+    const employeeStatusValue = formValues?.employeeStatus?.label;
+
+    if (
+      !employeeStatusValue ||
+      (employeeStatusValue !== 'ACTIVE' && employeeStatusValue !== 'TERMINATED')
+    ) {
+      return;
+    }
+
+    if (!employeeIDValue) {
+      return;
+    }
+
+    if (!contactNumberValue) {
+      return;
+    }
+
+    const response = await updateEmployeeRequest(
+      employeeIDValue,
+      user.accessToken,
+      contactNumberValue,
+      formValues.employeeTitle,
+      employeeStatusValue,
+    );
+
+    if (response.success && response.data) {
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+      const toastData: ToastMessage = getToastMessage(type, 'success');
+      setMessage(toastData.message);
+      setToastType(toastData.toastType);
+      setIsToastVisible(true);
+      setTimeout(() => {
+        navigation.goBack();
+      }, 3000);
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  const onCancel = () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title={type === 'Update' ? 'Update Employee' : 'Add Employee'} />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
       <View style={styles.viewContainer}>
-        <YesNoModal
+        <ErrorModal
+          type={screenStatus.type}
+          isVisible={screenStatus.hasError}
+          onCancel={onCancel}
+          onRetry={type === 'Add' ? handleAddEmployee : handleUpdateEmployee}
+        />
+        <ConfirmationModal
           type={type}
           isVisible={isModalVisible}
-          onNo={toggleYesNoModal}
+          onNo={toggleConfirmModal}
           onYes={handleYes}
         />
       </View>

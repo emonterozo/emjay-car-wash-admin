@@ -15,4 +15,4 @@ export { default as Button } from './Button/Button';
 export { default as ErrorState } from './ErrorState/ErrorState';
 export { default as CalendarPicker } from './CalendarPicker/CalendarPicker';
 export { default as CalendarWheelPicker } from './CalendarWheelPicker/CalendarWheelPicker';
-export { default as YesNoModal } from './YesNoModal/YesNoModal';
+export { default as ConfirmationModal } from './ConfirmationModal/ConfirmationModal';

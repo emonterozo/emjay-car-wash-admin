@@ -2,6 +2,8 @@ import Config from 'react-native-config';
 
 import { apiRequest, ApiResponse } from './apiRequest';
 import {
+  AddEmployeePayload,
+  AddEmployeeResponse,
   CustomerInformationResponse,
   CustomersResponse,
   EmployeeInformationResponse,
@@ -9,6 +11,8 @@ import {
   LoginPayload,
   LoginResponse,
   ServicesResponse,
+  UpdateEmployeePayload,
+  UpdateEmployeeResponse,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -101,6 +105,57 @@ export const getEmployeeInformationRequest = (
     {
       method: 'get',
       headers: requestHeader(accessToken),
+    },
+  );
+};
+
+export const addEmployeeRequest = (
+  accessToken: string,
+  first_name: string,
+  last_name: string,
+  birth_date: string | undefined,
+  gender: string,
+  contact_number: string,
+  employee_title: string,
+  employee_status: 'ACTIVE' | 'TERMINATED',
+  date_started: string | undefined,
+): ApiResponse<AddEmployeeResponse> => {
+  return apiRequest<AddEmployeePayload, AddEmployeeResponse>(
+    `${Config.API_BASE_URL}/admin/employees/add`,
+    {
+      method: 'post',
+      headers: requestHeader(accessToken),
+      data: {
+        first_name,
+        last_name,
+        birth_date,
+        gender,
+        contact_number,
+        employee_title,
+        employee_status,
+        date_started,
+      },
+    },
+  );
+};
+
+export const updateEmployeeRequest = (
+  id: string,
+  accessToken: string,
+  contact_number: string,
+  employee_title: string,
+  employee_status: 'ACTIVE' | 'TERMINATED',
+): ApiResponse<UpdateEmployeeResponse> => {
+  return apiRequest<UpdateEmployeePayload, UpdateEmployeeResponse>(
+    `${Config.API_BASE_URL}/admin/employees/update/${id}`,
+    {
+      method: 'put',
+      headers: requestHeader(accessToken),
+      data: {
+        contact_number,
+        employee_title,
+        employee_status,
+      },
     },
   );
 };

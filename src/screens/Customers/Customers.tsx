@@ -14,13 +14,11 @@ import {
   ActivityIndicator,
 } from '@app/components';
 import { color, font } from '@app/styles';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 import { getCustomersRequest } from '@app/services';
 import GlobalContext from '@app/context';
 
 const renderSeparator = () => <View style={styles.separator} />;
-
-const LIMIT = 50;
 
 const Customers = () => {
   const navigation = useNavigation<NavigationProp>();

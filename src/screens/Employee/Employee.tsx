@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, StyleSheet, StatusBar, Image, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { NavigationProp } from '../../types/navigation/types';
 import { Employees, ScreenStatusProps } from 'src/types/services/types';
@@ -14,13 +14,11 @@ import {
   LoadingAnimation,
 } from '@app/components';
 import { color, font } from '@app/styles';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 import { getEmployeesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 
 const renderSeparator = () => <View style={styles.separator} />;
-
-const LIMIT = 50;
 
 const Employee = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -33,6 +31,7 @@ const Employee = () => {
     type: 'error',
   });
   const [isFetching, setIsFetching] = useState(false);
+  const isFocused = useIsFocused();
 
   const handleCardPress = (id: string) => {
     navigation.navigate('EmployeeDetails', { id });
@@ -60,9 +59,11 @@ const Employee = () => {
   };
 
   useEffect(() => {
-    fetchEmployees();
+    if (isFocused) {
+      fetchEmployees();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isFocused]);
 
   const onCancel = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -89,7 +90,7 @@ const Employee = () => {
   };
 
   const getTextStatusStyle = (status: string) =>
-    status === 'Terminated' ? styles.textStatusRed : styles.textStatusGreen;
+    status === 'TERMINATED' ? styles.textStatusRed : styles.textStatusGreen;
 
   const renderEmployeeList = ({
     first_name,
@@ -105,7 +106,7 @@ const Employee = () => {
         style={styles.image}
         resizeMode="contain"
       />
-      <View>
+      <View style={styles.textContainer}>
         <Text style={styles.textName}>
           {first_name} {last_name}
         </Text>
@@ -186,14 +187,19 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 8,
     paddingVertical: 20,
     paddingHorizontal: 10,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    maxWidth: '100%',
   },
   image: {
     height: 90,
     width: 90,
+  },
+  textContainer: {
+    flex: 1,
   },
   textName: {
     ...font.regular,
@@ -201,6 +207,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     lineHeight: 24,
     marginBottom: 8,
+    flexWrap: 'wrap',
   },
   textTitle: {
     ...font.regular,

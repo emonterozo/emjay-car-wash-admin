@@ -11,7 +11,7 @@ import {
   Image,
 } from 'react-native';
 import { format } from 'date-fns';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { EmployeeDetailsRouteProp, NavigationProp } from 'src/types/navigation/types';
 import {
@@ -49,6 +49,7 @@ const EmployeeDetails = () => {
     undefined,
   );
   const [transactions, setTransactions] = useState<RecentTransaction[]>([]);
+  const isFocused = useIsFocused();
 
   const employeeDetails = employeeInformation
     ? [
@@ -103,7 +104,7 @@ const EmployeeDetails = () => {
     }
     navigation.navigate('EmployeeForm', {
       type: 'Update',
-      user: {
+      employee: {
         id: id,
         first_name: employeeInformation.first_name,
         last_name: employeeInformation.last_name,
@@ -118,9 +119,11 @@ const EmployeeDetails = () => {
   };
 
   useEffect(() => {
-    fetchEmployeeDetails();
+    if (isFocused) {
+      fetchEmployeeDetails();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isFocused]);
 
   const fetchEmployeeDetails = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });

@@ -129,3 +129,38 @@ export type EmployeeInformationResponse = {
   employee: EmployeeInformation;
   errors: ErrorProps[];
 };
+
+export type AddEmployeePayload = {
+  first_name: string;
+  last_name: string;
+  birth_date: string | undefined;
+  gender: string;
+  contact_number: string;
+  employee_title: string;
+  employee_status: 'ACTIVE' | 'TERMINATED';
+  date_started: string | undefined;
+};
+
+export type AddEmployeeResponse = {
+  data: {
+    employee: {
+      id: string;
+    };
+  };
+  errors: ErrorProps[];
+};
+
+export type UpdateEmployeePayload = {
+  contact_number: string;
+  employee_title: string;
+  employee_status: 'ACTIVE' | 'TERMINATED';
+};
+
+export type UpdateEmployeeResponse = {
+  data: {
+    employee: {
+      id: string;
+    };
+  };
+  errors: ErrorProps[];
+};
