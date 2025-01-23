@@ -25,6 +25,7 @@ export type AuthStackParamList = {
   Transaction: undefined;
   AddOngoing: {
     customerId: string | null;
+    freeWash: { type: string; size: string }[];
     transactionId: string | null;
     selectedServices: string[];
   };

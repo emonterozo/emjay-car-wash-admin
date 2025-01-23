@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import type { Option } from '../../components/Dropdown/Dropdown';
 import { color, font } from '@app/styles';
-import { AppHeader, Dropdown, TextInput, Button, SizeDisplay } from '@app/components';
-import { IMAGES } from '@app/constant';
+import {
+  AppHeader,
+  Dropdown,
+  TextInput,
+  Button,
+  SizeDisplay,
+  LoadingAnimation,
+  ErrorModal,
+} from '@app/components';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { CarIcon, MotorcycleIcon } from '@app/icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { AddOngoingRouteProp } from '../../types/navigation/types';
+import { getServicesRequest } from '@app/services';
+import GlobalContext from '@app/context';
+import { ScreenStatusProps, Service } from '../../types/services/types';
 
 type FormValues = {
   firstName: string;
@@ -63,13 +76,12 @@ const size = {
   motorcycle: ['SM', 'MD', 'LG'],
 };
 
-const FREE_WASH = [
-  { type: 'car', size: 'sm' },
-  { type: 'car', size: 'md' },
-  { type: 'motorcycle', size: 'md' },
-];
-
 const AddOngoing = () => {
+  const { customerId, freeWash, transactionId, selectedServices } =
+    useRoute<AddOngoingRouteProp>().params;
+  const { user } = useContext(GlobalContext);
+  const navigation = useNavigation();
+
   const initialFormValues: FormValues = {
     firstName: '',
     lastName: '',
@@ -87,6 +99,32 @@ const AddOngoing = () => {
   });
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [errors, setErrors] = useState<Errors>({});
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
+  const [services, setServices] = useState<Service[]>([]);
+
+  const fetchServices = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getServicesRequest(user.accessToken);
+    if (response.success && response.data) {
+      setServices(response.data.services);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchServices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerId]);
 
   const handleInputChange = (key: string, value: string) => {
     setFormValues({ ...formValues, [key]: value });
@@ -119,36 +157,51 @@ const AddOngoing = () => {
     setSizeCount(newSizeCount);
   };
 
+  const onCancel = () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Add Ongoing" />
-      <View style={styles.heading}>
-        <Text style={styles.text}>Free Carwash Details</Text>
-      </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.washList}
-        contentContainerStyle={styles.washContainer}
-      >
-        {FREE_WASH.map((item, index) => (
-          <View key={index} style={styles.washCard}>
-            <View style={styles.tag}>
-              <Text style={styles.size}>{item.size.toUpperCase()}</Text>
-            </View>
-            {item.type === 'car' ? (
-              <CarIcon width={60} height={60} fill={color.primary} />
-            ) : (
-              <MotorcycleIcon width={60} height={60} fill={color.primary} />
-            )}
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchServices}
+      />
+      {freeWash.length > 0 && (
+        <>
+          <View style={styles.heading}>
+            <Text style={styles.text}>Free Carwash Details</Text>
           </View>
-        ))}
-      </ScrollView>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.washList}
+            contentContainerStyle={styles.washContainer}
+          >
+            {freeWash.map((item, index) => (
+              <View key={index} style={styles.washCard}>
+                <View style={[styles.tag, item.type === 'motorcycle' && styles.motorcycle]}>
+                  <Text style={styles.size}>{item.size.toUpperCase()}</Text>
+                </View>
+                {item.type === 'car' ? (
+                  <CarIcon width={60} height={60} fill={color.primary} />
+                ) : (
+                  <MotorcycleIcon width={60} height={60} fill={color.primary} />
+                )}
+              </View>
+            ))}
+          </ScrollView>
+        </>
+      )}
       <View style={styles.heading}>
         <Text style={styles.text}>Customer Vehicle Details</Text>
       </View>
-
       <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
         <View>
           <Text style={styles.label}>Select Vehicle Type</Text>
@@ -212,6 +265,16 @@ const AddOngoing = () => {
           onChangeText={(value) => handleInputChange('contactNumber', value)}
           keyboardType="numeric"
           onFocus={() => removeError('contactNumber')}
+        />
+        <Dropdown
+          label="Service Charge"
+          placeholder="Select Services"
+          selected={formValues.gender}
+          options={GENDER_OPTIONS}
+          onSelected={(selectedOption) => handleDropdownChange('gender', selectedOption)}
+          optionMinWidth={196}
+          error={errors.gender}
+          onToggleOpen={() => removeError('gender')}
         />
         <Dropdown
           label="Services"
@@ -323,9 +386,12 @@ const styles = StyleSheet.create({
     left: 10,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    backgroundColor: color.primary, //FB8500
+    backgroundColor: color.primary,
     borderRadius: 8,
     minWidth: 50,
+  },
+  motorcycle: {
+    backgroundColor: '#FB8500',
   },
 });
 export default AddOngoing;

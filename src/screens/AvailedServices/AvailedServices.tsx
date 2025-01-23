@@ -109,6 +109,7 @@ const AvailedServices = () => {
         onPress={() =>
           navigation.navigate('AddOngoing', {
             customerId: null,
+            freeWash: [],
             transactionId: null,
             selectedServices: [],
           })
