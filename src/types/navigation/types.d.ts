@@ -23,7 +23,11 @@ export type AuthStackParamList = {
   Services: undefined;
   Settings: undefined;
   Transaction: undefined;
-  AddOngoing: undefined;
+  AddOngoing: {
+    customerId: string | null;
+    transactionId: string | null;
+    selectedServices: string[];
+  };
   PreTransaction: { id: string };
   EmployeeForm:
     | { type: 'Add'; employee?: never }
@@ -31,14 +35,14 @@ export type AuthStackParamList = {
         type: 'Update';
         employee: {
           id: string;
-          first_name: string;
-          last_name: string;
-          birth_date: string;
+          firstName: string;
+          lastName: string;
+          birthDate: string;
           gender: string;
-          contact_number: string;
-          employee_title: string;
-          employee_status: string;
-          date_started: string;
+          contactNumber: string;
+          employeeTitle: string;
+          employeeStatus: string;
+          dateStarted: string;
         };
       };
   AvailedServices: undefined;

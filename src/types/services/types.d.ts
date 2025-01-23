@@ -1,5 +1,13 @@
 import { ERROR_TYPE } from '@app/constant';
 
+export type TRANSACTION_STATUS = 'ONGOING' | 'COMPLETED' | 'CANCELLED';
+export type TRANSACTION_SERVICE_STATUS = 'PENDING' | 'ONGOING' | 'DONE' | 'CANCELLED';
+
+export type EMPLOYEE_STATUS = 'ACTIVE' | 'TERMINATED';
+export type GENDER = 'MALE' | 'FEMALE';
+export type VEHICLE_TYPE = 'car' | 'motorcycle';
+export type SERVICE_CHARGE = 'free' | 'not free';
+
 export type ScreenStatusProps = {
   isLoading: boolean;
   hasError: boolean;
@@ -36,7 +44,7 @@ export type Service = {
   title: string;
   description: string;
   image: string;
-  type: 'car' | 'motorcycle';
+  type: VEHICLE_TYPE;
   ratings: number;
   reviews_count: number;
   last_review: string | null;
@@ -66,9 +74,9 @@ export type CustomersResponse = {
 export type Employees = {
   first_name: string;
   last_name: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: GENDER;
   employee_title: string;
-  employee_status: 'ACTIVE' | 'TERMINATED';
+  employee_status: EMPLOYEE_STATUS;
   id: string;
 };
 
@@ -115,11 +123,11 @@ export type CustomerInformationResponse = {
 export type EmployeeInformation = {
   first_name: string;
   last_name: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: GENDER;
   birth_date: string;
   contact_number: string;
   employee_title: string;
-  employee_status: 'ACTIVE' | 'TERMINATED';
+  employee_status: EMPLOYEE_STATUS;
   date_started: string;
   id: string;
   recent_transactions: RecentTransaction[];
@@ -137,15 +145,13 @@ export type AddEmployeePayload = {
   gender: string;
   contact_number: string;
   employee_title: string;
-  employee_status: 'ACTIVE' | 'TERMINATED';
+  employee_status: EMPLOYEE_STATUS;
   date_started: string | undefined;
 };
 
 export type AddEmployeeResponse = {
-  data: {
-    employee: {
-      id: string;
-    };
+  employee: {
+    id: string;
   };
   errors: ErrorProps[];
 };
@@ -153,14 +159,115 @@ export type AddEmployeeResponse = {
 export type UpdateEmployeePayload = {
   contact_number: string;
   employee_title: string;
-  employee_status: 'ACTIVE' | 'TERMINATED';
+  employee_status: EMPLOYEE_STATUS;
 };
 
 export type UpdateEmployeeResponse = {
-  data: {
-    employee: {
-      id: string;
-    };
+  employee: {
+    id: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type OngoingTransaction = {
+  id: string;
+  model: string;
+  plate_number: string;
+  check_in: string;
+  customer_id: string | null;
+  first_name: string;
+  last_name: string;
+  status: TRANSACTION_STATUS;
+};
+
+export type OngoingTransactionResponse = {
+  transactions: OngoingTransaction[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type TransactionServices = {
+  transaction_service_id: string;
+  service_id: string;
+  title: string;
+  image: string;
+  status: TRANSACTION_SERVICE_STATUS;
+  is_free: boolean;
+};
+
+export type TransactionServicesResponse = {
+  transaction: {
+    id: string;
+    customer_id: string | null;
+    services: TransactionServices[];
+  };
+  errors: ErrorProps[];
+};
+
+export type TransactionServiceEmployee = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  gender: string;
+};
+
+export type TransactionServiceDetailsResponse = {
+  transaction: {
+    id: string;
+    transaction_service_id: string;
+    image: string;
+    title: string;
+    price: number;
+    deduction: number;
+    company_earnings: number;
+    employee_share: number;
+    status: TRANSACTION_SERVICE_STATUS;
+    is_free: boolean;
+    is_paid: boolean;
+    start_date: string | null;
+    end_date: string | null;
+    assigned_employee: TransactionServiceEmployee[];
+  };
+  errors: ErrorProps[];
+};
+
+export type CustomerFreeWashServiceResponse = {
+  customer: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    free_wash: { size: string; count: number; vehicle_type: string }[];
+  };
+  errors: ErrorProps[];
+};
+
+export type AddTransactionServicePayload = {
+  service_id: string;
+  price: number;
+  service_charge: SERVICE_CHARGE;
+};
+
+export type AddTransactionServiceResponse = {
+  transaction_service: {
+    id: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type CreateOngoingTransactionPayload = {
+  customer_id?: string;
+  vehicle_type: VEHICLE_TYPE;
+  vehicle_size: string;
+  model: string;
+  plate_number: string;
+  contact_number?: string;
+  service_id: string;
+  service_charge: SERVICE_CHARGE;
+};
+
+export type CreateOngoingTransactionResponse = {
+  ongoing: {
+    id: string;
   };
   errors: ErrorProps[];
 };

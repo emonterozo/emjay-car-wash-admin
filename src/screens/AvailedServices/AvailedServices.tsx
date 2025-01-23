@@ -105,7 +105,15 @@ const AvailedServices = () => {
           </View>
         </View>
       </View>
-      <FloatingActionButton onPress={() => navigation.navigate('AddOngoing')} />
+      <FloatingActionButton
+        onPress={() =>
+          navigation.navigate('AddOngoing', {
+            customerId: null,
+            transactionId: null,
+            selectedServices: [],
+          })
+        }
+      />
     </SafeAreaView>
   );
 };

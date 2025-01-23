@@ -106,14 +106,14 @@ const EmployeeDetails = () => {
       type: 'Update',
       employee: {
         id: id,
-        first_name: employeeInformation.first_name,
-        last_name: employeeInformation.last_name,
-        birth_date: employeeInformation.birth_date,
+        firstName: employeeInformation.first_name,
+        lastName: employeeInformation.last_name,
+        birthDate: employeeInformation.birth_date,
         gender: employeeInformation.gender,
-        contact_number: employeeInformation.contact_number,
-        employee_title: employeeInformation.employee_title,
-        employee_status: employeeInformation.employee_status,
-        date_started: employeeInformation.date_started,
+        contactNumber: employeeInformation.contact_number,
+        employeeStatus: employeeInformation.employee_title,
+        employeeTitle: employeeInformation.employee_status,
+        dateStarted: employeeInformation.date_started,
       },
     });
   };

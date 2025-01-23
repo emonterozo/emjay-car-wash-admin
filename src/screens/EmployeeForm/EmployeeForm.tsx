@@ -111,16 +111,14 @@ const EmployeeForm = () => {
           dateStarted: undefined,
         }
       : {
-          firstName: employee.first_name,
-          lastName: employee.last_name,
-          birthDate: employee.birth_date ? new Date(employee.birth_date) : undefined,
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          birthDate: employee.birthDate ? new Date(employee.birthDate) : undefined,
           gender: GENDER_OPTIONS.find((option) => option.label === employee.gender),
-          contactNumber: employee.contact_number,
-          employeeTitle: employee.employee_title,
-          employeeStatus: STATUS_OPTIONS.find(
-            (option) => option.label === employee.employee_status,
-          ),
-          dateStarted: employee.date_started ? new Date(employee.date_started) : undefined,
+          contactNumber: employee.contactNumber,
+          employeeTitle: employee.employeeTitle,
+          employeeStatus: STATUS_OPTIONS.find((option) => option.label === employee.employeeStatus),
+          dateStarted: employee.dateStarted ? new Date(employee.dateStarted) : undefined,
         };
 
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
@@ -301,12 +299,12 @@ const EmployeeForm = () => {
       user.accessToken,
       firstName,
       lastName,
-      formattedBirthDate,
+      formattedBirthDate!,
       genderValue,
       contactNumber,
       employeeTitle,
       employeeStatusValue,
-      formattedDateStarted,
+      formattedDateStarted!,
     );
 
     if (response.success && response.data) {

@@ -1,38 +1,88 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { format } from 'date-fns';
 
-import { ScreenStatusProps } from '../../types/services/types';
-import { AppHeader, ErrorModal, FloatingActionButton, LoadingAnimation } from '@app/components';
-import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
-import { CircleArrowRightIcon } from '@app/icons';
+import {
+  OngoingTransaction,
+  ScreenStatusProps,
+  TRANSACTION_STATUS,
+} from '../../types/services/types';
 import { NavigationProp } from '../../types/navigation/types';
+import {
+  AppHeader,
+  EmptyState,
+  ErrorModal,
+  FloatingActionButton,
+  LoadingAnimation,
+} from '@app/components';
+import { color, font } from '@app/styles';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { CircleArrowRightIcon } from '@app/icons';
+import { getOngoingTransactionsRequest } from '@app/services';
+import GlobalContext from '@app/context';
 
 const STATUSES = [
   {
     label: 'Ongoing',
+    value: 'ONGOING',
     color: '#1F93E1',
   },
   {
     label: 'Complete',
+    value: 'COMPLETED',
     color: '#4BB543',
   },
   {
     label: 'Cancel',
+    value: 'CANCELLED',
     color: '#FF7070',
   },
 ];
 
+const renderSeparator = () => <View style={styles.separator} />;
+
 const Ongoing = () => {
   const navigation = useNavigation<NavigationProp>();
+  const { user } = useContext(GlobalContext);
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
     type: 'error',
   });
-  const [selectedStatus, setSelectedStatus] = useState('Ongoing');
+  const [selectedStatus, setSelectedStatus] = useState('ONGOING');
+  const [transactions, setTransactions] = useState<OngoingTransaction[]>([]);
+
+  const fetchTransactions = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getOngoingTransactionsRequest(
+      user.accessToken,
+      selectedStatus as TRANSACTION_STATUS,
+      selectedStatus === 'ONGOING'
+        ? undefined
+        : {
+            start: format(new Date(), 'yyyy-MM-dd'),
+            end: format(new Date(), 'yyyy-MM-dd'),
+          },
+    );
+
+    if (response.success && response.data) {
+      setTransactions(response.data.transactions);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStatus]);
 
   const onCancel = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -48,7 +98,7 @@ const Ongoing = () => {
         type={screenStatus.type}
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
-        onRetry={() => {}}
+        onRetry={fetchTransactions}
       />
       <View style={styles.heading}>
         <Text style={styles.label}>Status</Text>
@@ -58,41 +108,61 @@ const Ongoing = () => {
           <TouchableOpacity
             style={[
               styles.status,
-              status.label === selectedStatus && { backgroundColor: status.color },
+              status.value === selectedStatus && { backgroundColor: status.color },
             ]}
             key={status.label}
-            onPress={() => setSelectedStatus(status.label)}
+            onPress={() => setSelectedStatus(status.value)}
           >
             <Text
-              style={[styles.statusLabel, status.label === selectedStatus && styles.statusSelected]}
+              style={[styles.statusLabel, status.value === selectedStatus && styles.statusSelected]}
             >
               {status.label}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.list}>
-        <View style={styles.card}>
-          <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
-          <View style={styles.tag}>
-            <Text style={styles.tagLabel}>Unregistered</Text>
+      <FlatList
+        data={transactions}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
+            <View style={[styles.tag, item.customer_id !== null && styles.registered]}>
+              <Text style={styles.tagLabel}>
+                {item.customer_id === null ? 'Unregistered' : 'Registered'}
+              </Text>
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.name}>{`${item.first_name} ${item.last_name}`}</Text>
+              <Text style={styles.otherDetails}>{item.model}</Text>
+              <Text style={styles.otherDetails}>{item.plate_number}</Text>
+              <Text style={styles.otherDetails}>
+                {format(new Date(item.check_in), 'MMM dd, hh:mm a')}
+              </Text>
+              <TouchableOpacity
+                style={styles.viewDetailsContainer}
+                onPress={() => navigation.navigate('AvailedServices')}
+              >
+                <Text style={styles.viewDetails}>View full details</Text>
+                <CircleArrowRightIcon />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.details}>
-            <Text style={styles.name}>EmJay Customer</Text>
-            <Text style={styles.otherDetails}>Honda Civic</Text>
-            <Text style={styles.otherDetails}>NFI7292</Text>
-            <Text style={styles.otherDetails}>November 20, 09:00 AM</Text>
-            <TouchableOpacity
-              style={styles.viewDetailsContainer}
-              onPress={() => navigation.navigate('AvailedServices')}
-            >
-              <Text style={styles.viewDetails}>View full details</Text>
-              <CircleArrowRightIcon />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-      <FloatingActionButton onPress={() => navigation.navigate('AddOngoing')} />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={styles.list}
+        ItemSeparatorComponent={renderSeparator}
+        ListEmptyComponent={<EmptyState />}
+      />
+      <FloatingActionButton
+        onPress={() =>
+          navigation.navigate('AddOngoing', {
+            customerId: null,
+            transactionId: null,
+            selectedServices: [],
+          })
+        }
+      />
     </SafeAreaView>
   );
 };
@@ -205,6 +275,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 12,
     color: '#016FB9',
+  },
+  separator: {
+    marginTop: 24,
+  },
+  registered: {
+    backgroundColor: '#4BB543',
   },
 });
 

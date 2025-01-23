@@ -4,13 +4,23 @@ import { apiRequest, ApiResponse } from './apiRequest';
 import {
   AddEmployeePayload,
   AddEmployeeResponse,
+  AddTransactionServicePayload,
+  AddTransactionServiceResponse,
+  CreateOngoingTransactionPayload,
+  CreateOngoingTransactionResponse,
   CustomerInformationResponse,
   CustomersResponse,
+  CustomerFreeWashServiceResponse,
+  EMPLOYEE_STATUS,
   EmployeeInformationResponse,
   EmployeesResponse,
   LoginPayload,
   LoginResponse,
+  OngoingTransactionResponse,
   ServicesResponse,
+  TRANSACTION_STATUS,
+  TransactionServiceDetailsResponse,
+  TransactionServicesResponse,
   UpdateEmployeePayload,
   UpdateEmployeeResponse,
 } from '../types/services/types';
@@ -113,15 +123,15 @@ export const addEmployeeRequest = (
   accessToken: string,
   first_name: string,
   last_name: string,
-  birth_date: string | undefined,
+  birth_date: string,
   gender: string,
   contact_number: string,
   employee_title: string,
-  employee_status: 'ACTIVE' | 'TERMINATED',
-  date_started: string | undefined,
+  employee_status: EMPLOYEE_STATUS,
+  date_started: string,
 ): ApiResponse<AddEmployeeResponse> => {
   return apiRequest<AddEmployeePayload, AddEmployeeResponse>(
-    `${Config.API_BASE_URL}/admin/employees/add`,
+    `${Config.API_BASE_URL}/admin/employees`,
     {
       method: 'post',
       headers: requestHeader(accessToken),
@@ -144,10 +154,10 @@ export const updateEmployeeRequest = (
   accessToken: string,
   contact_number: string,
   employee_title: string,
-  employee_status: 'ACTIVE' | 'TERMINATED',
+  employee_status: EMPLOYEE_STATUS,
 ): ApiResponse<UpdateEmployeeResponse> => {
   return apiRequest<UpdateEmployeePayload, UpdateEmployeeResponse>(
-    `${Config.API_BASE_URL}/admin/employees/update/${id}`,
+    `${Config.API_BASE_URL}/admin/employees/${id}`,
     {
       method: 'put',
       headers: requestHeader(accessToken),
@@ -156,6 +166,108 @@ export const updateEmployeeRequest = (
         employee_title,
         employee_status,
       },
+    },
+  );
+};
+
+export const getCustomerFreeWashServiceRequest = (
+  accessToken: string,
+  id: string,
+): ApiResponse<CustomerFreeWashServiceResponse> => {
+  return apiRequest<null, CustomerFreeWashServiceResponse>(
+    `${Config.API_BASE_URL}/admin/customers/${id}/free-wash-service`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+  );
+};
+
+export const getOngoingTransactionsRequest = (
+  accessToken: string,
+  status: TRANSACTION_STATUS = 'ONGOING',
+  dateRange?: {
+    start: string;
+    end: string;
+  },
+  field?: string,
+  direction?: 'asc' | 'desc',
+  limit?: number,
+  offset?: number,
+): ApiResponse<OngoingTransactionResponse> => {
+  let params: any = {
+    order_by: JSON.stringify({ field: field ?? 'check_in', direction: direction ?? 'asc' }),
+    limit,
+    offset,
+    status,
+  };
+
+  if (dateRange) {
+    params.date_range = JSON.stringify(dateRange);
+  }
+
+  return apiRequest<null, OngoingTransactionResponse>(
+    `${Config.API_BASE_URL}/admin/ongoing/transactions`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: params,
+    },
+  );
+};
+
+export const getTransactionServicesRequest = (
+  accessToken: string,
+  id: string,
+): ApiResponse<TransactionServicesResponse> => {
+  return apiRequest<null, TransactionServicesResponse>(
+    `${Config.API_BASE_URL}/admin/ongoing/transactions/${id}/services`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+  );
+};
+
+export const getTransactionServiceDetailsRequest = (
+  accessToken: string,
+  transactionId: string,
+  transactionServiceId: string,
+): ApiResponse<TransactionServiceDetailsResponse> => {
+  return apiRequest<null, TransactionServiceDetailsResponse>(
+    `${Config.API_BASE_URL}/admin/ongoing/transactions/${transactionId}/services/${transactionServiceId}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+  );
+};
+
+export const createOngoingTransactionRequest = (
+  accessToken: string,
+  payload: CreateOngoingTransactionPayload,
+): ApiResponse<CreateOngoingTransactionResponse> => {
+  return apiRequest<CreateOngoingTransactionPayload, CreateOngoingTransactionResponse>(
+    `${Config.API_BASE_URL}/admin/ongoing/transactions`,
+    {
+      method: 'post',
+      headers: requestHeader(accessToken),
+      data: payload,
+    },
+  );
+};
+
+export const addTransactionServiceRequest = (
+  accessToken: string,
+  id: string,
+  payload: AddTransactionServicePayload,
+): ApiResponse<AddTransactionServiceResponse> => {
+  return apiRequest<AddTransactionServicePayload, AddTransactionServiceResponse>(
+    `${Config.API_BASE_URL}/admin/ongoing/transactions/${id}/services`,
+    {
+      method: 'post',
+      headers: requestHeader(accessToken),
+      data: payload,
     },
   );
 };
