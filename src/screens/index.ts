@@ -17,3 +17,5 @@ export { default as Transaction } from './Transaction/Transaction';
 export { default as AddOngoing } from './AddOngoing/AddOngoing';
 export { default as PreTransaction } from './PreTransaction/PreTransaction';
 export { default as EmployeeForm } from './EmployeeForm/EmployeeForm';
+export { default as AvailedServices } from './AvailedServices/AvailedServices';
+export { default as AvailedServiceDetails } from './AvailedServiceDetails/AvailedServiceDetails';

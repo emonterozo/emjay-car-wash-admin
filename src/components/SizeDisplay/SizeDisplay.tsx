@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, LayoutChangeEvent, LayoutRectangle } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  LayoutChangeEvent,
+  LayoutRectangle,
+  TouchableOpacity,
+} from 'react-native';
 
 import { EllipseIcon } from '@app/icons';
 import { color, font } from '@app/styles';
@@ -7,9 +14,11 @@ import { color, font } from '@app/styles';
 type SizeDisplayProps = {
   sizes: string[];
   values: number[];
+  isCountVisible?: boolean;
+  onPress?: (index: number) => void;
 };
 
-const SizeDisplay = ({ sizes, values }: SizeDisplayProps) => {
+const SizeDisplay = ({ sizes, values, isCountVisible = true, onPress }: SizeDisplayProps) => {
   const [layouts, setLayouts] = useState<LayoutRectangle[]>([]);
   const [layout, setLayout] = useState({ height: 0, width: 0, x: 0, y: 0 });
   const { height } = layout;
@@ -17,6 +26,12 @@ const SizeDisplay = ({ sizes, values }: SizeDisplayProps) => {
   const handleEllipseLayout = (event: LayoutChangeEvent) => {
     event.persist();
     setLayouts((prevLayouts) => [...prevLayouts, event.nativeEvent.layout]);
+  };
+
+  const handlePress = (index: number) => {
+    if (onPress) {
+      onPress(index);
+    }
   };
 
   return (
@@ -48,13 +63,21 @@ const SizeDisplay = ({ sizes, values }: SizeDisplayProps) => {
           style={styles.itemContainer}
           onLayout={(event) => handleEllipseLayout(event)}
         >
-          <Text style={[styles.valueText, values[index] > 0 && styles.highlightedValueText]}>
+          <Text
+            style={[
+              styles.valueText,
+              values[index] > 0 && styles.highlightedValueText,
+              !isCountVisible && styles.hide,
+            ]}
+          >
             {values[index]}
           </Text>
-          <EllipseIcon
-            outerFill={values[index] === 10 ? color.primary : '#88888888'}
-            innerFill={values[index] === 0 ? '#88888888' : color.primary}
-          />
+          <TouchableOpacity disabled={!onPress} onPress={() => handlePress(index)}>
+            <EllipseIcon
+              outerFill={values[index] === 10 ? color.primary : '#88888888'}
+              innerFill={values[index] === 0 ? '#88888888' : color.primary}
+            />
+          </TouchableOpacity>
           <Text style={styles.labelText}>{size}</Text>
         </View>
       ))}
@@ -91,6 +114,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     position: 'absolute',
     borderColor: '#88888888',
+  },
+  hide: {
+    opacity: 0,
   },
 });
 

@@ -17,6 +17,8 @@ import {
   PreTransaction,
   AddOngoing,
   EmployeeForm,
+  AvailedServices,
+  AvailedServiceDetails,
 } from '@app/screens';
 import GlobalContext from '@app/context';
 import { AuthStackParamList } from '../types/navigation/types';
@@ -27,7 +29,7 @@ const UnAuthStack = createStackNavigator();
 const AuthStack = createStackNavigator<AuthStackParamList>();
 
 const Navigation = () => {
-  const [user, setUser] = useState<TUser>({ id: '', type: '', username: '', token: '' });
+  const [user, setUser] = useState<TUser>({ id: '', type: '', username: '', accessToken: '' });
 
   const initialContext = useMemo(
     () => ({
@@ -60,6 +62,8 @@ const Navigation = () => {
               component={EmployeeForm}
               options={{ gestureEnabled: false }}
             />
+            <AuthStack.Screen name="AvailedServices" component={AvailedServices} />
+            <AuthStack.Screen name="AvailedServiceDetails" component={AvailedServiceDetails} />
           </AuthStack.Navigator>
         ) : (
           <UnAuthStack.Navigator screenOptions={{ headerShown: false }}>

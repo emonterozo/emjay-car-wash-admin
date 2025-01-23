@@ -21,10 +21,10 @@ import {
   ErrorModal,
   LoadingAnimation,
   ServiceTransactionItem,
+  SizeDisplay,
 } from '@app/components';
 import { color, font } from '@app/styles';
 import { CarIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
-import SizeDisplay from './SizeDisplay';
 import { getCustomerInformationRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import {
@@ -49,8 +49,8 @@ const OPTIONS = [
 ];
 
 const size = {
-  car: ['S', 'MD', 'LG', 'XL', 'XXL'],
-  motorcycle: ['S', 'MD', 'LG'],
+  car: ['SM', 'MD', 'LG', 'XL', 'XXL'],
+  motorcycle: ['SM', 'MD', 'LG'],
 };
 
 const CustomerDetails = () => {

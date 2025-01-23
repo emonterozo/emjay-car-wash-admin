@@ -71,22 +71,24 @@ const Employee = () => {
   };
 
   const onEndReached = async () => {
-    if (employees.length < totalCount) {
-      setIsFetching(true);
-      const response = await getEmployeesRequest(
-        user.accessToken,
-        '_id',
-        'asc',
-        LIMIT,
-        employees.length,
-      );
-
-      if (response.success && response.data) {
-        setEmployees((prev) => [...prev, ...response.data?.employees!]);
-        setTotalCount(response.data.totalCount);
-      }
-      setIsFetching(false);
+    if (isFetching || employees.length >= totalCount) {
+      return;
     }
+
+    setIsFetching(true);
+    const response = await getEmployeesRequest(
+      user.accessToken,
+      '_id',
+      'asc',
+      LIMIT,
+      employees.length,
+    );
+
+    if (response.success && response.data) {
+      setEmployees((prev) => [...prev, ...response.data?.employees!]);
+      setTotalCount(response.data.totalCount);
+    }
+    setIsFetching(false);
   };
 
   const getTextStatusStyle = (status: string) =>

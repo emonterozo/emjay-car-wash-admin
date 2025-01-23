@@ -23,12 +23,7 @@ export type AuthStackParamList = {
   Services: undefined;
   Settings: undefined;
   Transaction: undefined;
-  AddOngoing: {
-    customerId?: string;
-    firstName?: string;
-    lastName?: string;
-    freeCarwashList?: CarwashList[];
-  };
+  AddOngoing: undefined;
   PreTransaction: { id: string };
   EmployeeForm:
     | { type: 'Add'; employee?: never }
@@ -46,6 +41,8 @@ export type AuthStackParamList = {
           date_started: string;
         };
       };
+  AvailedServices: undefined;
+  AvailedServiceDetails: undefined;
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];

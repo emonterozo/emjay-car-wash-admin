@@ -89,7 +89,7 @@ export const getEmployeesRequest = (
     method: 'get',
     headers: requestHeader(accessToken),
     params: {
-      order_by: JSON.stringify({ field: field ?? 'last_name', direction: direction ?? 'desc' }),
+      order_by: JSON.stringify({ field: field ?? 'date_started', direction: direction ?? 'asc' }),
       limit,
       offset,
     },

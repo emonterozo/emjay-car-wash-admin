@@ -64,22 +64,24 @@ const Customers = () => {
   };
 
   const onEndReached = async () => {
-    if (customers.length < totalCount) {
-      setIsFetching(true);
-      const response = await getCustomersRequest(
-        user.accessToken,
-        '_id',
-        'asc',
-        LIMIT,
-        customers.length,
-      );
-
-      if (response.success && response.data) {
-        setCustomers((prev) => [...prev, ...response.data?.customers!]);
-        setTotalCount(response.data.totalCount);
-      }
-      setIsFetching(false);
+    if (isFetching || customers.length >= totalCount) {
+      return;
     }
+
+    setIsFetching(true);
+    const response = await getCustomersRequest(
+      user.accessToken,
+      '_id',
+      'asc',
+      LIMIT,
+      customers.length,
+    );
+
+    if (response.success && response.data) {
+      setCustomers((prev) => [...prev, ...response.data?.customers!]);
+      setTotalCount(response.data.totalCount);
+    }
+    setIsFetching(false);
   };
 
   return (

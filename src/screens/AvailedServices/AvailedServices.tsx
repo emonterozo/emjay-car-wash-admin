@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import FastImage from '@d11/react-native-fast-image';
 
 import { ScreenStatusProps } from '../../types/services/types';
 import { AppHeader, ErrorModal, FloatingActionButton, LoadingAnimation } from '@app/components';
 import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
 import { CircleArrowRightIcon } from '@app/icons';
+import { formattedNumber } from '@app/helpers';
 import { NavigationProp } from '../../types/navigation/types';
 
 const STATUSES = [
+  {
+    label: 'Pending',
+    color: '#888888',
+  },
   {
     label: 'Ongoing',
     color: '#1F93E1',
   },
   {
-    label: 'Complete',
+    label: 'Done',
     color: '#4BB543',
   },
   {
@@ -25,14 +30,14 @@ const STATUSES = [
   },
 ];
 
-const Ongoing = () => {
+const AvailedServices = () => {
   const navigation = useNavigation<NavigationProp>();
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
     type: 'error',
   });
-  const [selectedStatus, setSelectedStatus] = useState('Ongoing');
+  const [selectedStatus, setSelectedStatus] = useState('Pending');
 
   const onCancel = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -42,7 +47,7 @@ const Ongoing = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Services" />
+      <AppHeader title="Availed Services" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         type={screenStatus.type}
@@ -51,7 +56,7 @@ const Ongoing = () => {
         onRetry={() => {}}
       />
       <View style={styles.heading}>
-        <Text style={styles.label}>Status</Text>
+        <Text style={styles.label}>List of Availed Services</Text>
       </View>
       <View style={styles.statusContainer}>
         {STATUSES.map((status) => (
@@ -73,18 +78,26 @@ const Ongoing = () => {
       </View>
       <View style={styles.list}>
         <View style={styles.card}>
-          <Image source={IMAGES.EM_JAY} style={styles.image} resizeMode="contain" />
-          <View style={styles.tag}>
-            <Text style={styles.tagLabel}>Unregistered</Text>
-          </View>
+          <FastImage
+            style={styles.serviceImage}
+            source={{
+              uri: 'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fbuff-wax.jpg?alt=media&token=32bded96-8bab-4a67-9949-4aa9c20914fe',
+              priority: FastImage.priority.normal,
+            }}
+            resizeMode={FastImage.resizeMode.cover}
+          />
           <View style={styles.details}>
-            <Text style={styles.name}>EmJay Customer</Text>
-            <Text style={styles.otherDetails}>Honda Civic</Text>
-            <Text style={styles.otherDetails}>NFI7292</Text>
-            <Text style={styles.otherDetails}>November 20, 09:00 AM</Text>
+            <Text style={styles.name}>Car Wash</Text>
+            <Text style={styles.price}>
+              <Text style={styles.priceLabel}>Amount: </Text>
+              {formattedNumber(5000)}
+            </Text>
+            <View style={styles.tag}>
+              <Text style={styles.tagLabel}>Not Free</Text>
+            </View>
             <TouchableOpacity
               style={styles.viewDetailsContainer}
-              onPress={() => navigation.navigate('AvailedServices')}
+              onPress={() => navigation.navigate('AvailedServiceDetails')}
             >
               <Text style={styles.viewDetails}>View full details</Text>
               <CircleArrowRightIcon />
@@ -120,6 +133,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    gap: 4,
   },
   status: {
     flex: 1,
@@ -128,8 +142,8 @@ const styles = StyleSheet.create({
   },
   statusLabel: {
     ...font.light,
-    fontSize: 16,
-    lineHeight: 16,
+    fontSize: 15,
+    lineHeight: 15,
     color: '#696969',
     textAlign: 'center',
   },
@@ -144,21 +158,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 5,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 5,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
   details: {
     gap: 8,
-    marginTop: 16,
     flex: 1,
   },
-  image: {
-    height: 105,
-    width: 105,
-    marginTop: 16,
+  serviceImage: {
+    width: '45%',
+    height: '100%',
+    borderRadius: 24,
   },
   name: {
     ...font.regular,
@@ -166,11 +179,17 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: color.black,
   },
-  otherDetails: {
+  price: {
     ...font.light,
     fontSize: 16,
     lineHeight: 16,
-    color: color.black,
+    color: color.primary,
+  },
+  priceLabel: {
+    ...font.light,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#777676',
   },
   list: {
     flexGrow: 1,
@@ -184,9 +203,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#7F7A7A',
     borderRadius: 8,
     width: 85,
-    position: 'absolute',
-    top: 8,
-    right: 16,
   },
   tagLabel: {
     ...font.regular,
@@ -208,4 +224,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Ongoing;
+export default AvailedServices;
