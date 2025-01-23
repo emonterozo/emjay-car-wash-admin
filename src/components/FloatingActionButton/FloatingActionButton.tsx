@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 25,
     right: 30,
-    zIndex: 1000,
+    zIndex: 2,
   },
   circle: {
     backgroundColor: color.primary,
