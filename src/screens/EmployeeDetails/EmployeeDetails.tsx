@@ -9,6 +9,7 @@ import {
   Dimensions,
   ScrollView,
   Image,
+  Linking,
 } from 'react-native';
 import { format } from 'date-fns';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
@@ -155,6 +156,21 @@ const EmployeeDetails = () => {
     return styles.textBlack;
   };
 
+  const handleContactNumber = (phoneNumber: string) => {
+    const isContactNumberValid = phoneNumber !== 'No available record';
+    return (
+      <Text
+        onPress={isContactNumberValid ? () => Linking.openURL(`tel:${phoneNumber}`) : undefined}
+        style={[
+          styles.textPersonalDetails,
+          isContactNumberValid ? styles.textPrimary : styles.textBlack,
+        ]}
+      >
+        {phoneNumber}
+      </Text>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -184,7 +200,11 @@ const EmployeeDetails = () => {
         <View style={styles.personalInformationContainer}>
           {employeeDetails.map((item, index) => (
             <Text key={index} style={[styles.textPersonalDetails, styles.textGray]}>
-              {item.label}:<Text style={getTextStyle(item.label, item.value)}> {item.value}</Text>
+              {item.label}:
+              <Text style={getTextStyle(item.label, item.value)}>
+                {' '}
+                {item.label === 'Contact number' ? handleContactNumber(item.value) : item.value}
+              </Text>
             </Text>
           ))}
         </View>
@@ -257,6 +277,9 @@ const styles = StyleSheet.create({
   },
   textBlack: {
     color: color.black,
+  },
+  textPrimary: {
+    color: color.primary,
   },
   textGreen: {
     color: '#4BB543',
