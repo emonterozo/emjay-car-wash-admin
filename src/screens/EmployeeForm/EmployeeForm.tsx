@@ -313,9 +313,17 @@ const EmployeeForm = () => {
       setMessage(toastData.message);
       setToastType(toastData.toastType);
       setIsToastVisible(true);
-      setTimeout(() => {
-        navigation.goBack();
-      }, 3000);
+      const clearFormValue = {
+        firstName: '',
+        lastName: '',
+        birthDate: undefined,
+        gender: undefined,
+        contactNumber: undefined,
+        employeeTitle: '',
+        employeeStatus: undefined,
+        dateStarted: undefined,
+      };
+      setFormValues(clearFormValue);
     } else {
       setScreenStatus({
         isLoading: false,
@@ -380,7 +388,10 @@ const EmployeeForm = () => {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title={type === 'Update' ? 'Update Employee' : 'Add Employee'} />
+      <AppHeader
+        title={type === 'Update' ? 'Update Employee' : 'Add Employee'}
+        onBack={handleCancel}
+      />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <View style={styles.viewContainer}>
         <ErrorModal
