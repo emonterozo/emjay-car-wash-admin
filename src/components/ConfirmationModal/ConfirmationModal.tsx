@@ -5,14 +5,14 @@ import { font } from '@app/styles';
 import { CONFIRM_TYPE, IMAGES } from '@app/constant';
 import { Button } from '..';
 
-export type YesNoModalProps = {
+export type ConfirmationModalProps = {
   isVisible: boolean;
   type: keyof typeof CONFIRM_TYPE;
   onYes: () => void;
   onNo: () => void;
 };
 
-const YesNoModal: React.FC<YesNoModalProps> = ({ isVisible, type, onNo, onYes }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isVisible, type, onNo, onYes }) => {
   return (
     <Modal visible={isVisible} animationType="slide" onRequestClose={onNo} transparent={true}>
       <View style={styles.modalContainer}>
@@ -101,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default YesNoModal;
+export default ConfirmationModal;

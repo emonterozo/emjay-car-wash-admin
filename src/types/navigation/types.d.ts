@@ -31,10 +31,10 @@ export type AuthStackParamList = {
   };
   PreTransaction: { id: string };
   EmployeeForm:
-    | { type: 'Add'; user?: never }
+    | { type: 'Add'; employee?: never }
     | {
         type: 'Update';
-        user: {
+        employee: {
           id: string;
           first_name: string;
           last_name: string;

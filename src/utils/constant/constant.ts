@@ -113,6 +113,8 @@ export const CONFIRM_TYPE = {
   },
 };
 
+export const LIMIT = 50;
+
 type ImageKeys = keyof typeof IMAGES;
 export const MESSAGE: Record<
   string,
