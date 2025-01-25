@@ -45,7 +45,7 @@ type FormValues = {
   plateNumber: string | undefined;
   service: string[];
   serviceCharge: Option | undefined;
-  contactNumber: string | undefined;
+  contactNumber: string | null;
 };
 
 type Errors = {
@@ -89,14 +89,16 @@ const validationSchema = Yup.object({
   plateNumber: Yup.string().required('Plate number is required'),
   service: Yup.array().required('Service array is required').min(1, 'Service is required'),
   serviceCharge: Yup.object().required('Service charge is required'),
-  contactNumber: Yup.string().matches(
-    /^09[0-9]{9}$/,
-    'Contact Number must be 11 digits long, starting with "09", and contain only numbers',
-  ),
+  contactNumber: Yup.string()
+    .matches(
+      /^09[0-9]{9}$/,
+      'Contact Number must be 11 digits long, starting with "09", and contain only numbers',
+    )
+    .nullable(),
 });
 
 const AddOngoing = () => {
-  const { customerId, freeWash, selectedServices, transactionId } =
+  const { customerId, contactNumber, freeWash, selectedServices, transactionId } =
     useRoute<AddOngoingRouteProp>().params;
   const { user } = useContext(GlobalContext);
   const navigation = useNavigation<NavigationProp>();
@@ -105,7 +107,7 @@ const AddOngoing = () => {
     plateNumber: undefined,
     service: [],
     serviceCharge: SERVICE_CHARGE_OPTION[1],
-    contactNumber: undefined,
+    contactNumber: contactNumber,
   };
   const [sizeCount, setSizeCount] = useState({
     car: [10, 0, 0, 0, 0],
@@ -237,6 +239,9 @@ const AddOngoing = () => {
           };
           if (customerId !== null) {
             payload.customer_id = customerId;
+          }
+          if (formValues.contactNumber !== null) {
+            payload.contact_number = formValues.contactNumber;
           }
 
           setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
@@ -409,7 +414,7 @@ const AddOngoing = () => {
           label="Contact Number"
           placeholder="Enter Contact Number"
           error={errors.contactNumber}
-          value={formValues.contactNumber}
+          value={formValues.contactNumber as string}
           onChangeText={(value) => handleInputChange('contactNumber', value)}
           keyboardType="numeric"
           onFocus={() => removeError('contactNumber')}

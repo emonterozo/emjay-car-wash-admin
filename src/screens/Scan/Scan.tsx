@@ -51,21 +51,22 @@ const Scan = () => {
       setIsScannerActive(true);
       setIsCustomerExist(true);
     }
-
   }, [isFocused, requestPermission]);
 
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
-    onCodeScanned: (_codes) => {
+    onCodeScanned: (codes) => {
       setIsScannerActive(false);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-      setCodeValue(_codes[0].value);
-      checkIfCustomerExist(_codes[0].value);
+      setCodeValue(codes[0].value);
+      checkIfCustomerExist(codes[0].value);
     },
   });
 
   const checkIfCustomerExist = (scanCodeValue: string | undefined) => {
-    if (!scanCodeValue) {return;}
+    if (!scanCodeValue) {
+      return;
+    }
     fetchEmployeeFreeWash(scanCodeValue);
   };
 
@@ -85,9 +86,10 @@ const Scan = () => {
 
       navigation.navigate('AddOngoing', {
         customerId: response.data.customer.id,
+        contactNumber: response.data.customer.contact_number,
         freeWash: transformedFreeWash,
         transactionId: null,
-        selectedServices: ['Car'],
+        selectedServices: [],
       });
     } else {
       switch (response.status) {

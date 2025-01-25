@@ -161,6 +161,7 @@ const Ongoing = () => {
         onPress={() =>
           navigation.navigate('AddOngoing', {
             customerId: null,
+            contactNumber: null,
             freeWash: [],
             transactionId: null,
             selectedServices: [],
