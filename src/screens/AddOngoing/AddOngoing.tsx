@@ -20,6 +20,7 @@ import {
   SizeDisplay,
   LoadingAnimation,
   ErrorModal,
+  ModalDropdown,
 } from '@app/components';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { CarIcon, MotorcycleIcon } from '@app/icons';
@@ -55,6 +56,44 @@ const GENDER_OPTIONS = [
     id: '2',
     icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
     label: 'FEMALE',
+  },
+];
+
+const SERVICES = [
+  {
+    id: '1',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
+    title: 'Car Wash',
+    description: 'P 150.00',
+  },
+  {
+    id: '2',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
+    title: 'Car Wash 1',
+    description: 'P 150.00',
+  },
+  {
+    id: '3',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
+    title: 'Car Wash 2',
+    description: 'P 150.00',
+  },
+  {
+    id: '4',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
+    title: 'Car Wash 3',
+    description: 'P 150.00',
+  },
+  {
+    id: '5',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
+    title: 'Car Wash 3',
+    description: 'P 150.00',
   },
 ];
 
@@ -105,6 +144,7 @@ const AddOngoing = () => {
     type: 'error',
   });
   const [services, setServices] = useState<Service[]>([]);
+  const [selectedService, setSelectedService] = useState<string[]>([]);
 
   const fetchServices = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
@@ -257,14 +297,16 @@ const AddOngoing = () => {
           onFocus={() => removeError('lastName')}
           maxLength={64}
         />
-        <TextInput
-          label="Contact Number"
-          placeholder="Enter Contact Number"
-          error={errors.contactNumber}
-          value={formValues.contactNumber}
-          onChangeText={(value) => handleInputChange('contactNumber', value)}
-          keyboardType="numeric"
-          onFocus={() => removeError('contactNumber')}
+        <ModalDropdown
+          label="Service"
+          placeholder="Select Service"
+          selected={selectedService}
+          multiSelect
+          options={SERVICES}
+          onSelected={(selected) => setSelectedService(selected)}
+          error={errors.gender}
+          onToggleOpen={() => removeError('gender')}
+          title="Select Service"
         />
         <Dropdown
           label="Service Charge"
@@ -276,15 +318,14 @@ const AddOngoing = () => {
           error={errors.gender}
           onToggleOpen={() => removeError('gender')}
         />
-        <Dropdown
-          label="Services"
-          placeholder="Select Services"
-          selected={formValues.gender}
-          options={GENDER_OPTIONS}
-          onSelected={(selectedOption) => handleDropdownChange('gender', selectedOption)}
-          optionMinWidth={196}
-          error={errors.gender}
-          onToggleOpen={() => removeError('gender')}
+        <TextInput
+          label="Contact Number"
+          placeholder="Enter Contact Number"
+          error={errors.contactNumber}
+          value={formValues.contactNumber}
+          onChangeText={(value) => handleInputChange('contactNumber', value)}
+          keyboardType="numeric"
+          onFocus={() => removeError('contactNumber')}
         />
         <Button
           title="Submit"
