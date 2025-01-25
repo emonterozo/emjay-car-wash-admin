@@ -14,38 +14,40 @@ export type ErrorModalProps = {
 
 const ErrorModal: React.FC<ErrorModalProps> = ({ isVisible, type, onCancel, onRetry }) => {
   return (
-    <Modal visible={isVisible} animationType="slide" onRequestClose={onCancel} transparent={true}>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalViewContainer}>
-          <Image
-            source={type === 'error' ? IMAGES.ERROR : IMAGES.NO_CONNECTION}
-            style={styles.image}
-            resizeMode="contain"
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.titleText}>{ERROR_TYPE[type].title}</Text>
-            <Text style={styles.descriptionText}>{ERROR_TYPE[type].description}</Text>
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Cancel"
-              variant="secondary"
-              secondaryBackgroundColor="white"
-              buttonStyle={styles.button}
-              textStyle={styles.textStyle}
-              onPress={onCancel}
+    <View>
+      <Modal visible={isVisible} animationType="slide" onRequestClose={onCancel} transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalViewContainer}>
+            <Image
+              source={type === 'error' ? IMAGES.ERROR : IMAGES.NO_CONNECTION}
+              style={styles.image}
+              resizeMode="contain"
             />
-            <Button
-              title="Try Again"
-              variant="primary"
-              buttonStyle={styles.button}
-              textStyle={styles.textStyle}
-              onPress={onRetry}
-            />
+            <View style={styles.textContainer}>
+              <Text style={styles.titleText}>{ERROR_TYPE[type].title}</Text>
+              <Text style={styles.descriptionText}>{ERROR_TYPE[type].description}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Cancel"
+                variant="secondary"
+                secondaryBackgroundColor="white"
+                buttonStyle={styles.button}
+                textStyle={styles.textStyle}
+                onPress={onCancel}
+              />
+              <Button
+                title="Try Again"
+                variant="primary"
+                buttonStyle={styles.button}
+                textStyle={styles.textStyle}
+                onPress={onRetry}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 

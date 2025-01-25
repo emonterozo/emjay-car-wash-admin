@@ -170,7 +170,7 @@ const AddOngoing = () => {
           image: service.image,
           title: service.title,
           description: formattedNumber(price ?? service.price_list[0].price),
-          value: price,
+          value: price ?? service.price_list[0].price,
         };
       });
 
@@ -241,6 +241,11 @@ const AddOngoing = () => {
 
           setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
           const response = await createOngoingTransactionRequest(user.accessToken, payload);
+          setScreenStatus({
+            isLoading: false,
+            type: response.error === ERR_NETWORK ? 'connection' : 'error',
+            hasError: true,
+          });
           if (response.success && response.data) {
             setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
             setToast({

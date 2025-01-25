@@ -14,34 +14,36 @@ export type ConfirmationModalProps = {
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isVisible, type, onNo, onYes }) => {
   return (
-    <Modal visible={isVisible} animationType="slide" onRequestClose={onNo} transparent={true}>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalViewContainer}>
-          <Image source={IMAGES.CANCEL} style={styles.image} resizeMode="contain" />
-          <View style={styles.textContainer}>
-            <Text style={styles.titleText}>{CONFIRM_TYPE[type].title}</Text>
-            <Text style={styles.descriptionText}>{CONFIRM_TYPE[type].description}</Text>
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="No"
-              variant="secondary"
-              secondaryBackgroundColor="white"
-              buttonStyle={styles.button}
-              textStyle={styles.textStyle}
-              onPress={onNo}
-            />
-            <Button
-              title="Yes"
-              variant="primary"
-              buttonStyle={styles.button}
-              textStyle={styles.textStyle}
-              onPress={onYes}
-            />
+    <View>
+      <Modal visible={isVisible} animationType="slide" onRequestClose={onNo} transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalViewContainer}>
+            <Image source={IMAGES.CANCEL} style={styles.image} resizeMode="contain" />
+            <View style={styles.textContainer}>
+              <Text style={styles.titleText}>{CONFIRM_TYPE[type].title}</Text>
+              <Text style={styles.descriptionText}>{CONFIRM_TYPE[type].description}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="No"
+                variant="secondary"
+                secondaryBackgroundColor="white"
+                buttonStyle={styles.button}
+                textStyle={styles.textStyle}
+                onPress={onNo}
+              />
+              <Button
+                title="Yes"
+                variant="primary"
+                buttonStyle={styles.button}
+                textStyle={styles.textStyle}
+                onPress={onYes}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
