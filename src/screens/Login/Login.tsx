@@ -32,8 +32,8 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: '',
-    password: '',
+    username: 'emjay_admin',
+    password: 'password',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
 

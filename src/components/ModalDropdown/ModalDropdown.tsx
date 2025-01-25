@@ -24,6 +24,7 @@ export type ModalDropdownOption = {
   image: string;
   title: string;
   description: string;
+  value?: string | number;
 };
 
 export type ModalDropdownProps = {

@@ -1,12 +1,12 @@
 import { ERROR_TYPE } from '@app/constant';
 
-export type TRANSACTION_STATUS = 'ONGOING' | 'COMPLETED' | 'CANCELLED';
-export type TRANSACTION_SERVICE_STATUS = 'PENDING' | 'ONGOING' | 'DONE' | 'CANCELLED';
+export type TransactionStatusType = 'ONGOING' | 'COMPLETED' | 'CANCELLED';
+export type TransactionServiceStatusType = 'PENDING' | 'ONGOING' | 'DONE' | 'CANCELLED';
 
-export type EMPLOYEE_STATUS = 'ACTIVE' | 'TERMINATED';
-export type GENDER = 'MALE' | 'FEMALE';
-export type VEHICLE_TYPE = 'car' | 'motorcycle';
-export type SERVICE_CHARGE = 'free' | 'not free';
+export type EmployeeStatusType = 'ACTIVE' | 'TERMINATED';
+export type GenderType = 'MALE' | 'FEMALE';
+export type VehicleType = 'car' | 'motorcycle';
+export type ServiceChargeType = 'free' | 'not free';
 
 export type ScreenStatusProps = {
   isLoading: boolean;
@@ -265,6 +265,7 @@ export type CreateOngoingTransactionPayload = {
   plate_number: string;
   contact_number?: string;
   service_id: string;
+  price: number;
   service_charge: SERVICE_CHARGE;
 };
 

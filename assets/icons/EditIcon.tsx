@@ -1,5 +1,5 @@
-import * as React from "react";
-import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
+import * as React from 'react';
+import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
 const EditIcon = ({ width = 30, height = 30 }: IconProps) => (
     <Svg width={30} height={30} viewBox={`0 0 ${width} ${height}`} fill="none">
     <Rect width={30} height={30} fill="url(#pattern0_728_229)" />

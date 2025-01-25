@@ -1,5 +1,5 @@
-import * as React from "react";
-import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
+import * as React from 'react';
+import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
 const WaterDropIcon = ({ width = 31, height = 31 }: IconProps) => (
     <Svg width={31} height={31} viewBox={`0 0 ${width} ${height}`} fill="none">
     <Rect

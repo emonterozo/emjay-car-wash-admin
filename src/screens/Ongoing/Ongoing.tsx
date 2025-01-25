@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList, Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 
 import {
   OngoingTransaction,
   ScreenStatusProps,
-  TRANSACTION_STATUS,
+  TransactionStatusType,
 } from '../../types/services/types';
 import { NavigationProp } from '../../types/navigation/types';
 import {
@@ -46,6 +46,7 @@ const renderSeparator = () => <View style={styles.separator} />;
 const Ongoing = () => {
   const navigation = useNavigation<NavigationProp>();
   const { user } = useContext(GlobalContext);
+  const isFocused = useIsFocused();
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
@@ -58,7 +59,7 @@ const Ongoing = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getOngoingTransactionsRequest(
       user.accessToken,
-      selectedStatus as TRANSACTION_STATUS,
+      selectedStatus as TransactionStatusType,
       selectedStatus === 'ONGOING'
         ? undefined
         : {
@@ -80,9 +81,11 @@ const Ongoing = () => {
   };
 
   useEffect(() => {
-    fetchTransactions();
+    if (isFocused) {
+      fetchTransactions();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedStatus]);
+  }, [selectedStatus, isFocused]);
 
   const onCancel = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });

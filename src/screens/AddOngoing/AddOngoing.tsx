@@ -9,7 +9,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Yup from 'yup';
+import { ValidationError } from 'yup';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { AddOngoingRouteProp, NavigationProp } from '../../types/navigation/types';
+import {
+  CreateOngoingTransactionPayload,
+  ScreenStatusProps,
+  Service,
+  ServiceChargeType,
+} from '../../types/services/types';
+import { ModalDropdownOption } from '../../components/ModalDropdown/ModalDropdown';
 import type { Option } from '../../components/Dropdown/Dropdown';
 import { color, font } from '@app/styles';
 import {
@@ -21,19 +32,16 @@ import {
   LoadingAnimation,
   ErrorModal,
   ModalDropdown,
+  Toast,
 } from '@app/components';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { CarIcon, MotorcycleIcon } from '@app/icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { AddOngoingRouteProp } from '../../types/navigation/types';
-import { getServicesRequest } from '@app/services';
+import { createOngoingTransactionRequest, getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { ScreenStatusProps, Service } from '../../types/services/types';
 import { formattedNumber } from '@app/helpers';
-import { ModalDropdownOption } from '../../components/ModalDropdown/ModalDropdown';
 
 type FormValues = {
-  model: string | undefined;
+  vehicleModel: string | undefined;
   plateNumber: string | undefined;
   service: string[];
   serviceCharge: Option | undefined;
@@ -76,18 +84,29 @@ const size = {
   motorcycle: ['SM', 'MD', 'LG'],
 };
 
-const initialFormValues: FormValues = {
-  model: undefined,
-  plateNumber: undefined,
-  service: [],
-  serviceCharge: SERVICE_CHARGE_OPTION[1],
-  contactNumber: undefined,
-};
+const validationSchema = Yup.object({
+  vehicleModel: Yup.string().required('Vehicle model is required'),
+  plateNumber: Yup.string().required('Plate number is required'),
+  service: Yup.array().required('Service array is required').min(1, 'Service is required'),
+  serviceCharge: Yup.object().required('Service charge is required'),
+  contactNumber: Yup.string().matches(
+    /^09[0-9]{9}$/,
+    'Contact Number must be 11 digits long, starting with "09", and contain only numbers',
+  ),
+});
 
 const AddOngoing = () => {
-  const { freeWash, selectedServices } = useRoute<AddOngoingRouteProp>().params;
+  const { customerId, freeWash, selectedServices, transactionId } =
+    useRoute<AddOngoingRouteProp>().params;
   const { user } = useContext(GlobalContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
+  const initialFormValues: FormValues = {
+    vehicleModel: undefined,
+    plateNumber: undefined,
+    service: [],
+    serviceCharge: SERVICE_CHARGE_OPTION[1],
+    contactNumber: undefined,
+  };
   const [sizeCount, setSizeCount] = useState({
     car: [10, 0, 0, 0, 0],
     motorcycle: [10, 0, 0],
@@ -102,7 +121,11 @@ const AddOngoing = () => {
   });
   const [services, setServices] = useState<Service[]>([]);
   const [serviceSelection, setServiceSelection] = useState<ModalDropdownOption[]>([]);
-  const [selectedService, setSelectedService] = useState<string[]>([]);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string }>({
+    type: 'success',
+    message: '',
+  });
 
   const fetchServices = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
@@ -120,31 +143,39 @@ const AddOngoing = () => {
     }
   };
 
+  const getSelectedVehicleSize = () => {
+    const selectedSizeIndex = sizeCount[selectedVehicle].findIndex((item) => item === 10);
+    const selectedSize = size[selectedVehicle][selectedSizeIndex].toLowerCase();
+
+    return selectedSize;
+  };
+
   useEffect(() => {
     fetchServices();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const selectedSizeIndex = sizeCount[selectedVehicle].findIndex((item) => item === 10);
-    const selectedSize = size[selectedVehicle][selectedSizeIndex].toLowerCase();
-
     //selectedServices, should still return service with no specific size
 
     const filteredServices = services
       .filter((service) => service.type === selectedVehicle)
       .map((service) => {
-        const price = service.price_list.find((item) => item.size === selectedSize)?.price;
+        const price = service.price_list.find(
+          (item) => item.size === getSelectedVehicleSize(),
+        )?.price;
 
         return {
           id: service.id,
           image: service.image,
           title: service.title,
           description: formattedNumber(price ?? service.price_list[0].price),
+          value: price,
         };
       });
 
     setServiceSelection(filteredServices);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services, selectedServices, selectedVehicle, sizeCount]);
 
   const handleInputChange = (key: keyof typeof initialFormValues, value: string) => {
@@ -169,6 +200,7 @@ const AddOngoing = () => {
       car: [10, 0, 0, 0, 0],
       motorcycle: [10, 0, 0],
     });
+    setFormValues({ ...formValues, service: [] });
   };
 
   const onSelectSize = (type: keyof typeof sizeCount, index: number) => {
@@ -183,6 +215,69 @@ const AddOngoing = () => {
     navigation.goBack();
   };
 
+  const handleSubmit = () => {
+    validationSchema
+      .validate(formValues, { abortEarly: false })
+      .then(async () => {
+        setErrors({});
+        const { vehicleModel, plateNumber, serviceCharge, service } = formValues;
+        const selectedSize = getSelectedVehicleSize();
+        const selectedServiceId = service[0];
+        const price = serviceSelection.find((item) => item.id === selectedServiceId)?.value;
+
+        if (transactionId === null) {
+          const payload: CreateOngoingTransactionPayload = {
+            vehicle_type: selectedVehicle,
+            vehicle_size: selectedSize,
+            model: vehicleModel!,
+            plate_number: plateNumber!,
+            service_id: selectedServiceId,
+            price: price as number,
+            service_charge: serviceCharge?.label.toLowerCase() as ServiceChargeType,
+          };
+          if (customerId !== null) {
+            payload.customer_id = customerId;
+          }
+
+          setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+          const response = await createOngoingTransactionRequest(user.accessToken, payload);
+          if (response.success && response.data) {
+            setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+            setToast({
+              message: 'Service have been added successfully!',
+              type: 'success',
+            });
+            setIsToastVisible(true);
+            setTimeout(() => {
+              navigation.replace('Ongoing');
+            }, 3000);
+          } else {
+            setScreenStatus({
+              isLoading: false,
+              type: response.error === ERR_NETWORK ? 'connection' : 'error',
+              hasError: true,
+            });
+          }
+        } else {
+          // TODO: add availed service to existing transaction
+        }
+      })
+      .catch((err) => {
+        const errorMessages: Errors = err.inner.reduce((acc: Errors, curr: ValidationError) => {
+          acc[curr.path as keyof FormValues] = curr.message;
+          return acc;
+        }, {});
+        setErrors(errorMessages);
+        setIsToastVisible(true);
+        setToast({
+          message: 'Please complete the required fields before adding.',
+          type: 'error',
+        });
+      });
+  };
+
+  const onToastClose = () => setIsToastVisible(false);
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -193,6 +288,13 @@ const AddOngoing = () => {
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
         onRetry={fetchServices}
+      />
+      <Toast
+        isVisible={isToastVisible}
+        message={toast.message}
+        duration={3000}
+        type={toast.type}
+        onClose={onToastClose}
       />
       {freeWash.length > 0 && (
         <>
@@ -261,12 +363,12 @@ const AddOngoing = () => {
           )}
         </View>
         <TextInput
-          label="Model"
-          placeholder="Enter Model"
-          error={errors.model}
-          value={formValues.model}
-          onChangeText={(value) => handleInputChange('model', value)}
-          onFocus={() => removeError('model')}
+          label="Vehicle Model"
+          placeholder="Enter Vehicle Model"
+          error={errors.vehicleModel}
+          value={formValues.vehicleModel}
+          onChangeText={(value) => handleInputChange('vehicleModel', value)}
+          onFocus={() => removeError('vehicleModel')}
           maxLength={64}
         />
         <TextInput
@@ -281,9 +383,9 @@ const AddOngoing = () => {
         <ModalDropdown
           label="Service"
           placeholder="Select Service"
-          selected={selectedService}
+          selected={formValues.service}
           options={serviceSelection}
-          onSelected={(selected) => setSelectedService(selected)}
+          onSelected={(selected) => setFormValues({ ...formValues, service: selected })}
           error={errors.service}
           onToggleOpen={() => removeError('service')}
           title="Select Service"
@@ -312,7 +414,7 @@ const AddOngoing = () => {
           variant="primary"
           buttonStyle={styles.button}
           textStyle={styles.textStyle}
-          onPress={() => {}}
+          onPress={handleSubmit}
         />
       </ScrollView>
     </SafeAreaView>

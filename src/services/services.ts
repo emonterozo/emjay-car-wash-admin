@@ -11,14 +11,14 @@ import {
   CustomerInformationResponse,
   CustomersResponse,
   CustomerFreeWashServiceResponse,
-  EMPLOYEE_STATUS,
+  EmployeeStatusType,
   EmployeeInformationResponse,
   EmployeesResponse,
   LoginPayload,
   LoginResponse,
   OngoingTransactionResponse,
   ServicesResponse,
-  TRANSACTION_STATUS,
+  TransactionStatusType,
   TransactionServiceDetailsResponse,
   TransactionServicesResponse,
   UpdateEmployeePayload,
@@ -127,7 +127,7 @@ export const addEmployeeRequest = (
   gender: string,
   contact_number: string,
   employee_title: string,
-  employee_status: EMPLOYEE_STATUS,
+  employee_status: EmployeeStatusType,
   date_started: string,
 ): ApiResponse<AddEmployeeResponse> => {
   return apiRequest<AddEmployeePayload, AddEmployeeResponse>(
@@ -154,7 +154,7 @@ export const updateEmployeeRequest = (
   accessToken: string,
   contact_number: string,
   employee_title: string,
-  employee_status: EMPLOYEE_STATUS,
+  employee_status: EmployeeStatusType,
 ): ApiResponse<UpdateEmployeeResponse> => {
   return apiRequest<UpdateEmployeePayload, UpdateEmployeeResponse>(
     `${Config.API_BASE_URL}/admin/employees/${id}`,
@@ -185,7 +185,7 @@ export const getCustomerFreeWashServiceRequest = (
 
 export const getOngoingTransactionsRequest = (
   accessToken: string,
-  status: TRANSACTION_STATUS = 'ONGOING',
+  status: TransactionStatusType = 'ONGOING',
   dateRange?: {
     start: string;
     end: string;
@@ -265,7 +265,7 @@ export const addTransactionServiceRequest = (
   return apiRequest<AddTransactionServicePayload, AddTransactionServiceResponse>(
     `${Config.API_BASE_URL}/admin/ongoing/transactions/${id}/services`,
     {
-      method: 'post',
+      method: 'put',
       headers: requestHeader(accessToken),
       data: payload,
     },
