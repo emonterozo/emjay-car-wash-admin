@@ -135,125 +135,130 @@ const CalendarPicker = ({
   };
 
   return (
-    <Modal visible={isVisible} animationType="slide" transparent={true}>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalViewContainer}>
-          <View style={styles.row}>
-            {isDefaultSelection && (
+    <View style={styles.container}>
+      <Modal visible={isVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalViewContainer}>
+            <View style={styles.row}>
+              {isDefaultSelection && (
+                <TouchableOpacity
+                  onPress={() => onChevronClick('dec')}
+                  disabled={isSameMonth(selectedDate, minDate)}
+                >
+                  <MaterialCommunityIcon name="chevron-left" size={25} color="#88888888" />
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
-                onPress={() => onChevronClick('dec')}
-                disabled={isSameMonth(selectedDate, minDate)}
+                style={styles.content}
+                disabled
+                onPress={() => setIsDefaultSelection(!isDefaultSelection)}
               >
-                <MaterialCommunityIcon name="chevron-left" size={25} color="#88888888" />
+                <Text style={styles.date}>{format(selectedDate, 'MMMM yyyy')}</Text>
               </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={styles.content}
-              disabled
-              onPress={() => setIsDefaultSelection(!isDefaultSelection)}
-            >
-              <Text style={styles.date}>{format(selectedDate, 'MMMM yyyy')}</Text>
-            </TouchableOpacity>
-            {isDefaultSelection && (
-              <TouchableOpacity
-                onPress={() => onChevronClick('inc')}
-                disabled={isSameMonth(selectedDate, maxDate)}
-              >
-                <MaterialCommunityIcon name="chevron-right" size={25} color="#88888888" />
-              </TouchableOpacity>
-            )}
-          </View>
-          <View style={styles.separator} />
-          {isDefaultSelection ? (
-            <View>
-              <View style={styles.headerRow}>
-                {daysOfWeek.map((day, index) => (
-                  <Text key={index} style={styles.headerText}>
-                    {day}
-                  </Text>
-                ))}
-              </View>
-              <View style={styles.daysContainer}>
-                {currentDate &&
-                  days.map((day, index) => {
-                    const { startingDay, daysInCurrentMonth } = currentDate;
-                    const maxDay = maxDate.getUTCDate();
-                    const minDay = minDate.getUTCDate();
-
-                    return (
-                      <View key={index} style={styles.dayCell}>
-                        <TouchableOpacity
-                          style={[
-                            styles.dayButton,
-                            day === selectedDay &&
-                              styles.selectedDay &&
-                              index >= startingDay &&
-                              index < startingDay + daysInCurrentMonth &&
-                              styles.selectedDay,
-                          ]}
-                          disabled={
-                            index < startingDay ||
-                            index >= startingDay + daysInCurrentMonth ||
-                            (day > maxDay && isSameMonth(selectedDate, maxDate)) ||
-                            (day < minDay && isSameMonth(selectedDate, minDate))
-                          }
-                          onPress={() => onSelectedDay(day)}
-                        >
-                          <Text
-                            style={[
-                              styles.dayText,
-                              day === selectedDay && styles.selectedDayText,
-                              index < startingDay && styles.notActiveDate,
-                              index >= startingDay + daysInCurrentMonth && styles.notActiveDate,
-                              day > maxDay &&
-                                isSameMonth(selectedDate, maxDate) &&
-                                styles.notActiveDate,
-                              day < minDay &&
-                                isSameMonth(selectedDate, minDate) &&
-                                styles.notActiveDate,
-                            ]}
-                          >
-                            {day}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  })}
-              </View>
+              {isDefaultSelection && (
+                <TouchableOpacity
+                  onPress={() => onChevronClick('inc')}
+                  disabled={isSameMonth(selectedDate, maxDate)}
+                >
+                  <MaterialCommunityIcon name="chevron-right" size={25} color="#88888888" />
+                </TouchableOpacity>
+              )}
             </View>
-          ) : (
-            <CalendarWheelPicker
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              minDate={minDate}
-              maxDate={maxDate}
-              onSelected={() => {}}
-            />
-          )}
-          <View style={styles.separator} />
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Cancel"
-              variant="secondary"
-              buttonStyle={styles.button}
-              textStyle={styles.textStyle}
-              onPress={handlePressClose}
-            />
-            <Button
-              title="Confirm"
-              variant="primary"
-              buttonStyle={styles.button}
-              textStyle={styles.textStyle}
-              onPress={handlePressConfirm}
-            />
+            <View style={styles.separator} />
+            {isDefaultSelection ? (
+              <View>
+                <View style={styles.headerRow}>
+                  {daysOfWeek.map((day, index) => (
+                    <Text key={index} style={styles.headerText}>
+                      {day}
+                    </Text>
+                  ))}
+                </View>
+                <View style={styles.daysContainer}>
+                  {currentDate &&
+                    days.map((day, index) => {
+                      const { startingDay, daysInCurrentMonth } = currentDate;
+                      const maxDay = maxDate.getUTCDate();
+                      const minDay = minDate.getUTCDate();
+
+                      return (
+                        <View key={index} style={styles.dayCell}>
+                          <TouchableOpacity
+                            style={[
+                              styles.dayButton,
+                              day === selectedDay &&
+                                styles.selectedDay &&
+                                index >= startingDay &&
+                                index < startingDay + daysInCurrentMonth &&
+                                styles.selectedDay,
+                            ]}
+                            disabled={
+                              index < startingDay ||
+                              index >= startingDay + daysInCurrentMonth ||
+                              (day > maxDay && isSameMonth(selectedDate, maxDate)) ||
+                              (day < minDay && isSameMonth(selectedDate, minDate))
+                            }
+                            onPress={() => onSelectedDay(day)}
+                          >
+                            <Text
+                              style={[
+                                styles.dayText,
+                                day === selectedDay && styles.selectedDayText,
+                                index < startingDay && styles.notActiveDate,
+                                index >= startingDay + daysInCurrentMonth && styles.notActiveDate,
+                                day > maxDay &&
+                                  isSameMonth(selectedDate, maxDate) &&
+                                  styles.notActiveDate,
+                                day < minDay &&
+                                  isSameMonth(selectedDate, minDate) &&
+                                  styles.notActiveDate,
+                              ]}
+                            >
+                              {day}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    })}
+                </View>
+              </View>
+            ) : (
+              <CalendarWheelPicker
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
+                minDate={minDate}
+                maxDate={maxDate}
+                onSelected={() => {}}
+              />
+            )}
+            <View style={styles.separator} />
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Cancel"
+                variant="secondary"
+                buttonStyle={styles.button}
+                textStyle={styles.textStyle}
+                onPress={handlePressClose}
+              />
+              <Button
+                title="Confirm"
+                variant="primary"
+                buttonStyle={styles.button}
+                textStyle={styles.textStyle}
+                onPress={handlePressConfirm}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -261,6 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(141, 141, 141, 0.43)',
   },
   row: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -349,8 +355,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

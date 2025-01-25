@@ -168,61 +168,63 @@ const ModalDropdown = ({
           <Text style={styles.error}>{error}</Text>
         </View>
       )}
-      <Modal visible={isOptionOpen} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalViewContainer}>
-            <View style={styles.headerContainer}>
-              <TouchableOpacity style={styles.back} onPress={handlePressCancel}>
-                <ChevronLeftIcon />
-              </TouchableOpacity>
-              <Text style={styles.title}>{title}</Text>
-            </View>
-            <FlatList
-              data={options}
-              showsVerticalScrollIndicator={false}
-              bounces={false}
-              renderItem={({ item }) => (
-                <TouchableWithoutFeedback onPress={() => onSelect(item.id)}>
-                  <View
-                    style={[styles.option, selectedHolder.includes(item.id) && styles.selected]}
-                  >
-                    <FastImage
-                      style={styles.optionImage}
-                      source={{
-                        uri: item.image,
-                        priority: FastImage.priority.normal,
-                      }}
-                      resizeMode={FastImage.resizeMode.cover}
-                    />
-                    <Text style={styles.optionTitle}>{item.title}</Text>
-                    <Text style={styles.optionDescription}>{item.description}</Text>
-                  </View>
-                </TouchableWithoutFeedback>
-              )}
-              keyExtractor={(item) => item.id}
-              numColumns={2}
-              columnWrapperStyle={styles.columnWrapper}
-              ItemSeparatorComponent={ItemSeparator}
-            />
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Cancel"
-                variant="secondary"
-                buttonStyle={styles.button}
-                textStyle={styles.textStyle}
-                onPress={handlePressCancel}
+      <View>
+        <Modal visible={isOptionOpen} animationType="slide" transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalViewContainer}>
+              <View style={styles.headerContainer}>
+                <TouchableOpacity style={styles.back} onPress={handlePressCancel}>
+                  <ChevronLeftIcon />
+                </TouchableOpacity>
+                <Text style={styles.title}>{title}</Text>
+              </View>
+              <FlatList
+                data={options}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+                renderItem={({ item }) => (
+                  <TouchableWithoutFeedback onPress={() => onSelect(item.id)}>
+                    <View
+                      style={[styles.option, selectedHolder.includes(item.id) && styles.selected]}
+                    >
+                      <FastImage
+                        style={styles.optionImage}
+                        source={{
+                          uri: item.image,
+                          priority: FastImage.priority.normal,
+                        }}
+                        resizeMode={FastImage.resizeMode.cover}
+                      />
+                      <Text style={styles.optionTitle}>{item.title}</Text>
+                      <Text style={styles.optionDescription}>{item.description}</Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                )}
+                keyExtractor={(item) => item.id}
+                numColumns={2}
+                columnWrapperStyle={styles.columnWrapper}
+                ItemSeparatorComponent={ItemSeparator}
               />
-              <Button
-                title="Confirm"
-                variant="primary"
-                buttonStyle={styles.button}
-                textStyle={styles.textStyle}
-                onPress={handlePressSelected}
-              />
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Cancel"
+                  variant="secondary"
+                  buttonStyle={styles.button}
+                  textStyle={styles.textStyle}
+                  onPress={handlePressCancel}
+                />
+                <Button
+                  title="Confirm"
+                  variant="primary"
+                  buttonStyle={styles.button}
+                  textStyle={styles.textStyle}
+                  onPress={handlePressSelected}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </View>
     </View>
   );
 };
