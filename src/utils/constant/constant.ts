@@ -88,6 +88,8 @@ export const IMAGES = {
   NO_CAMERA: require('../../../assets/images/no-camera.png'),
   PERMISSION_DENIED: require('../../../assets/images/permission-denied.png'),
   CANCEL: require('../../../assets/images/cancel.png'),
+  FREE: require('../../../assets/images/gift.png'),
+  NOT_FREE: require('../../../assets/images/cart.png'),
 };
 
 export const ERROR_TYPE = {

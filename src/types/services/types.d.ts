@@ -198,7 +198,9 @@ export type TransactionServices = {
 export type TransactionServicesResponse = {
   transaction: {
     id: string;
-    customer_id: string | null;
+    contact_number: string | null;
+    vehicle_type: string;
+    vehicle_size: string;
     services: TransactionServices[];
   };
   errors: ErrorProps[];
@@ -236,6 +238,7 @@ export type CustomerFreeWashServiceResponse = {
     id: string;
     first_name: string;
     last_name: string;
+    contact_number: string;
     free_wash: { size: string; count: number; vehicle_type: string }[];
   };
   errors: ErrorProps[];

@@ -29,16 +29,15 @@ import { AddOngoingRouteProp } from '../../types/navigation/types';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { ScreenStatusProps, Service } from '../../types/services/types';
+import { formattedNumber } from '@app/helpers';
+import { ModalDropdownOption } from '../../components/ModalDropdown/ModalDropdown';
 
 type FormValues = {
-  firstName: string;
-  lastName: string;
-  birthDate: Date | undefined;
-  gender: Option | undefined;
+  model: string | undefined;
+  plateNumber: string | undefined;
+  service: string[];
+  serviceCharge: Option | undefined;
   contactNumber: string | undefined;
-  employeeTitle: string;
-  employeeStatus: Option | undefined;
-  dateStarted: Date | undefined;
 };
 
 type Errors = {
@@ -46,54 +45,16 @@ type Errors = {
   [key in keyof FormValues]?: string;
 };
 
-const GENDER_OPTIONS = [
+const SERVICE_CHARGE_OPTION = [
   {
     id: '1',
-    icon: <Image source={IMAGES.MALE} resizeMode="contain" />,
-    label: 'MALE',
+    icon: <Image source={IMAGES.FREE} resizeMode="contain" />,
+    label: 'Free',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
-    label: 'FEMALE',
-  },
-];
-
-const SERVICES = [
-  {
-    id: '1',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
-    title: 'Car Wash',
-    description: 'P 150.00',
-  },
-  {
-    id: '2',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
-    title: 'Car Wash 1',
-    description: 'P 150.00',
-  },
-  {
-    id: '3',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
-    title: 'Car Wash 2',
-    description: 'P 150.00',
-  },
-  {
-    id: '4',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
-    title: 'Car Wash 3',
-    description: 'P 150.00',
-  },
-  {
-    id: '5',
-    image:
-      'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fcar-wash.jpg?alt=media&token=5427e084-b345-4ef8-acc5-40404d4b5022',
-    title: 'Car Wash 3',
-    description: 'P 150.00',
+    icon: <Image source={IMAGES.NOT_FREE} resizeMode="contain" />,
+    label: 'Not Free',
   },
 ];
 
@@ -115,27 +76,23 @@ const size = {
   motorcycle: ['SM', 'MD', 'LG'],
 };
 
+const initialFormValues: FormValues = {
+  model: undefined,
+  plateNumber: undefined,
+  service: [],
+  serviceCharge: SERVICE_CHARGE_OPTION[1],
+  contactNumber: undefined,
+};
+
 const AddOngoing = () => {
-  const { customerId, freeWash, transactionId, selectedServices } =
-    useRoute<AddOngoingRouteProp>().params;
+  const { freeWash, selectedServices } = useRoute<AddOngoingRouteProp>().params;
   const { user } = useContext(GlobalContext);
   const navigation = useNavigation();
-
-  const initialFormValues: FormValues = {
-    firstName: '',
-    lastName: '',
-    birthDate: undefined,
-    gender: undefined,
-    contactNumber: undefined,
-    employeeTitle: '',
-    employeeStatus: undefined,
-    dateStarted: undefined,
-  };
-  const [selectedVehicle, setSelectedVehicle] = useState('car');
   const [sizeCount, setSizeCount] = useState({
     car: [10, 0, 0, 0, 0],
     motorcycle: [10, 0, 0],
   });
+  const [selectedVehicle, setSelectedVehicle] = useState<keyof typeof size>('car');
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [errors, setErrors] = useState<Errors>({});
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
@@ -144,11 +101,13 @@ const AddOngoing = () => {
     type: 'error',
   });
   const [services, setServices] = useState<Service[]>([]);
+  const [serviceSelection, setServiceSelection] = useState<ModalDropdownOption[]>([]);
   const [selectedService, setSelectedService] = useState<string[]>([]);
 
   const fetchServices = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getServicesRequest(user.accessToken);
+    const response = await getServicesRequest(user.accessToken, '_id', 'asc');
+
     if (response.success && response.data) {
       setServices(response.data.services);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -164,10 +123,32 @@ const AddOngoing = () => {
   useEffect(() => {
     fetchServices();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerId]);
+  }, []);
 
-  const handleInputChange = (key: string, value: string) => {
-    setFormValues({ ...formValues, [key]: value });
+  useEffect(() => {
+    const selectedSizeIndex = sizeCount[selectedVehicle].findIndex((item) => item === 10);
+    const selectedSize = size[selectedVehicle][selectedSizeIndex].toLowerCase();
+
+    //selectedServices, should still return service with no specific size
+
+    const filteredServices = services
+      .filter((service) => service.type === selectedVehicle)
+      .map((service) => {
+        const price = service.price_list.find((item) => item.size === selectedSize)?.price;
+
+        return {
+          id: service.id,
+          image: service.image,
+          title: service.title,
+          description: formattedNumber(price ?? service.price_list[0].price),
+        };
+      });
+
+    setServiceSelection(filteredServices);
+  }, [services, selectedServices, selectedVehicle, sizeCount]);
+
+  const handleInputChange = (key: keyof typeof initialFormValues, value: string) => {
+    setFormValues({ ...formValues, [key]: key === 'plateNumber' ? value.toUpperCase() : value });
   };
 
   const handleDropdownChange = (key: string, value: Option) => {
@@ -182,7 +163,7 @@ const AddOngoing = () => {
     });
   };
 
-  const handleSelectVehicle = (vehicle: string) => {
+  const handleSelectVehicle = (vehicle: keyof typeof sizeCount) => {
     setSelectedVehicle(vehicle);
     setSizeCount({
       car: [10, 0, 0, 0, 0],
@@ -253,7 +234,7 @@ const AddOngoing = () => {
                   option.key === selectedVehicle && { shadowColor: color.primary },
                 ]}
                 key={option.key}
-                onPress={() => handleSelectVehicle(option.key)}
+                onPress={() => handleSelectVehicle(option.key as keyof typeof size)}
               >
                 {option.key === selectedVehicle ? option.active : option.inactive}
               </TouchableOpacity>
@@ -282,41 +263,40 @@ const AddOngoing = () => {
         <TextInput
           label="Model"
           placeholder="Enter Model"
-          error={errors.firstName}
-          value={formValues.firstName}
-          onChangeText={(value) => handleInputChange('firstName', value)}
-          onFocus={() => removeError('firstName')}
+          error={errors.model}
+          value={formValues.model}
+          onChangeText={(value) => handleInputChange('model', value)}
+          onFocus={() => removeError('model')}
           maxLength={64}
         />
         <TextInput
           label="Plate Number"
           placeholder="Enter Plate Number"
-          error={errors.lastName}
-          value={formValues.lastName}
-          onChangeText={(value) => handleInputChange('lastName', value)}
-          onFocus={() => removeError('lastName')}
+          error={errors.plateNumber}
+          value={formValues.plateNumber}
+          onChangeText={(value) => handleInputChange('plateNumber', value)}
+          onFocus={() => removeError('plateNumber')}
           maxLength={64}
         />
         <ModalDropdown
           label="Service"
           placeholder="Select Service"
           selected={selectedService}
-          multiSelect
-          options={SERVICES}
+          options={serviceSelection}
           onSelected={(selected) => setSelectedService(selected)}
-          error={errors.gender}
-          onToggleOpen={() => removeError('gender')}
+          error={errors.service}
+          onToggleOpen={() => removeError('service')}
           title="Select Service"
         />
         <Dropdown
           label="Service Charge"
           placeholder="Select Services"
-          selected={formValues.gender}
-          options={GENDER_OPTIONS}
-          onSelected={(selectedOption) => handleDropdownChange('gender', selectedOption)}
+          selected={formValues.serviceCharge}
+          options={SERVICE_CHARGE_OPTION}
+          onSelected={(selectedOption) => handleDropdownChange('serviceCharge', selectedOption)}
           optionMinWidth={196}
-          error={errors.gender}
-          onToggleOpen={() => removeError('gender')}
+          error={errors.serviceCharge}
+          onToggleOpen={() => removeError('serviceCharge')}
         />
         <TextInput
           label="Contact Number"

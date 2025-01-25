@@ -19,7 +19,7 @@ import { isStringEmpty } from '@app/helpers';
 import { IMAGES } from '@app/constant';
 import { ChevronLeftIcon } from '@app/icons';
 
-export type Option = {
+export type ModalDropdownOption = {
   id: string;
   image: string;
   title: string;
@@ -35,7 +35,7 @@ export type ModalDropdownProps = {
   disabledColor?: string;
   textColor?: string;
   selected: string[];
-  options: Option[];
+  options: ModalDropdownOption[];
   onSelected: (selected: string[]) => void;
   error?: string;
   isDisabled?: boolean;
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   },
   modalViewContainer: {
     width: Dimensions.get('window').width * 0.9,
-    height: '70%',
+    height: '80%',
     backgroundColor: color.background,
     borderRadius: 24,
     gap: 8,
