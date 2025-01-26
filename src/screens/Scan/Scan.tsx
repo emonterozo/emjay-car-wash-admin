@@ -88,8 +88,7 @@ const Scan = () => {
         customerId: response.data.customer.id,
         contactNumber: response.data.customer.contact_number,
         freeWash: transformedFreeWash,
-        transactionId: null,
-        selectedServices: [],
+        transaction: undefined,
       });
     } else {
       switch (response.status) {

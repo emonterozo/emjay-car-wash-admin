@@ -1,5 +1,6 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
+import { TransactionServicesResponse } from '../services/types';
 
 export type CarwashList = {
   icon: string;
@@ -27,8 +28,11 @@ export type AuthStackParamList = {
     customerId: string | null;
     contactNumber: string | null;
     freeWash: { type: string; size: string }[];
-    transactionId: string | null;
-    selectedServices: string[];
+    transaction:
+      | (Omit<TransactionServicesResponse['transaction'], 'availed_services' | 'contact_number'> & {
+          availedServices: string[];
+        })
+      | undefined;
   };
   PreTransaction: { id: string };
   EmployeeForm:
@@ -47,8 +51,8 @@ export type AuthStackParamList = {
           dateStarted: string;
         };
       };
-  AvailedServices: undefined;
-  AvailedServiceDetails: undefined;
+  AvailedServices: { customerId: string | null; transactionId: string };
+  AvailedServiceDetails: { transactionId: string; transactionServiceId: string };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -62,3 +66,7 @@ export type AddOngoingRouteProp = RouteProp<AuthStackParamList, 'AddOngoing'>;
 export type EmployeeDetailsRouteProp = RouteProp<AuthStackParamList, 'EmployeeDetails'>;
 
 export type EmployeeFormRouteProp = RouteProp<AuthStackParamList, 'EmployeeForm'>;
+
+export type AvailedServicesRouteProp = RouteProp<AuthStackParamList, 'AvailedServices'>;
+
+export type AvailedServiceDetailRouteProp = RouteProp<AuthStackParamList, 'AvailedServiceDetails'>;

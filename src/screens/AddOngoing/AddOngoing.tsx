@@ -36,7 +36,11 @@ import {
 } from '@app/components';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { CarIcon, MotorcycleIcon } from '@app/icons';
-import { createOngoingTransactionRequest, getServicesRequest } from '@app/services';
+import {
+  addTransactionServiceRequest,
+  createOngoingTransactionRequest,
+  getServicesRequest,
+} from '@app/services';
 import GlobalContext from '@app/context';
 import { formattedNumber } from '@app/helpers';
 
@@ -98,13 +102,13 @@ const validationSchema = Yup.object({
 });
 
 const AddOngoing = () => {
-  const { customerId, contactNumber, freeWash, selectedServices, transactionId } =
+  const { customerId, contactNumber, freeWash, transaction } =
     useRoute<AddOngoingRouteProp>().params;
   const { user } = useContext(GlobalContext);
   const navigation = useNavigation<NavigationProp>();
   const initialFormValues: FormValues = {
-    vehicleModel: undefined,
-    plateNumber: undefined,
+    vehicleModel: transaction?.model,
+    plateNumber: transaction?.plate_number,
     service: [],
     serviceCharge: SERVICE_CHARGE_OPTION[1],
     contactNumber: contactNumber,
@@ -113,7 +117,9 @@ const AddOngoing = () => {
     car: [10, 0, 0, 0, 0],
     motorcycle: [10, 0, 0],
   });
-  const [selectedVehicle, setSelectedVehicle] = useState<keyof typeof size>('car');
+  const [selectedVehicle, setSelectedVehicle] = useState<keyof typeof size>(
+    (transaction?.vehicle_type as keyof typeof size) ?? 'car',
+  );
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [errors, setErrors] = useState<Errors>({});
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
@@ -153,9 +159,18 @@ const AddOngoing = () => {
   };
 
   useEffect(() => {
+    if (transaction) {
+      const type = transaction.vehicle_type as keyof typeof size;
+      const selectedSizeIndex = size[type].indexOf(transaction.vehicle_size.toUpperCase());
+      onSelectSize(type, selectedSizeIndex);
+
+      //newSizeCount[transaction.vehicle_size]
+      // newSizeCount[type] = newSizeCount[type].map(() => 0);
+      // newSizeCount[type][index] = 10;
+    }
     fetchServices();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [transaction]);
 
   useEffect(() => {
     //selectedServices, should still return service with no specific size
@@ -178,7 +193,7 @@ const AddOngoing = () => {
 
     setServiceSelection(filteredServices);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [services, selectedServices, selectedVehicle, sizeCount]);
+  }, [services, selectedVehicle, sizeCount]);
 
   const handleInputChange = (key: keyof typeof initialFormValues, value: string) => {
     setFormValues({ ...formValues, [key]: key === 'plateNumber' ? value.toUpperCase() : value });
@@ -221,13 +236,38 @@ const AddOngoing = () => {
     validationSchema
       .validate(formValues, { abortEarly: false })
       .then(async () => {
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
         setErrors({});
         const { vehicleModel, plateNumber, serviceCharge, service } = formValues;
         const selectedSize = getSelectedVehicleSize();
         const selectedServiceId = service[0];
         const price = serviceSelection.find((item) => item.id === selectedServiceId)?.value;
 
-        if (transactionId === null) {
+        if (transaction) {
+          const response = await addTransactionServiceRequest(user.accessToken, transaction.id, {
+            service_id: selectedServiceId,
+            price: price as number,
+            service_charge: serviceCharge?.label.toLowerCase() as ServiceChargeType,
+          });
+
+          if (response.success && response.data) {
+            setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+            setToast({
+              message: 'Service have been added successfully!',
+              type: 'success',
+            });
+            setIsToastVisible(true);
+            setTimeout(() => {
+              navigation.goBack();
+            }, 3000);
+          } else {
+            setScreenStatus({
+              isLoading: false,
+              type: response.error === ERR_NETWORK ? 'connection' : 'error',
+              hasError: true,
+            });
+          }
+        } else {
           const payload: CreateOngoingTransactionPayload = {
             vehicle_type: selectedVehicle,
             vehicle_size: selectedSize,
@@ -244,22 +284,17 @@ const AddOngoing = () => {
             payload.contact_number = formValues.contactNumber;
           }
 
-          setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
           const response = await createOngoingTransactionRequest(user.accessToken, payload);
-          setScreenStatus({
-            isLoading: false,
-            type: response.error === ERR_NETWORK ? 'connection' : 'error',
-            hasError: true,
-          });
+
           if (response.success && response.data) {
             setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
             setToast({
-              message: 'Service have been added successfully!',
+              message: 'Transaction have been created successfully!',
               type: 'success',
             });
             setIsToastVisible(true);
             setTimeout(() => {
-              navigation.replace('Ongoing');
+              navigation.goBack();
             }, 3000);
           } else {
             setScreenStatus({
@@ -268,8 +303,6 @@ const AddOngoing = () => {
               hasError: true,
             });
           }
-        } else {
-          // TODO: add availed service to existing transaction
         }
       })
       .catch((err) => {
@@ -291,7 +324,7 @@ const AddOngoing = () => {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Add Ongoing" />
+      <AppHeader title={`Add ${transaction ? 'Service' : 'Ongoing'}`} />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         type={screenStatus.type}
@@ -346,6 +379,7 @@ const AddOngoing = () => {
                   option.key === selectedVehicle && { shadowColor: color.primary },
                 ]}
                 key={option.key}
+                disabled={transaction ? true : false}
                 onPress={() => handleSelectVehicle(option.key as keyof typeof size)}
               >
                 {option.key === selectedVehicle ? option.active : option.inactive}
@@ -360,7 +394,7 @@ const AddOngoing = () => {
               sizes={size.car}
               values={sizeCount.car}
               isCountVisible={false}
-              onPress={(index) => onSelectSize('car', index)}
+              onPress={transaction ? undefined : (index) => onSelectSize('car', index)}
             />
           )}
           {selectedVehicle === 'motorcycle' && (
@@ -368,7 +402,7 @@ const AddOngoing = () => {
               sizes={size.motorcycle}
               values={sizeCount.motorcycle}
               isCountVisible={false}
-              onPress={(index) => onSelectSize('motorcycle', index)}
+              onPress={transaction ? undefined : (index) => onSelectSize('motorcycle', index)}
             />
           )}
         </View>
@@ -380,6 +414,7 @@ const AddOngoing = () => {
           onChangeText={(value) => handleInputChange('vehicleModel', value)}
           onFocus={() => removeError('vehicleModel')}
           maxLength={64}
+          readOnly={transaction ? true : false}
         />
         <TextInput
           label="Plate Number"
@@ -389,6 +424,7 @@ const AddOngoing = () => {
           onChangeText={(value) => handleInputChange('plateNumber', value)}
           onFocus={() => removeError('plateNumber')}
           maxLength={64}
+          readOnly={transaction ? true : false}
         />
         <ModalDropdown
           label="Service"
@@ -418,6 +454,7 @@ const AddOngoing = () => {
           onChangeText={(value) => handleInputChange('contactNumber', value)}
           keyboardType="numeric"
           onFocus={() => removeError('contactNumber')}
+          readOnly={transaction ? true : false}
         />
         <Button
           title="Submit"

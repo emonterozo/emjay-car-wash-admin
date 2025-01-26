@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Image,
@@ -9,110 +9,132 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import FastImage from '@d11/react-native-fast-image';
+import { format } from 'date-fns';
 
-import { ScreenStatusProps } from '../../types/services/types';
-import { AppHeader, ErrorModal, LoadingAnimation } from '@app/components';
+import { AvailedServiceDetailRouteProp } from '../../types/navigation/types';
+import { ScreenStatusProps, TransactionServiceDetailsResponse } from '../../types/services/types';
+import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { color, font } from '@app/styles';
 import { EditIcon } from '@app/icons';
-import { format } from 'date-fns';
 import { formattedNumber } from '@app/helpers';
-import { IMAGES } from '@app/constant';
-
-type ServiceInformationProps = {
-  price: number;
-  deduction: number;
-  company_earnings: number;
-  employee_share: number;
-  status: string;
-  payment_status: string;
-  start_date: Date;
-  end_date: Date;
-};
-
-const serviceInformation: ServiceInformationProps = {
-  price: 150,
-  deduction: 0,
-  company_earnings: 80,
-  employee_share: 60,
-  status: 'Ongoing',
-  payment_status: 'Not Yet Paid',
-  start_date: new Date('2024-12-23T08:00:00.000Z'),
-  end_date: new Date('2024-12-23T08:00:00.000Z'),
-};
-
-const serviceDetails = serviceInformation
-  ? [
-      {
-        label: 'Price',
-        value: formattedNumber(serviceInformation.price),
-      },
-      {
-        label: 'Deduction',
-        value: formattedNumber(serviceInformation.deduction),
-      },
-      { label: 'Company Earnings', value: formattedNumber(serviceInformation.company_earnings) },
-      {
-        label: 'Employee Share',
-        value: formattedNumber(serviceInformation.employee_share),
-      },
-      {
-        label: 'Status',
-        value: `${serviceInformation.status}`,
-      },
-      {
-        label: 'Payment Status',
-        value: `${serviceInformation.payment_status}`,
-      },
-      {
-        label: 'Start Date & Time',
-        value: format(new Date(serviceInformation.start_date), 'dd MMM, hh:mm a'),
-      },
-      {
-        label: 'End Date & Time',
-        value: format(new Date(serviceInformation.end_date), 'dd MMM, hh:mm a'),
-      },
-    ]
-  : [
-      {
-        label: 'Price',
-        value: 'No available record',
-      },
-      {
-        label: 'Deduction',
-        value: 'No available record',
-      },
-      { label: 'Company Earnings', value: 'No available record' },
-      {
-        label: 'Employee Share',
-        value: 'No available record',
-      },
-      {
-        label: 'Status',
-        value: 'No available record',
-      },
-      {
-        label: 'Payment Status',
-        value: 'No available record',
-      },
-      {
-        label: 'Start Date & Time',
-        value: 'No available record',
-      },
-      {
-        label: 'End Date & Time',
-        value: 'No available record',
-      },
-    ];
+import { ERR_NETWORK, IMAGES } from '@app/constant';
+import GlobalContext from '@app/context';
+import { getTransactionServiceDetailsRequest } from '@app/services';
 
 const AvailedServiceDetails = () => {
+  const { user } = useContext(GlobalContext);
+  const { transactionId, transactionServiceId } = useRoute<AvailedServiceDetailRouteProp>().params;
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
     type: 'error',
   });
+  const [transactionService, setTransactionService] = useState<
+    TransactionServiceDetailsResponse['transaction'] | undefined
+  >(undefined);
+
+  const serviceDetails = transactionService
+    ? [
+        {
+          label: 'Price',
+          value: formattedNumber(transactionService.price),
+        },
+        {
+          label: 'Deduction',
+          value: formattedNumber(transactionService.deduction),
+        },
+        { label: 'Company Earnings', value: formattedNumber(transactionService.company_earnings) },
+        {
+          label: 'Employee Share',
+          value: formattedNumber(transactionService.employee_share),
+        },
+        {
+          label: 'Status',
+          value:
+            transactionService.status.charAt(0).toUpperCase() +
+            transactionService.status.slice(1).toLowerCase(),
+        },
+        {
+          label: 'Payment Status',
+          value: `${transactionService.is_paid ? 'Paid' : 'Not Yet Paid'}`,
+        },
+        {
+          label: 'Start Date & Time',
+          value:
+            transactionService.start_date !== null
+              ? format(new Date(transactionService.start_date!), 'dd MMM, hh:mm a')
+              : 'No available record',
+        },
+        {
+          label: 'End Date & Time',
+          value:
+            transactionService.end_date !== null
+              ? format(new Date(transactionService.end_date!), 'dd MMM, hh:mm a')
+              : 'No available record',
+        },
+      ]
+    : [
+        {
+          label: 'Price',
+          value: 'No available record',
+        },
+        {
+          label: 'Deduction',
+          value: 'No available record',
+        },
+        { label: 'Company Earnings', value: 'No available record' },
+        {
+          label: 'Employee Share',
+          value: 'No available record',
+        },
+        {
+          label: 'Status',
+          value: 'No available record',
+        },
+        {
+          label: 'Payment Status',
+          value: 'No available record',
+        },
+        {
+          label: 'Start Date & Time',
+          value: 'No available record',
+        },
+        {
+          label: 'End Date & Time',
+          value: 'No available record',
+        },
+      ];
+
+  const fetchTransactionServiceDetails = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getTransactionServiceDetailsRequest(
+      user.accessToken,
+      transactionId,
+      transactionServiceId,
+    );
+
+    if (response.success && response.data) {
+      setTransactionService(response.data.transaction);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchTransactionServiceDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused]);
 
   const onCancel = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -128,7 +150,7 @@ const AvailedServiceDetails = () => {
         type={screenStatus.type}
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
-        onRetry={() => {}}
+        onRetry={fetchTransactionServiceDetails}
       />
       <View style={styles.heading}>
         <Text style={styles.label}>Details of Availed Service</Text>
@@ -137,15 +159,20 @@ const AvailedServiceDetails = () => {
         </TouchableOpacity>
       </View>
       <ScrollView bounces={false} contentContainerStyle={styles.content}>
-        <FastImage
-          style={styles.serviceImage}
-          source={{
-            uri: 'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/EmJay%20Services%20Image%2Fbuff-wax.jpg?alt=media&token=32bded96-8bab-4a67-9949-4aa9c20914fe',
-            priority: FastImage.priority.normal,
-          }}
-          resizeMode={FastImage.resizeMode.cover}
-        />
-        <Text style={styles.service}>Seat Cover Removal</Text>
+        <View>
+          <FastImage
+            style={styles.serviceImage}
+            source={{
+              uri: transactionService?.image,
+              priority: FastImage.priority.normal,
+            }}
+            resizeMode={FastImage.resizeMode.cover}
+          />
+          <View style={[styles.tagContainer, transactionService?.is_free && styles.tagFree]}>
+            <Text style={styles.tag}>{`${transactionService?.is_free ? 'Free' : 'Not Free'}`}</Text>
+          </View>
+        </View>
+        <Text style={styles.service}>{transactionService?.title}</Text>
         <View style={styles.details}>
           {serviceDetails.map((item, index) => (
             <Text key={index} style={[styles.textDetails, styles.textGray]}>
@@ -158,14 +185,20 @@ const AvailedServiceDetails = () => {
           Assigned employees
         </Text>
         <View style={styles.list}>
-          <View style={styles.row}>
-            <Image source={IMAGES.AVATAR_BOY} style={styles.image} resizeMode="contain" />
-            <Text style={styles.employee}>John Smith</Text>
-          </View>
-          <View style={styles.row}>
-            <Image source={IMAGES.AVATAR_BOY} style={styles.image} resizeMode="contain" />
-            <Text style={styles.employee}>John Smith</Text>
-          </View>
+          {transactionService && transactionService?.assigned_employees.length > 0 ? (
+            transactionService?.assigned_employees.map((item) => (
+              <View key={item.id} style={styles.row}>
+                <Image
+                  source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
+                <Text style={styles.employee}>{`${item.first_name} ${item.last_name}`}</Text>
+              </View>
+            ))
+          ) : (
+            <EmptyState />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -249,6 +282,28 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: 16,
+  },
+  tagContainer: {
+    position: 'absolute',
+    right: 13,
+    top: 13,
+    backgroundColor: '#7F7A7A',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+    width: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 30,
+  },
+  tag: {
+    ...font.regular,
+    fontSize: 12,
+    lineHeight: 12,
+    color: '#F3F2EF',
+  },
+  tagFree: {
+    backgroundColor: '#4BB543',
   },
 });
 

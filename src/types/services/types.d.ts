@@ -191,6 +191,7 @@ export type TransactionServices = {
   service_id: string;
   title: string;
   image: string;
+  price: number;
   status: TRANSACTION_SERVICE_STATUS;
   is_free: boolean;
 };
@@ -201,7 +202,9 @@ export type TransactionServicesResponse = {
     contact_number: string | null;
     vehicle_type: string;
     vehicle_size: string;
-    services: TransactionServices[];
+    model: string;
+    plate_number: string;
+    availed_services: TransactionServices[];
   };
   errors: ErrorProps[];
 };
@@ -228,7 +231,7 @@ export type TransactionServiceDetailsResponse = {
     is_paid: boolean;
     start_date: string | null;
     end_date: string | null;
-    assigned_employee: TransactionServiceEmployee[];
+    assigned_employees: TransactionServiceEmployee[];
   };
   errors: ErrorProps[];
 };

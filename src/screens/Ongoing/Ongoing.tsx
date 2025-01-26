@@ -95,7 +95,7 @@ const Ongoing = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Services" />
+      <AppHeader title="Services" onBack={() => navigation.replace('BottomTab')} />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         type={screenStatus.type}
@@ -143,7 +143,12 @@ const Ongoing = () => {
               </Text>
               <TouchableOpacity
                 style={styles.viewDetailsContainer}
-                onPress={() => navigation.navigate('AvailedServices')}
+                onPress={() =>
+                  navigation.navigate('AvailedServices', {
+                    customerId: item.customer_id,
+                    transactionId: item.id,
+                  })
+                }
               >
                 <Text style={styles.viewDetails}>View full details</Text>
                 <CircleArrowRightIcon />
@@ -163,8 +168,7 @@ const Ongoing = () => {
             customerId: null,
             contactNumber: null,
             freeWash: [],
-            transactionId: null,
-            selectedServices: [],
+            transaction: undefined,
           })
         }
       />
