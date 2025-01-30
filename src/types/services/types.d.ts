@@ -224,6 +224,7 @@ export type TransactionServiceDetailsResponse = {
     title: string;
     price: number;
     deduction: number;
+    discount: number;
     company_earnings: number;
     employee_share: number;
     status: TRANSACTION_SERVICE_STATUS;
@@ -290,6 +291,43 @@ export type UpdateAvailedServicePayload = {
 export type UpdateAvailedServiceResponse = {
   transaction_service: {
     id: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type TransactionItem = {
+  id: string;
+  transaction_id: string;
+  service_name: string;
+  price: number;
+  date: string;
+};
+
+export type TransactionSummary = {
+  gross_income: number;
+  company_earnings: number;
+  employee_share: number;
+  deduction: number;
+  discount: number;
+};
+
+export type TransactionResponse = {
+  summary: TransactionSummary;
+  transactions: TransactionItem[];
+  errors: ErrorProps[];
+};
+
+export type TransactionDetailsResponse = {
+  transaction: Omit<
+    TransactionServiceDetailsResponse['transaction'],
+    'image' | 'status' | 'is_free' | 'is_paid'
+  > & {
+    first_name: string;
+    last_name: string;
+    vehicle_type: VehicleType;
+    model: string;
+    vehicle_size: string;
+    plate_number: string;
   };
   errors: ErrorProps[];
 };

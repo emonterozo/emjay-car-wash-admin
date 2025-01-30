@@ -34,7 +34,7 @@ import {
   ModalDropdown,
   Toast,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, SIZES } from '@app/constant';
 import { CarIcon, MotorcycleIcon } from '@app/icons';
 import {
   addTransactionServiceRequest,
@@ -174,6 +174,7 @@ const AddOngoing = () => {
 
   useEffect(() => {
     //selectedServices, should still return service with no specific size
+    //console.log(transaction?.availedServices);
 
     const filteredServices = services
       .filter((service) => service.type === selectedVehicle)
@@ -191,7 +192,27 @@ const AddOngoing = () => {
         };
       });
 
-    setServiceSelection(filteredServices);
+    // extract services that can be multiple select
+    const servicesWithoutSize: string[] = [];
+    services
+      .filter((service) => service.type === selectedVehicle)
+      .forEach((service) => {
+        const noSize = service.price_list.find((item) => !SIZES.includes(item.size));
+        if (noSize) {
+          servicesWithoutSize.push(service.id);
+        }
+      });
+
+    // filter out currently selected services
+    const selectedServices = transaction?.availedServices.filter(
+      (item) => !servicesWithoutSize.includes(item),
+    );
+
+    setServiceSelection(
+      selectedServices
+        ? filteredServices.filter((item) => !selectedServices.includes(item.id))
+        : filteredServices,
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services, selectedVehicle, sizeCount]);
 

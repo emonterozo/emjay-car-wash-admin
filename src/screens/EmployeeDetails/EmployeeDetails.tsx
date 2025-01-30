@@ -32,7 +32,7 @@ import {
   ScreenStatusProps,
 } from 'src/types/services/types';
 import { formattedNumber } from '@app/helpers';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, NO_DATA } from '@app/constant';
 
 const isField = 'Employee Status';
 const isFieldValue = 'ACTIVE';
@@ -79,23 +79,23 @@ const EmployeeDetails = () => {
     : [
         {
           label: 'Full Name',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Date of Birth',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Contact number',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Employee Title',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Date Started',
-          value: 'No available record',
+          value: NO_DATA,
         },
       ];
 
@@ -157,7 +157,7 @@ const EmployeeDetails = () => {
   };
 
   const handleContactNumber = (phoneNumber: string) => {
-    const isContactNumberValid = phoneNumber !== 'No available record';
+    const isContactNumberValid = phoneNumber !== NO_DATA;
     return (
       <Text
         onPress={isContactNumberValid ? () => Linking.openURL(`tel:${phoneNumber}`) : undefined}
@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
   transactionsContainer: {
     gap: 24,
     marginBottom: 10,
+    paddingHorizontal: 25,
   },
   emptyState: {
     paddingTop: 20,

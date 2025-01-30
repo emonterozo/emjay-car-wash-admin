@@ -121,6 +121,12 @@ const AvailedServices = () => {
     );
   };
 
+  const getAvailedServicesId = () => {
+    const data = transactionService?.availed_services.map((item) => item.service_id);
+
+    return data!;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -208,7 +214,7 @@ const AvailedServices = () => {
                 vehicle_type: transactionService.vehicle_type,
                 model: transactionService.model,
                 plate_number: transactionService.plate_number,
-                availedServices: [],
+                availedServices: getAvailedServicesId(),
               },
             })
           }

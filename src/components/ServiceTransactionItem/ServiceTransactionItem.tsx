@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
   serviceIconContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    paddingHorizontal: 25,
     gap: 6,
   },
   serviceIconCardContainer: {

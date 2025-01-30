@@ -25,6 +25,8 @@ import {
   UpdateEmployeeResponse,
   UpdateAvailedServiceResponse,
   UpdateAvailedServicePayload,
+  TransactionResponse,
+  TransactionDetailsResponse,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -286,6 +288,36 @@ export const updateAvailedServiceRequest = (
       method: 'put',
       headers: requestHeader(accessToken),
       data: payload,
+    },
+  );
+};
+
+export const getTransactionsRequest = (
+  accessToken: string,
+  dateRange: {
+    start: string;
+    end: string;
+  },
+): ApiResponse<TransactionResponse> => {
+  return apiRequest<null, TransactionResponse>(`${Config.API_BASE_URL}/admin/transactions`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: {
+      date_range: JSON.stringify(dateRange),
+    },
+  });
+};
+
+export const getTransactionDetailsRequest = (
+  accessToken: string,
+  transactionId: string,
+  transactionServiceId: string,
+): ApiResponse<TransactionDetailsResponse> => {
+  return apiRequest<null, TransactionDetailsResponse>(
+    `${Config.API_BASE_URL}/admin/transactions/${transactionId}/services/${transactionServiceId}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
     },
   );
 };

@@ -500,6 +500,14 @@ const AvailedServiceForm = () => {
           onSelected={(selectedOption) => handleDropdownChange('paymentStatus', selectedOption)}
           optionMinWidth={196}
         />
+        <Dropdown
+          label="Service Status"
+          placeholder="Select service status"
+          selected={formValues.status}
+          options={filteredServiceStatusOption}
+          onSelected={(selectedOption) => handleDropdownChange('status', selectedOption)}
+          optionMinWidth={196}
+        />
         <ModalDropdown
           label="Assigned Employee"
           placeholder="Select Employee"
@@ -510,14 +518,6 @@ const AvailedServiceForm = () => {
           }}
           multiSelect={true}
           title="Select Employee"
-        />
-        <Dropdown
-          label="Service Status"
-          placeholder="Select service status"
-          selected={formValues.status}
-          options={filteredServiceStatusOption}
-          onSelected={(selectedOption) => handleDropdownChange('status', selectedOption)}
-          optionMinWidth={196}
         />
         <View style={styles.buttonContainer}>
           <Button

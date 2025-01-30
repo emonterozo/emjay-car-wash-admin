@@ -69,6 +69,7 @@ export type AuthStackParamList = {
       endDateTime: string | '';
     };
   };
+  TransactionDetails: { transactionId: string; transactionServiceId: string };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -88,3 +89,5 @@ export type AvailedServicesRouteProp = RouteProp<AuthStackParamList, 'AvailedSer
 export type AvailedServiceDetailRouteProp = RouteProp<AuthStackParamList, 'AvailedServiceDetails'>;
 
 export type AvailedServiceFormRouteProp = RouteProp<AuthStackParamList, 'AvailedServiceForm'>;
+
+export type TransactionDetailsRouteProp = RouteProp<AuthStackParamList, 'TransactionDetails'>;

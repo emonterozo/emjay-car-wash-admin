@@ -19,7 +19,7 @@ import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/compon
 import { color, font } from '@app/styles';
 import { EditIcon } from '@app/icons';
 import { formattedNumber } from '@app/helpers';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, NO_DATA } from '@app/constant';
 import GlobalContext from '@app/context';
 import { getTransactionServiceDetailsRequest } from '@app/services';
 
@@ -47,6 +47,10 @@ const AvailedServiceDetails = () => {
           label: 'Deduction',
           value: formattedNumber(transactionService.deduction),
         },
+        {
+          label: 'Discount',
+          value: formattedNumber(transactionService.discount),
+        },
         { label: 'Company Earnings', value: formattedNumber(transactionService.company_earnings) },
         {
           label: 'Employee Share',
@@ -66,46 +70,50 @@ const AvailedServiceDetails = () => {
           label: 'Start Date & Time',
           value:
             transactionService.start_date !== null
-              ? format(new Date(transactionService.start_date!), 'dd MMM, hh:mm a')
-              : 'No available record',
+              ? format(new Date(transactionService.start_date!), 'dd MMM yyyy, hh:mm a')
+              : NO_DATA,
         },
         {
           label: 'End Date & Time',
           value:
             transactionService.end_date !== null
-              ? format(new Date(transactionService.end_date!), 'dd MMM, hh:mm a')
-              : 'No available record',
+              ? format(new Date(transactionService.end_date!), 'dd MMM yyyy, hh:mm a')
+              : NO_DATA,
         },
       ]
     : [
         {
           label: 'Price',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Deduction',
-          value: 'No available record',
+          value: NO_DATA,
         },
-        { label: 'Company Earnings', value: 'No available record' },
+        {
+          label: 'Discount',
+          value: NO_DATA,
+        },
+        { label: 'Company Earnings', value: NO_DATA },
         {
           label: 'Employee Share',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Status',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Payment Status',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Start Date & Time',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'End Date & Time',
-          value: 'No available record',
+          value: NO_DATA,
         },
       ];
 

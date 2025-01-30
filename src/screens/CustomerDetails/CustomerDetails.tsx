@@ -33,7 +33,7 @@ import {
   ScreenStatusProps,
 } from '../../types/services/types';
 import { formattedNumber } from '@app/helpers';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, NO_DATA } from '@app/constant';
 
 const OPTIONS = [
   {
@@ -92,7 +92,7 @@ const CustomerDetails = () => {
             province: customerInformation.province,
           }).every(Boolean)
             ? `${customerInformation.address} ${customerInformation.barangay} ${customerInformation.city} ${customerInformation.province}`
-            : 'No available record',
+            : NO_DATA,
         },
         {
           label: 'Registration Date',
@@ -102,17 +102,17 @@ const CustomerDetails = () => {
     : [
         {
           label: 'Full Name',
-          value: 'No available record',
+          value: NO_DATA,
         },
-        { label: 'Date of Birth', value: 'No available record' },
-        { label: 'Contact number', value: 'No available record' },
+        { label: 'Date of Birth', value: NO_DATA },
+        { label: 'Contact number', value: NO_DATA },
         {
           label: 'Address',
-          value: 'No available record',
+          value: NO_DATA,
         },
         {
           label: 'Registration Date',
-          value: 'No available record',
+          value: NO_DATA,
         },
       ];
 
@@ -153,7 +153,7 @@ const CustomerDetails = () => {
   };
 
   const handleContactNumber = (phoneNumber: string) => {
-    const isContactNumberValid = phoneNumber !== 'No available record';
+    const isContactNumberValid = phoneNumber !== NO_DATA;
     return (
       <Text
         onPress={isContactNumberValid ? () => Linking.openURL(`tel:${phoneNumber}`) : undefined}

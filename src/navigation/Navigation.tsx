@@ -20,6 +20,7 @@ import {
   AvailedServices,
   AvailedServiceDetails,
   AvailedServiceForm,
+  TransactionDetails,
 } from '@app/screens';
 import GlobalContext from '@app/context';
 import { AuthStackParamList } from '../types/navigation/types';
@@ -44,7 +45,10 @@ const Navigation = () => {
     <NavigationContainer>
       <GlobalContext.Provider value={initialContext}>
         {user.id.length > 0 ? (
-          <AuthStack.Navigator initialRouteName="BottomTab" screenOptions={{ headerShown: false }}>
+          <AuthStack.Navigator
+            initialRouteName="BottomTab"
+            screenOptions={{ headerShown: false, gestureEnabled: false }}
+          >
             <AuthStack.Screen name="BottomTab" component={BottomTab} />
             <AuthStack.Screen name="Consumables" component={Consumables} />
             <AuthStack.Screen name="Customers" component={Customers} />
@@ -58,14 +62,11 @@ const Navigation = () => {
             <AuthStack.Screen name="Services" component={Services} />
             <AuthStack.Screen name="PreTransaction" component={PreTransaction} />
             <AuthStack.Screen name="AddOngoing" component={AddOngoing} />
-            <AuthStack.Screen
-              name="EmployeeForm"
-              component={EmployeeForm}
-              options={{ gestureEnabled: false }}
-            />
+            <AuthStack.Screen name="EmployeeForm" component={EmployeeForm} />
             <AuthStack.Screen name="AvailedServices" component={AvailedServices} />
             <AuthStack.Screen name="AvailedServiceDetails" component={AvailedServiceDetails} />
             <AuthStack.Screen name="AvailedServiceForm" component={AvailedServiceForm} />
+            <AuthStack.Screen name="TransactionDetails" component={TransactionDetails} />
           </AuthStack.Navigator>
         ) : (
           <UnAuthStack.Navigator screenOptions={{ headerShown: false }}>
