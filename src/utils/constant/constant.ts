@@ -90,6 +90,8 @@ export const IMAGES = {
   CANCEL: require('../../../assets/images/cancel.png'),
   FREE: require('../../../assets/images/gift.png'),
   NOT_FREE: require('../../../assets/images/cart.png'),
+  PENDING: require('../../../assets/images/pending.png'),
+  CANCELLED: require('../../../assets/images/cancelled.png'),
 };
 
 export const ERROR_TYPE = {
@@ -112,6 +114,11 @@ export const CONFIRM_TYPE = {
     title: 'Are you sure you want to cancel updating employee?',
     description:
       'By doing this, you will cancel updating the employee and lose any unsaved changes.',
+  },
+  UpdateAvailedService: {
+    title: 'Are you sure you want to cancel updating availed service?',
+    description:
+      'By doing this, you will cancel updating the availed service and lose any unsaved changes.',
   },
 };
 

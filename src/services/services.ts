@@ -23,6 +23,8 @@ import {
   TransactionServicesResponse,
   UpdateEmployeePayload,
   UpdateEmployeeResponse,
+  UpdateAvailedServiceResponse,
+  UpdateAvailedServicePayload,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -264,6 +266,22 @@ export const addTransactionServiceRequest = (
 ): ApiResponse<AddTransactionServiceResponse> => {
   return apiRequest<AddTransactionServicePayload, AddTransactionServiceResponse>(
     `${Config.API_BASE_URL}/admin/ongoing/transactions/${id}/services`,
+    {
+      method: 'put',
+      headers: requestHeader(accessToken),
+      data: payload,
+    },
+  );
+};
+
+export const updateAvailedServiceRequest = (
+  transaction_id: string,
+  transaction_service_id: string,
+  accessToken: string,
+  payload: UpdateAvailedServicePayload,
+): ApiResponse<UpdateAvailedServiceResponse> => {
+  return apiRequest<UpdateAvailedServicePayload, UpdateAvailedServiceResponse>(
+    `${Config.API_BASE_URL}/admin/ongoing/transactions/${transaction_id}/services/${transaction_service_id}`,
     {
       method: 'put',
       headers: requestHeader(accessToken),

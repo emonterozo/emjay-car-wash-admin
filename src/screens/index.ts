@@ -19,3 +19,4 @@ export { default as PreTransaction } from './PreTransaction/PreTransaction';
 export { default as EmployeeForm } from './EmployeeForm/EmployeeForm';
 export { default as AvailedServices } from './AvailedServices/AvailedServices';
 export { default as AvailedServiceDetails } from './AvailedServiceDetails/AvailedServiceDetails';
+export { default as AvailedServiceForm } from './AvailedServiceForm/AvailedServiceForm';
