@@ -53,6 +53,22 @@ export type AuthStackParamList = {
       };
   AvailedServices: { customerId: string | null; transactionId: string };
   AvailedServiceDetails: { transactionId: string; transactionServiceId: string };
+  AvailedServiceForm: {
+    service: {
+      transactionId: string;
+      transactionServiceId: string;
+      title: string;
+      price: number;
+      deduction: number;
+      companyEarnings: number;
+      employeeShare: number;
+      serviceCharge: boolean;
+      status: string;
+      paymentStatus: boolean;
+      startDateTime: string | '';
+      endDateTime: string | '';
+    };
+  };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -70,3 +86,5 @@ export type EmployeeFormRouteProp = RouteProp<AuthStackParamList, 'EmployeeForm'
 export type AvailedServicesRouteProp = RouteProp<AuthStackParamList, 'AvailedServices'>;
 
 export type AvailedServiceDetailRouteProp = RouteProp<AuthStackParamList, 'AvailedServiceDetails'>;
+
+export type AvailedServiceFormRouteProp = RouteProp<AuthStackParamList, 'AvailedServiceForm'>;

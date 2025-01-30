@@ -13,7 +13,7 @@ import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import FastImage from '@d11/react-native-fast-image';
 import { format } from 'date-fns';
 
-import { AvailedServiceDetailRouteProp } from '../../types/navigation/types';
+import { AvailedServiceDetailRouteProp, NavigationProp } from '../../types/navigation/types';
 import { ScreenStatusProps, TransactionServiceDetailsResponse } from '../../types/services/types';
 import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { color, font } from '@app/styles';
@@ -27,7 +27,7 @@ const AvailedServiceDetails = () => {
   const { user } = useContext(GlobalContext);
   const { transactionId, transactionServiceId } = useRoute<AvailedServiceDetailRouteProp>().params;
   const isFocused = useIsFocused();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
@@ -141,6 +141,29 @@ const AvailedServiceDetails = () => {
     navigation.goBack();
   };
 
+  const handleUpdateServiceDetails = () => {
+    if (!transactionService) {
+      return;
+    }
+
+    navigation.navigate('AvailedServiceForm', {
+      service: {
+        transactionId: transactionId,
+        transactionServiceId: transactionServiceId,
+        title: transactionService.title,
+        price: transactionService.price,
+        deduction: transactionService.deduction,
+        companyEarnings: transactionService.company_earnings,
+        employeeShare: transactionService.employee_share,
+        serviceCharge: transactionService.is_free,
+        status: transactionService.status,
+        paymentStatus: transactionService.is_paid,
+        startDateTime: transactionService.start_date || '',
+        endDateTime: transactionService.end_date || '',
+      },
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -154,7 +177,7 @@ const AvailedServiceDetails = () => {
       />
       <View style={styles.heading}>
         <Text style={styles.label}>Details of Availed Service</Text>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={handleUpdateServiceDetails}>
           <EditIcon />
         </TouchableOpacity>
       </View>

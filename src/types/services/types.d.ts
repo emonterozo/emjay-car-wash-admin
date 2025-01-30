@@ -278,3 +278,18 @@ export type CreateOngoingTransactionResponse = {
   };
   errors: ErrorProps[];
 };
+
+export type UpdateAvailedServicePayload = {
+  deduction: number;
+  is_free: boolean;
+  is_paid: boolean;
+  status: string;
+  assigned_employee?: string[];
+};
+
+export type UpdateAvailedServiceResponse = {
+  transaction_service: {
+    id: string;
+  };
+  errors: ErrorProps[];
+};
