@@ -286,7 +286,7 @@ export type UpdateAvailedServicePayload = {
   is_free: boolean;
   is_paid: boolean;
   status: string;
-  assigned_employee?: string[];
+  assigned_employee?: string;
 };
 
 export type UpdateAvailedServiceResponse = {
@@ -329,6 +329,13 @@ export type TransactionDetailsResponse = {
     model: string;
     vehicle_size: string;
     plate_number: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type UpdateTransactionResponse = {
+  transaction: {
+    id: string;
   };
   errors: ErrorProps[];
 };

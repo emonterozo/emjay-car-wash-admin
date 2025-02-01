@@ -95,7 +95,7 @@ const Ongoing = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Services" onBack={() => navigation.replace('BottomTab')} />
+      <AppHeader title="Services" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         type={screenStatus.type}

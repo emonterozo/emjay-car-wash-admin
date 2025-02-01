@@ -8,6 +8,7 @@ import { AvailedServicesRouteProp, NavigationProp } from '../../types/navigation
 import { ScreenStatusProps, TransactionServicesResponse } from '../../types/services/types';
 import {
   AppHeader,
+  ConfirmationModal,
   EmptyState,
   ErrorModal,
   FloatingActionButton,
@@ -16,7 +17,11 @@ import {
 import { color, font } from '@app/styles';
 import { CircleArrowRightIcon } from '@app/icons';
 import { formattedNumber } from '@app/helpers';
-import { getCustomerFreeWashServiceRequest, getTransactionServicesRequest } from '@app/services';
+import {
+  getCustomerFreeWashServiceRequest,
+  getTransactionServicesRequest,
+  updateTransactionRequest,
+} from '@app/services';
 import GlobalContext from '@app/context';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 
@@ -60,6 +65,7 @@ const AvailedServices = () => {
     TransactionServicesResponse['transaction'] | undefined
   >(undefined);
   const [freeWash, setFreeWash] = useState<{ type: string; size: string }[]>([]);
+  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 
   const fetchEmployeeFreeWash = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
@@ -94,6 +100,7 @@ const AvailedServices = () => {
       setTransactionService(response.data.transaction);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
+      //TODO: handle this scenario if updating failed
       setScreenStatus({
         isLoading: false,
         type: response.error === ERR_NETWORK ? 'connection' : 'error',
@@ -128,7 +135,9 @@ const AvailedServices = () => {
   };
 
   const navigateToAddOngoing = () => {
-    if (!transactionService) {return;}
+    if (!transactionService) {
+      return;
+    }
 
     navigation.navigate('AddOngoing', {
       customerId: null,
@@ -145,6 +154,24 @@ const AvailedServices = () => {
     });
   };
 
+  const cancelTransaction = async () => {
+    setIsConfirmationVisible(false);
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+
+    const response = await updateTransactionRequest(user.accessToken, transactionId, 'CANCELLED');
+
+    if (response.success && response.data) {
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+      navigation.goBack();
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -155,6 +182,14 @@ const AvailedServices = () => {
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
         onRetry={fetchEmployeeFreeWash}
+      />
+      <ConfirmationModal
+        type="CancelTransaction"
+        isVisible={isConfirmationVisible}
+        onNo={() => setIsConfirmationVisible(false)}
+        onYes={cancelTransaction}
+        textCancel="Cancel"
+        textProceed="Confirm"
       />
       <View style={styles.heading}>
         <Text style={styles.label}>List of Availed Services</Text>
@@ -221,12 +256,6 @@ const AvailedServices = () => {
       />
       {transactionService && (
         <FloatingActionButton
-          onPress={() => {
-            switch (selectedStatus) {
-              case 'Ongoing':
-                navigateToAddOngoing();
-            }
-          }}
           additionalButtons={(() => {
             switch (selectedStatus) {
               case 'Pending':
@@ -235,12 +264,12 @@ const AvailedServices = () => {
                     icon: IMAGES.WALLET_ERROR,
                     label: 'Cancel the Transaction',
                     onPress: () => {
-                      //perform actions
+                      setIsConfirmationVisible(true);
                     },
                   },
                   {
-                    icon: 'pencil-circle',
-                    label: 'Avail service',
+                    icon: IMAGES.WALLET_ERROR,
+                    label: 'Add service',
                     onPress: navigateToAddOngoing,
                   },
                 ];
@@ -250,12 +279,12 @@ const AvailedServices = () => {
                     icon: IMAGES.WALLET_CHECKED,
                     label: 'Complete the Transaction',
                     onPress: () => {
-                      //perform actions
+                      setIsConfirmationVisible(true);
                     },
                   },
                   {
-                    icon: 'pencil-circle',
-                    label: 'Avail service',
+                    icon: IMAGES.WALLET_ERROR,
+                    label: 'Add service',
                     onPress: navigateToAddOngoing,
                   },
                 ];
@@ -265,12 +294,12 @@ const AvailedServices = () => {
                     icon: IMAGES.WALLET_ERROR,
                     label: 'Cancel the Transaction',
                     onPress: () => {
-                      //perform actions
+                      setIsConfirmationVisible(true);
                     },
                   },
                   {
-                    icon: 'pencil-circle',
-                    label: 'Avail service',
+                    icon: IMAGES.WALLET_ERROR,
+                    label: 'Add service',
                     onPress: navigateToAddOngoing,
                   },
                 ];

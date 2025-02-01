@@ -125,6 +125,11 @@ export const CONFIRM_TYPE = {
     description:
       'By doing this, you will cancel updating the availed service and lose any unsaved changes.',
   },
+  CancelTransaction: {
+    title: 'Are you sure you want to Cancel the Transaction?',
+    description:
+      "Once canceled, the transaction cannot be undone. Please confirm if you'd like to proceed.",
+  },
 };
 
 export const LIMIT = 50;

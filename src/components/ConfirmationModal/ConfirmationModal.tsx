@@ -10,9 +10,18 @@ export type ConfirmationModalProps = {
   type: keyof typeof CONFIRM_TYPE;
   onYes: () => void;
   onNo: () => void;
+  textCancel?: string;
+  textProceed?: string;
 };
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isVisible, type, onNo, onYes }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  isVisible,
+  type,
+  onNo,
+  onYes,
+  textCancel = 'No',
+  textProceed = 'Yes',
+}) => {
   return (
     <View>
       <Modal visible={isVisible} animationType="slide" onRequestClose={onNo} transparent={true}>
@@ -25,7 +34,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isVisible, type, 
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                title="No"
+                title={textCancel}
                 variant="secondary"
                 secondaryBackgroundColor="white"
                 buttonStyle={styles.button}
@@ -33,7 +42,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isVisible, type, 
                 onPress={onNo}
               />
               <Button
-                title="Yes"
+                title={textProceed}
                 variant="primary"
                 buttonStyle={styles.button}
                 textStyle={styles.textStyle}

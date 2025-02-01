@@ -151,7 +151,9 @@ const AvailedServiceForm = () => {
       ) || undefined,
     status:
       SERVICE_STATUS_OPTIONS.find((option) => {
-        switch (service.status.toLowerCase()) {
+        const status =
+          service.status.toLowerCase() === 'cancelled' ? 'cancel' : service.status.toLowerCase();
+        switch (status) {
           case 'ongoing':
             return option.label === 'ONGOING';
           case 'pending':
@@ -424,18 +426,19 @@ const AvailedServiceForm = () => {
 
     const formattedServiceCharge = formValues.serviceCharge?.label === 'Free';
     const formattedPaymentStatus = formValues.paymentStatus?.label === 'Paid';
-    const formattedStatus = formValues.status?.label || '';
+    const formattedStatus =
+      formValues.status?.label === 'CANCEL' ? 'CANCELLED' : formValues.status?.label;
 
     const payload: UpdateAvailedServicePayload = {
       discount: formValues.discount,
       deduction: formValues.deduction,
       is_free: formattedServiceCharge,
       is_paid: formattedPaymentStatus,
-      status: formattedStatus,
+      status: formattedStatus!,
     };
 
     if ((formValues.employees ?? []).length > 0) {
-      payload.assigned_employee = formValues.employees;
+      payload.assigned_employee = formValues.employees?.toString();
     }
 
     const response = await updateAvailedServiceRequest(

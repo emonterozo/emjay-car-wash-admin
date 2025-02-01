@@ -27,6 +27,7 @@ import {
   UpdateAvailedServicePayload,
   TransactionResponse,
   TransactionDetailsResponse,
+  UpdateTransactionResponse,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -338,6 +339,23 @@ export const getTransactionsComputationRequest = (
       params: {
         date_range: JSON.stringify(dateRange),
         employee_id: employeeId.toString(),
+      },
+    },
+  );
+};
+
+export const updateTransactionRequest = (
+  accessToken: string,
+  transaction_id: string,
+  status: 'CANCELLED' | 'COMPLETED',
+): ApiResponse<UpdateTransactionResponse> => {
+  return apiRequest<{ status: string }, UpdateTransactionResponse>(
+    `${Config.API_BASE_URL}/admin/ongoing/transactions/${transaction_id}`,
+    {
+      method: 'put',
+      headers: requestHeader(accessToken),
+      data: {
+        status,
       },
     },
   );
