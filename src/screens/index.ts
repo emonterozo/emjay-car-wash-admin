@@ -21,3 +21,4 @@ export { default as AvailedServices } from './AvailedServices/AvailedServices';
 export { default as AvailedServiceDetails } from './AvailedServiceDetails/AvailedServiceDetails';
 export { default as AvailedServiceForm } from './AvailedServiceForm/AvailedServiceForm';
 export { default as TransactionDetails } from './TransactionDetails/TransactionDetails';
+export { default as TransactionComputation } from './TransactionComputation/TransactionComputation';

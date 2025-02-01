@@ -7,47 +7,90 @@ import {
   StatusBar,
   FlatList,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { format } from 'date-fns';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { NavigationProp } from '../../types/navigation/types';
-import { ScreenStatusProps, TransactionItem, TransactionSummary } from '../../types/services/types';
+import { NavigationProp, TransactionComputationRouteProp } from '../../types/navigation/types';
+import {
+  Employees,
+  ScreenStatusProps,
+  TransactionItem,
+  TransactionSummary,
+} from '../../types/services/types';
+import ModalDropdown, { ModalDropdownOption } from '../../components/ModalDropdown/ModalDropdown';
 import { color, font } from '@app/styles';
 import {
   AppHeader,
   EmptyState,
   ErrorModal,
-  FloatingActionButton,
   LoadingAnimation,
   ServiceTransactionItem,
 } from '@app/components';
 import { formattedNumber } from '@app/helpers';
 import { WaterDropIcon } from '@app/icons';
-import { getTransactionsRequest } from '@app/services';
+import { getEmployeesRequest, getTransactionsComputationRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { ERR_NETWORK } from '@app/constant';
+import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
-const Transaction = () => {
+const ICON_GENDER = [
+  {
+    id: '1',
+    icon: Image.resolveAssetSource(IMAGES.AVATAR_BOY).uri,
+    label: 'MALE',
+  },
+  {
+    id: '2',
+    icon: Image.resolveAssetSource(IMAGES.AVATAR_GIRL).uri,
+    label: 'FEMALE',
+  },
+];
+
+const TransactionComputation = () => {
   const { user } = useContext(GlobalContext);
+  const { startDate, endDate } = useRoute<TransactionComputationRouteProp>().params;
   const navigation = useNavigation<NavigationProp>();
-  const isFocused = useIsFocused();
+
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
     type: 'error',
   });
+  const [employees, setEmployees] = useState<Employees[]>([]);
+  const [employeeSelection, setEmployeeSelection] = useState<ModalDropdownOption[]>([]);
+  const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [summary, setSummary] = useState<TransactionSummary | undefined>(undefined);
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
 
-  const fetchTransactions = async () => {
+  const fetchEmployees = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getTransactionsRequest(user.accessToken, {
-      start: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
-      end: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
-    });
+    const response = await getEmployeesRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
+
+    if (response.success && response.data) {
+      setEmployees(response.data.employees);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  const fetchTransactions = async (selected: string[]) => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getTransactionsComputationRequest(
+      user.accessToken,
+      {
+        start: startDate,
+        end: endDate,
+      },
+      selected,
+    );
 
     if (response.success && response.data) {
       setSummary(response.data.summary);
@@ -63,11 +106,25 @@ const Transaction = () => {
   };
 
   useEffect(() => {
-    if (isFocused) {
-      fetchTransactions();
-    }
+    const filteredEmployees = employees
+      .filter((employee) => employee.employee_status === 'ACTIVE')
+      .map((employee) => {
+        return {
+          id: employee.id,
+          image: employee.gender === 'MALE' ? ICON_GENDER[0].icon : ICON_GENDER[1].icon,
+          title: `${employee.first_name} ${employee.last_name}`,
+          description: employee.employee_title,
+          value: employee.id,
+        };
+      });
+
+    setEmployeeSelection(filteredEmployees);
+  }, [employees]);
+
+  useEffect(() => {
+    fetchEmployees();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
+  }, []);
 
   const summaryDetails = summary
     ? [
@@ -108,19 +165,45 @@ const Transaction = () => {
     navigation.goBack();
   };
 
+  const onRetry = () => {
+    if (employees.length > 0) {
+      fetchTransactions(selectedEmployees);
+    } else {
+      fetchEmployees();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Records" />
-      <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
+      <AppHeader title="Computation" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         type={screenStatus.type}
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
-        onRetry={fetchTransactions}
+        onRetry={onRetry}
       />
+
       <View style={styles.content}>
-        <Text style={[styles.heading, styles.topContent]}>January 29, 2025 Summary</Text>
+        <ModalDropdown
+          label="Assigned Employee"
+          placeholder="Select Employee"
+          selected={selectedEmployees}
+          options={employeeSelection}
+          onSelected={(selected) => {
+            setSelectedEmployees(selected);
+            if (selected.length > 0) {
+              fetchTransactions(selected);
+            } else {
+              setSummary(undefined);
+              setTransactions([]);
+            }
+          }}
+          multiSelect={true}
+          title="Select Employee"
+        />
+        <Text style={[styles.heading, styles.topContent]}>Computation Summary</Text>
         <View style={styles.infoContainer}>
           {summaryDetails.map((item, index) => (
             <Text key={index} style={styles.text}>
@@ -161,14 +244,6 @@ const Transaction = () => {
           ListEmptyComponent={<EmptyState />}
         />
       </View>
-      <FloatingActionButton
-        onPress={() =>
-          navigation.navigate('TransactionComputation', {
-            startDate: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
-            endDate: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
-          })
-        }
-      />
     </SafeAreaView>
   );
 };
@@ -224,4 +299,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Transaction;
+export default TransactionComputation;

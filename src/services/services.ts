@@ -321,3 +321,24 @@ export const getTransactionDetailsRequest = (
     },
   );
 };
+
+export const getTransactionsComputationRequest = (
+  accessToken: string,
+  dateRange: {
+    start: string;
+    end: string;
+  },
+  employeeId: string[],
+): ApiResponse<TransactionResponse> => {
+  return apiRequest<null, TransactionResponse>(
+    `${Config.API_BASE_URL}/admin/transactions/computation`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        date_range: JSON.stringify(dateRange),
+        employee_id: employeeId.toString(),
+      },
+    },
+  );
+};
