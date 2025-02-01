@@ -281,6 +281,7 @@ export type CreateOngoingTransactionResponse = {
 };
 
 export type UpdateAvailedServicePayload = {
+  discount: number;
   deduction: number;
   is_free: boolean;
   is_paid: boolean;

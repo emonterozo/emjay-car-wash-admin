@@ -91,7 +91,12 @@ export const IMAGES = {
   FREE: require('../../../assets/images/gift.png'),
   NOT_FREE: require('../../../assets/images/cart.png'),
   PENDING: require('../../../assets/images/pending.png'),
+  ONGOING: require('../../../assets/images/ongoing.png'),
   CANCELLED: require('../../../assets/images/cancelled.png'),
+  PAID: require('../../../assets/images/paid.png'),
+  NOT_YET_PAID: require('../../../assets/images/not-yet-paid.png'),
+  WALLET_CHECKED: require('../../../assets/images/wallet-checked.png'),
+  WALLET_ERROR: require('../../../assets/images/wallet-error.png'),
 };
 
 export const ERROR_TYPE = {

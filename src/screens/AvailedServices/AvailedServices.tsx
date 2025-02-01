@@ -18,7 +18,7 @@ import { CircleArrowRightIcon } from '@app/icons';
 import { formattedNumber } from '@app/helpers';
 import { getCustomerFreeWashServiceRequest, getTransactionServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { ERR_NETWORK } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 
 const STATUSES = [
   {
@@ -127,6 +127,24 @@ const AvailedServices = () => {
     return data!;
   };
 
+  const navigateToAddOngoing = () => {
+    if (!transactionService) {return;}
+
+    navigation.navigate('AddOngoing', {
+      customerId: null,
+      contactNumber: transactionService.contact_number,
+      freeWash: freeWash,
+      transaction: {
+        id: transactionService.id,
+        vehicle_size: transactionService.vehicle_size,
+        vehicle_type: transactionService.vehicle_type,
+        model: transactionService.model,
+        plate_number: transactionService.plate_number,
+        availedServices: getAvailedServicesId(),
+      },
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -203,21 +221,63 @@ const AvailedServices = () => {
       />
       {transactionService && (
         <FloatingActionButton
-          onPress={() =>
-            navigation.navigate('AddOngoing', {
-              customerId: null,
-              contactNumber: transactionService.contact_number,
-              freeWash: freeWash,
-              transaction: {
-                id: transactionService.id,
-                vehicle_size: transactionService.vehicle_size,
-                vehicle_type: transactionService.vehicle_type,
-                model: transactionService.model,
-                plate_number: transactionService.plate_number,
-                availedServices: getAvailedServicesId(),
-              },
-            })
-          }
+          onPress={() => {
+            switch (selectedStatus) {
+              case 'Ongoing':
+                navigateToAddOngoing();
+            }
+          }}
+          additionalButtons={(() => {
+            switch (selectedStatus) {
+              case 'Pending':
+                return [
+                  {
+                    icon: IMAGES.WALLET_ERROR,
+                    label: 'Cancel the Transaction',
+                    onPress: () => {
+                      //perform actions
+                    },
+                  },
+                  {
+                    icon: 'pencil-circle',
+                    label: 'Avail service',
+                    onPress: navigateToAddOngoing,
+                  },
+                ];
+              case 'Done':
+                return [
+                  {
+                    icon: IMAGES.WALLET_CHECKED,
+                    label: 'Complete the Transaction',
+                    onPress: () => {
+                      //perform actions
+                    },
+                  },
+                  {
+                    icon: 'pencil-circle',
+                    label: 'Avail service',
+                    onPress: navigateToAddOngoing,
+                  },
+                ];
+              case 'Cancel':
+                return [
+                  {
+                    icon: IMAGES.WALLET_ERROR,
+                    label: 'Cancel the Transaction',
+                    onPress: () => {
+                      //perform actions
+                    },
+                  },
+                  {
+                    icon: 'pencil-circle',
+                    label: 'Avail service',
+                    onPress: navigateToAddOngoing,
+                  },
+                ];
+              default:
+                return [];
+            }
+          })()}
         />
       )}
     </SafeAreaView>
