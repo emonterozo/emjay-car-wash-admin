@@ -68,7 +68,7 @@ const SERVICE_STATUS_OPTIONS = [
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.PENDING} resizeMode="contain" />,
+    icon: <Image source={IMAGES.ONGOING} resizeMode="contain" />,
     label: 'ONGOING',
   },
   {
@@ -112,12 +112,12 @@ const ICON_GENDER = [
 const PAYMENT_STATUS_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.NOT_FREE} resizeMode="contain" />,
+    icon: <Image source={IMAGES.PAID} resizeMode="contain" />,
     label: 'Paid',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.FREE} resizeMode="contain" />,
+    icon: <Image source={IMAGES.NOT_YET_PAID} resizeMode="contain" />,
     label: 'Not Yet Paid',
   },
 ];
@@ -140,7 +140,7 @@ const AvailedServiceForm = () => {
   const initialFormValues: FormValues = {
     title: service.title,
     price: service.price,
-    discount: 0,
+    discount: service.discount,
     deduction: service.deduction,
     companyEarnings: service.companyEarnings,
     employees: [],
@@ -174,6 +174,7 @@ const AvailedServiceForm = () => {
 
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [errors, setErrors] = useState<Errors>({});
+  // const [discountDisplay, setDiscountDisplay] = useState(formValues.discount.toString());
 
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
@@ -283,10 +284,42 @@ const AvailedServiceForm = () => {
         );
         break;
       default:
-        setFilteredServiceStatusOption(SERVICE_STATUS_OPTIONS); // Default: show all options
+        setFilteredServiceStatusOption(SERVICE_STATUS_OPTIONS);
         break;
     }
   }, [service.status]);
+
+  useEffect(() => {
+    if (formValues.serviceCharge?.label === 'Free') {
+      setFormValues((prev) => {
+        const newPrice = Number(prev.price);
+        return {
+          ...prev,
+          discount: newPrice,
+          companyEarnings: 0,
+        };
+      });
+    } else {
+      setFormValues((prev) => ({
+        ...prev,
+        discount: prev.discount === prev.price ? 0 : prev.discount,
+      }));
+    }
+  }, [formValues.serviceCharge, formValues.price]);
+
+  useEffect(() => {
+    if (formValues.serviceCharge?.label !== 'Free') {
+      const value = formValues.price - formValues.deduction;
+      const companyEarningsBeforeDiscount = value * 0.6;
+      const companyEarnings = companyEarningsBeforeDiscount - formValues.discount;
+
+      setFormValues((prev) => ({
+        ...prev,
+        companyEarnings: Math.max(Math.round(companyEarnings), 0),
+        employeeShare: Math.round(value * 0.4),
+      }));
+    }
+  }, [formValues.price, formValues.deduction, formValues.discount, formValues.serviceCharge]);
 
   const onCancel = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -307,18 +340,33 @@ const AvailedServiceForm = () => {
   };
 
   const handleInputChange = (key: string, value: string) => {
-    const validValue =
+    let validValue =
       value === '' || !isNaN(parseFloat(value))
         ? value
-        : (formValues[key as keyof FormValues] || '').toString();
-    const updatedValues = { ...formValues, [key]: validValue };
+        : formValues[key as keyof FormValues]?.toString() || '';
+
+    let updatedValues = { ...formValues, [key]: validValue };
 
     if (key === 'deduction') {
-      const price = parseFloat(formValues.price.toString()) || 0;
-      const deduction = parseFloat(validValue) || 0;
+      const price = parseFloat(formValues.price?.toString() || '0') || 0;
+      const deduction = parseFloat(validValue || '0') || 0;
+      const discount = parseFloat(formValues.discount?.toString() || '0') || 0;
 
-      updatedValues.companyEarnings = (price - deduction) * 0.6;
-      updatedValues.employeeShare = (price - deduction) * 0.4;
+      const computedCompanyEarnings = Math.round((price - deduction) * 0.6 - discount);
+      const computedEmployeeShare = Math.round((price - deduction) * 0.4);
+
+      updatedValues.companyEarnings = computedCompanyEarnings < 0 ? 0 : computedCompanyEarnings;
+      updatedValues.employeeShare = computedEmployeeShare;
+    }
+
+    if (key === 'discount') {
+      const discount = parseFloat(validValue || '0') || 0;
+      let companyEarnings = parseFloat(formValues.companyEarnings?.toString() || '0') || 0;
+
+      companyEarnings -= discount;
+      companyEarnings = companyEarnings < 0 ? 0 : companyEarnings;
+
+      updatedValues.companyEarnings = Math.round(companyEarnings);
     }
 
     setFormValues(updatedValues);
@@ -379,6 +427,7 @@ const AvailedServiceForm = () => {
     const formattedStatus = formValues.status?.label || '';
 
     const payload: UpdateAvailedServicePayload = {
+      discount: formValues.discount,
       deduction: formValues.deduction,
       is_free: formattedServiceCharge,
       is_paid: formattedPaymentStatus,
@@ -456,13 +505,15 @@ const AvailedServiceForm = () => {
         />
         <TextInput
           label="Discount"
-          placeholder="discount"
-          error={errors.deduction}
+          placeholder="Discount"
+          error={errors.discount}
           value={formValues.discount.toString()}
           onChangeText={(value) => handleInputChange('discount', value)}
           onFocus={() => removeError('discount')}
-          keyboardType="numeric"
+          keyboardType="number-pad"
+          readOnly={formValues.serviceCharge?.label === 'Free'}
         />
+
         <TextInput
           label="Deduction"
           placeholder="Deduction"
@@ -470,7 +521,7 @@ const AvailedServiceForm = () => {
           value={formValues.deduction.toString()}
           onChangeText={(value) => handleInputChange('deduction', value)}
           onFocus={() => removeError('deduction')}
-          keyboardType="numeric"
+          keyboardType="number-pad"
         />
         <TextInput
           label="Company Earnings"
@@ -514,7 +565,10 @@ const AvailedServiceForm = () => {
           selected={formValues?.employees || []}
           options={employeeSelection}
           onSelected={(selected) => {
-            setFormValues({ ...formValues, employees: selected });
+            setFormValues({
+              ...formValues,
+              employees: Array.isArray(selected) ? selected : [selected],
+            });
           }}
           multiSelect={true}
           title="Select Employee"

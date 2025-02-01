@@ -59,6 +59,7 @@ export type AuthStackParamList = {
       transactionServiceId: string;
       title: string;
       price: number;
+      discount: number;
       deduction: number;
       companyEarnings: number;
       employeeShare: number;

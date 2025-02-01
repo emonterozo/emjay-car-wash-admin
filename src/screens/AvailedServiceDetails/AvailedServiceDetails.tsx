@@ -160,6 +160,7 @@ const AvailedServiceDetails = () => {
         transactionServiceId: transactionServiceId,
         title: transactionService.title,
         price: transactionService.price,
+        discount: transactionService.discount,
         deduction: transactionService.deduction,
         companyEarnings: transactionService.company_earnings,
         employeeShare: transactionService.employee_share,
