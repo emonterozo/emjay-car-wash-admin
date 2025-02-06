@@ -72,10 +72,14 @@ const Transaction = () => {
 
   useEffect(() => {
     if (isFocused) {
-      fetchTransactions();
+      setSelectedDate(new Date());
     }
+  }, [isFocused]);
+
+  useEffect(() => {
+    fetchTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused, selectedDate]);
+  }, [selectedDate]);
 
   const summaryDetails = summary
     ? [

@@ -12,7 +12,7 @@ import {
   ScreenStatusProps,
   UpdateAvailedServicePayload,
 } from '../../types/services/types';
-import { ModalDropdownOption } from '../../components/ModalDropdownTrigger/ModalDropdownTrigger';
+import { ModalDropdownOption } from '../../components/ModalDropdown/ModalDropdown';
 import { color, font } from '@app/styles';
 import {
   AppHeader,
