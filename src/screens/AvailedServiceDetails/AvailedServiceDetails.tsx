@@ -25,7 +25,8 @@ import { getTransactionServiceDetailsRequest } from '@app/services';
 
 const AvailedServiceDetails = () => {
   const { user } = useContext(GlobalContext);
-  const { transactionId, transactionServiceId } = useRoute<AvailedServiceDetailRouteProp>().params;
+  const { transactionId, transactionServiceId, transactionStatus } =
+    useRoute<AvailedServiceDetailRouteProp>().params;
   const isFocused = useIsFocused();
   const navigation = useNavigation<NavigationProp>();
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
@@ -153,6 +154,7 @@ const AvailedServiceDetails = () => {
     if (!transactionService) {
       return;
     }
+    const employeesId = transactionService.assigned_employees.map((employee) => employee.id);
 
     navigation.navigate('AvailedServiceForm', {
       service: {
@@ -169,6 +171,7 @@ const AvailedServiceDetails = () => {
         paymentStatus: transactionService.is_paid,
         startDateTime: transactionService.start_date || '',
         endDateTime: transactionService.end_date || '',
+        assignedEmployees: employeesId,
       },
     });
   };
@@ -186,9 +189,11 @@ const AvailedServiceDetails = () => {
       />
       <View style={styles.heading}>
         <Text style={styles.label}>Details of Availed Service</Text>
-        <TouchableOpacity onPress={handleUpdateServiceDetails}>
-          <EditIcon />
-        </TouchableOpacity>
+        {transactionStatus === 'ONGOING' && (
+          <TouchableOpacity onPress={handleUpdateServiceDetails}>
+            <EditIcon />
+          </TouchableOpacity>
+        )}
       </View>
       <ScrollView bounces={false} contentContainerStyle={styles.content}>
         <View>

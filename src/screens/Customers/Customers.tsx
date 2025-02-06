@@ -177,6 +177,8 @@ const styles = StyleSheet.create({
   image: {
     height: 90,
     width: 90,
+    backgroundColor: '#46A6FF',
+    borderRadius: 90,
   },
   textCustomerList: {
     ...font.regular,

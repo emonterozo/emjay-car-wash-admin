@@ -344,6 +344,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 41,
     marginBottom: 41,
+    backgroundColor: '#46A6FF',
+    borderRadius: 187,
   },
 });
 

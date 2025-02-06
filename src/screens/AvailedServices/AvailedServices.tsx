@@ -23,7 +23,7 @@ import {
   updateTransactionRequest,
 } from '@app/services';
 import GlobalContext from '@app/context';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { CONFIRM_TYPE, ERR_NETWORK, IMAGES } from '@app/constant';
 
 const STATUSES = [
   {
@@ -52,23 +52,40 @@ const renderSeparator = () => <View style={styles.separator} />;
 
 const AvailedServices = () => {
   const { user } = useContext(GlobalContext);
-  const { customerId, transactionId } = useRoute<AvailedServicesRouteProp>().params;
+  const { customerId, transactionId, transactionStatus, model, plateNumber } =
+    useRoute<AvailedServicesRouteProp>().params;
   const isFocused = useIsFocused();
   const navigation = useNavigation<NavigationProp>();
-  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+  const [screenStatus, setScreenStatus] = useState<
+    ScreenStatusProps & {
+      request:
+        | 'customer'
+        | 'transactionServices'
+        | 'cancelTransaction'
+        | 'completeTransaction'
+        | 'default';
+    }
+  >({
     isLoading: false,
     hasError: false,
     type: 'error',
+    request: 'default',
   });
   const [selectedStatus, setSelectedStatus] = useState('Pending');
   const [transactionService, setTransactionService] = useState<
     TransactionServicesResponse['transaction'] | undefined
   >(undefined);
   const [freeWash, setFreeWash] = useState<{ type: string; size: string }[]>([]);
-  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
+  const [confirmation, setConfirmation] = useState<{
+    isVisible: boolean;
+    type: keyof typeof CONFIRM_TYPE;
+  }>({
+    isVisible: false,
+    type: 'CancelTransaction',
+  });
 
-  const fetchEmployeeFreeWash = async () => {
-    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+  const fetchCustomerFreeWash = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, request: 'default', isLoading: true });
     if (customerId !== null) {
       const response = await getCustomerFreeWashServiceRequest(user.accessToken, customerId);
 
@@ -86,6 +103,7 @@ const AvailedServices = () => {
           isLoading: false,
           type: response.error === ERR_NETWORK ? 'connection' : 'error',
           hasError: true,
+          request: 'customer',
         });
       }
     } else {
@@ -100,18 +118,18 @@ const AvailedServices = () => {
       setTransactionService(response.data.transaction);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
-      //TODO: handle this scenario if updating failed
       setScreenStatus({
         isLoading: false,
         type: response.error === ERR_NETWORK ? 'connection' : 'error',
         hasError: true,
+        request: 'transactionServices',
       });
     }
   };
 
   useEffect(() => {
     if (isFocused) {
-      fetchEmployeeFreeWash();
+      fetchCustomerFreeWash();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionId, customerId, isFocused]);
@@ -154,11 +172,11 @@ const AvailedServices = () => {
     });
   };
 
-  const cancelTransaction = async () => {
-    setIsConfirmationVisible(false);
-    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+  const updateTransaction = async (status: 'CANCELLED' | 'COMPLETED') => {
+    setConfirmation({ ...confirmation, isVisible: false });
+    setScreenStatus({ ...screenStatus, hasError: false, request: 'default', isLoading: true });
 
-    const response = await updateTransactionRequest(user.accessToken, transactionId, 'CANCELLED');
+    const response = await updateTransactionRequest(user.accessToken, transactionId, status);
 
     if (response.success && response.data) {
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -168,8 +186,35 @@ const AvailedServices = () => {
         isLoading: false,
         type: response.error === ERR_NETWORK ? 'connection' : 'error',
         hasError: true,
+        request: status === 'CANCELLED' ? 'cancelTransaction' : 'completeTransaction',
       });
     }
+  };
+
+  const onRetry = () => {
+    switch (screenStatus.request) {
+      case 'customer':
+        fetchCustomerFreeWash();
+        break;
+      case 'transactionServices':
+        setScreenStatus({ ...screenStatus, hasError: false, request: 'default', isLoading: true });
+        fetchTransactionServices();
+        break;
+      case 'cancelTransaction':
+        updateTransaction('CANCELLED');
+        break;
+      case 'completeTransaction':
+        updateTransaction('COMPLETED');
+        break;
+      default:
+        break;
+    }
+  };
+
+  const checkAvailedServices = (status: 'PENDING' | 'DONE') => {
+    return transactionService?.availed_services.every(
+      (service) => service.status === status || service.status === 'CANCELLED',
+    );
   };
 
   return (
@@ -181,18 +226,25 @@ const AvailedServices = () => {
         type={screenStatus.type}
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
-        onRetry={fetchEmployeeFreeWash}
+        onRetry={onRetry}
       />
       <ConfirmationModal
-        type="CancelTransaction"
-        isVisible={isConfirmationVisible}
-        onNo={() => setIsConfirmationVisible(false)}
-        onYes={cancelTransaction}
+        type={confirmation.type}
+        isVisible={confirmation.isVisible}
+        onNo={() => setConfirmation({ ...confirmation, isVisible: false })}
+        onYes={() =>
+          updateTransaction(confirmation.type === 'CancelTransaction' ? 'CANCELLED' : 'COMPLETED')
+        }
         textCancel="Cancel"
         textProceed="Confirm"
       />
       <View style={styles.heading}>
-        <Text style={styles.label}>List of Availed Services</Text>
+        <Text style={styles.label}>
+          List of Availed Services for
+          <Text
+            style={[styles.label, { color: color.primary }]}
+          >{` ${model} (${plateNumber})`}</Text>
+        </Text>
       </View>
       <View style={styles.statusContainer}>
         {STATUSES.map((status) => (
@@ -227,8 +279,10 @@ const AvailedServices = () => {
             <View style={styles.details}>
               <Text style={styles.name}>{item.title}</Text>
               <Text style={styles.price}>
-                <Text style={styles.priceLabel}>Amount: </Text>
-                {formattedNumber(item.price)}
+                <Text style={styles.priceLabel}>Price: </Text>
+                {item.is_paid && !item.is_free
+                  ? 'Paid'
+                  : formattedNumber(item.price - (item.is_free ? 0 : item.discount))}
               </Text>
               <View style={[styles.tag, item.is_free && styles.tagFree]}>
                 <Text style={styles.tagLabel}>{item.is_free ? 'Free' : 'Not Free'}</Text>
@@ -239,6 +293,7 @@ const AvailedServices = () => {
                   navigation.navigate('AvailedServiceDetails', {
                     transactionId: transactionId,
                     transactionServiceId: item.transaction_service_id,
+                    transactionStatus,
                   })
                 }
               >
@@ -254,61 +309,58 @@ const AvailedServices = () => {
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
       />
-      {transactionService && (
-        <FloatingActionButton
-          additionalButtons={(() => {
-            switch (selectedStatus) {
-              case 'Pending':
-                return [
-                  {
-                    icon: IMAGES.WALLET_ERROR,
-                    label: 'Cancel the Transaction',
-                    onPress: () => {
-                      setIsConfirmationVisible(true);
+      {transactionService &&
+        (selectedStatus === 'Pending' || selectedStatus === 'Done') &&
+        transactionStatus === 'ONGOING' && (
+          <FloatingActionButton
+            additionalButtons={(() => {
+              let actions = [];
+              switch (selectedStatus) {
+                case 'Pending':
+                  actions = [
+                    {
+                      icon: IMAGES.WALLET_ERROR,
+                      label: 'Cancel the Transaction',
+                      onPress: () => {
+                        setConfirmation({
+                          type: 'CancelTransaction',
+                          isVisible: true,
+                        });
+                      },
                     },
-                  },
-                  {
-                    icon: IMAGES.WALLET_ERROR,
-                    label: 'Add service',
-                    onPress: navigateToAddOngoing,
-                  },
-                ];
-              case 'Done':
-                return [
-                  {
-                    icon: IMAGES.WALLET_CHECKED,
-                    label: 'Complete the Transaction',
-                    onPress: () => {
-                      setIsConfirmationVisible(true);
+                    {
+                      icon: 'plus',
+                      label: 'Add service',
+                      onPress: navigateToAddOngoing,
                     },
-                  },
-                  {
-                    icon: IMAGES.WALLET_ERROR,
-                    label: 'Add service',
-                    onPress: navigateToAddOngoing,
-                  },
-                ];
-              case 'Cancel':
-                return [
-                  {
-                    icon: IMAGES.WALLET_ERROR,
-                    label: 'Cancel the Transaction',
-                    onPress: () => {
-                      setIsConfirmationVisible(true);
+                  ];
+
+                  return checkAvailedServices('PENDING') ? actions : actions.slice(1);
+                case 'Done':
+                  actions = [
+                    {
+                      icon: IMAGES.WALLET_CHECKED,
+                      label: 'Complete the Transaction',
+                      onPress: () => {
+                        setConfirmation({
+                          type: 'CompleteTransaction',
+                          isVisible: true,
+                        });
+                      },
                     },
-                  },
-                  {
-                    icon: IMAGES.WALLET_ERROR,
-                    label: 'Add service',
-                    onPress: navigateToAddOngoing,
-                  },
-                ];
-              default:
-                return [];
-            }
-          })()}
-        />
-      )}
+                    {
+                      icon: 'plus',
+                      label: 'Add service',
+                      onPress: navigateToAddOngoing,
+                    },
+                  ];
+                  return checkAvailedServices('DONE') ? actions : actions.slice(1);
+                default:
+                  return [];
+              }
+            })()}
+          />
+        )}
     </SafeAreaView>
   );
 };
@@ -319,8 +371,6 @@ const styles = StyleSheet.create({
     backgroundColor: color.background,
   },
   heading: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginVertical: 16,
     paddingHorizontal: 25,
   },

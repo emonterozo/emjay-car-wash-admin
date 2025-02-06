@@ -19,13 +19,14 @@ import {
   TransactionItem,
   TransactionSummary,
 } from '../../types/services/types';
-import ModalDropdown, { ModalDropdownOption } from '../../components/ModalDropdown/ModalDropdown';
+import { ModalDropdownOption } from '../../components/ModalDropdown/ModalDropdown';
 import { color, font } from '@app/styles';
 import {
   AppHeader,
   EmptyState,
   ErrorModal,
   LoadingAnimation,
+  ModalDropdown,
   ServiceTransactionItem,
 } from '@app/components';
 import { formattedNumber } from '@app/helpers';
@@ -64,6 +65,7 @@ const TransactionComputation = () => {
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [summary, setSummary] = useState<TransactionSummary | undefined>(undefined);
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
+  const [isOptionOpen, setIsOptionOpen] = useState(false);
 
   const fetchEmployees = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
@@ -173,6 +175,19 @@ const TransactionComputation = () => {
     }
   };
 
+  const toggleOption = () => setIsOptionOpen(!isOptionOpen);
+
+  const getHeadingTitle = () => {
+    const firstNames = employeeSelection
+      .filter((option) => selectedEmployees.includes(option.id))
+      .map((option) => option.title.split(' ')[0])
+      .join(', ');
+
+    return selectedEmployees.length > 0
+      ? `${firstNames.replace(/, ([^,]*)$/, ' & $1')} Service Transactions`
+      : 'Please select an employee';
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -187,11 +202,12 @@ const TransactionComputation = () => {
 
       <View style={styles.content}>
         <ModalDropdown
-          label="Assigned Employee"
-          placeholder="Select Employee"
+          isVisible={isOptionOpen}
+          onCancel={toggleOption}
           selected={selectedEmployees}
           options={employeeSelection}
           onSelected={(selected) => {
+            toggleOption();
             setSelectedEmployees(selected);
             if (selected.length > 0) {
               fetchTransactions(selected);
@@ -202,8 +218,11 @@ const TransactionComputation = () => {
           }}
           multiSelect={true}
           title="Select Employee"
+          imageColorBackground="#46A6FF"
         />
-        <Text style={[styles.heading, styles.topContent]}>Computation Summary</Text>
+        <TouchableOpacity onPress={toggleOption}>
+          <Text style={[styles.heading, styles.topContent]}>{getHeadingTitle()}</Text>
+        </TouchableOpacity>
         <View style={styles.infoContainer}>
           {summaryDetails.map((item, index) => (
             <Text key={index} style={styles.text}>
@@ -258,6 +277,7 @@ const styles = StyleSheet.create({
   },
   topContent: {
     marginVertical: 16,
+    color: color.primary,
   },
   heading: {
     ...font.regular,

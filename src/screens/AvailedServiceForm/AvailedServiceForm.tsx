@@ -5,8 +5,14 @@ import * as Yup from 'yup';
 import { ValidationError } from 'yup';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { Option } from 'src/components/Dropdown/Dropdown';
-import { ModalDropdownOption } from 'src/components/ModalDropdown/ModalDropdown';
+import { Option } from '../../components/Dropdown/Dropdown';
+import { AvailedServiceFormRouteProp, NavigationProp } from '../../types/navigation/types';
+import {
+  Employees,
+  ScreenStatusProps,
+  UpdateAvailedServicePayload,
+} from '../../types/services/types';
+import { ModalDropdownOption } from '../../components/ModalDropdownTrigger/ModalDropdownTrigger';
 import { color, font } from '@app/styles';
 import {
   AppHeader,
@@ -16,17 +22,11 @@ import {
   Dropdown,
   Button,
   Toast,
-  ModalDropdown,
+  ModalDropdownTrigger,
   ConfirmationModal,
 } from '@app/components';
 import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 import { useNativeBackHandler } from '@app/hooks';
-import { AvailedServiceFormRouteProp, NavigationProp } from 'src/types/navigation/types';
-import {
-  Employees,
-  ScreenStatusProps,
-  UpdateAvailedServicePayload,
-} from 'src/types/services/types';
 import { getEmployeesRequest, updateAvailedServiceRequest } from '@app/services';
 import GlobalContext from '@app/context';
 
@@ -143,7 +143,7 @@ const AvailedServiceForm = () => {
     discount: service.discount,
     deduction: service.deduction,
     companyEarnings: service.companyEarnings,
-    employees: [],
+    employees: service.assignedEmployees,
     employeeShare: service.employeeShare,
     serviceCharge:
       SERVICE_CHARGE_OPTIONS.find((option) =>
@@ -176,7 +176,6 @@ const AvailedServiceForm = () => {
 
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [errors, setErrors] = useState<Errors>({});
-  // const [discountDisplay, setDiscountDisplay] = useState(formValues.discount.toString());
 
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
@@ -277,7 +276,7 @@ const AvailedServiceForm = () => {
           SERVICE_STATUS_OPTIONS.filter((option) => option.label === 'DONE'),
         );
         break;
-      case 'cancel':
+      case 'cancelled':
         setFilteredServiceStatusOption(
           SERVICE_STATUS_OPTIONS.filter(
             (option) =>
@@ -438,7 +437,7 @@ const AvailedServiceForm = () => {
     };
 
     if ((formValues.employees ?? []).length > 0) {
-      payload.assigned_employee = formValues.employees?.toString();
+      payload.assigned_employee = formValues.employees;
     }
 
     const response = await updateAvailedServiceRequest(
@@ -466,6 +465,14 @@ const AvailedServiceForm = () => {
     }
   };
 
+  const onRetry = () => {
+    if (employees.length > 0) {
+      handleSubmit();
+    } else {
+      fetchEmployees();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -475,7 +482,7 @@ const AvailedServiceForm = () => {
         type={screenStatus.type}
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
-        onRetry={fetchEmployees}
+        onRetry={onRetry}
       />
       <Toast
         isVisible={isToastVisible}
@@ -549,10 +556,15 @@ const AvailedServiceForm = () => {
         <Dropdown
           label="Payment Status"
           placeholder="Payment status"
-          selected={formValues.paymentStatus}
+          selected={
+            formValues.serviceCharge === SERVICE_CHARGE_OPTIONS[0]
+              ? PAYMENT_STATUS_OPTIONS[0]
+              : formValues.paymentStatus
+          }
           options={PAYMENT_STATUS_OPTIONS}
           onSelected={(selectedOption) => handleDropdownChange('paymentStatus', selectedOption)}
           optionMinWidth={196}
+          isDisabled={formValues.serviceCharge === SERVICE_CHARGE_OPTIONS[0]}
         />
         <Dropdown
           label="Service Status"
@@ -562,7 +574,7 @@ const AvailedServiceForm = () => {
           onSelected={(selectedOption) => handleDropdownChange('status', selectedOption)}
           optionMinWidth={196}
         />
-        <ModalDropdown
+        <ModalDropdownTrigger
           label="Assigned Employee"
           placeholder="Select Employee"
           selected={formValues?.employees || []}
@@ -575,6 +587,7 @@ const AvailedServiceForm = () => {
           }}
           multiSelect={true}
           title="Select Employee"
+          imageColorBackground="#46A6FF"
         />
         <View style={styles.buttonContainer}>
           <Button
