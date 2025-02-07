@@ -130,6 +130,15 @@ export const CONFIRM_TYPE = {
     description:
       "Once canceled, the transaction cannot be undone. Please confirm if you'd like to proceed.",
   },
+  AddConsumables: {
+    title: 'Are you sure you want to cancel adding consumables?',
+    description: 'By doing this, you will lose any unsaved changes.',
+  },
+  DeleteConsumables: {
+    title: 'Are you sure you want to delete this consumables?',
+    description:
+      "By doing this, deleting cannot be undone Please confirm if you'd like to proceed.",
+  },
 };
 
 export const LIMIT = 50;

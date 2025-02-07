@@ -28,6 +28,8 @@ import {
   TransactionResponse,
   TransactionDetailsResponse,
   UpdateTransactionResponse,
+  AddConsumablesPayload,
+  AddConsumablesResponse,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -357,6 +359,20 @@ export const updateTransactionRequest = (
       data: {
         status,
       },
+    },
+  );
+};
+
+export const addConsumablesRequest = (
+  accessToken: string,
+  payload: AddConsumablesPayload,
+): ApiResponse<AddConsumablesResponse> => {
+  return apiRequest<AddConsumablesPayload, AddConsumablesResponse>(
+    `${Config.API_BASE_URL}/admin/consumables`,
+    {
+      method: 'put',
+      headers: requestHeader(accessToken),
+      data: payload,
     },
   );
 };

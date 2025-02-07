@@ -339,3 +339,17 @@ export type UpdateTransactionResponse = {
   };
   errors: ErrorProps[];
 };
+
+export type AddConsumablesPayload = {
+  name: string;
+  price: number;
+  quantity: number;
+  date: string;
+};
+
+export type AddConsumablesResponse = {
+  consumables: {
+    id: string;
+  };
+  errors: ErrorProps[];
+};
