@@ -1,6 +1,6 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
-import { TransactionServicesResponse } from '../services/types';
+import { TransactionServicesResponse, TransactionStatusType } from '../services/types';
 
 export type CarwashList = {
   icon: string;
@@ -51,8 +51,18 @@ export type AuthStackParamList = {
           dateStarted: string;
         };
       };
-  AvailedServices: { customerId: string | null; transactionId: string };
-  AvailedServiceDetails: { transactionId: string; transactionServiceId: string };
+  AvailedServices: {
+    customerId: string | null;
+    transactionId: string;
+    transactionStatus: TransactionStatusType;
+    model: string;
+    plateNumber: string;
+  };
+  AvailedServiceDetails: {
+    transactionId: string;
+    transactionStatus: TransactionStatusType;
+    transactionServiceId: string;
+  };
   AvailedServiceForm: {
     service: {
       transactionId: string;
@@ -68,6 +78,7 @@ export type AuthStackParamList = {
       paymentStatus: boolean;
       startDateTime: string | '';
       endDateTime: string | '';
+      assignedEmployees: string[];
     };
   };
   TransactionDetails: { transactionId: string; transactionServiceId: string };

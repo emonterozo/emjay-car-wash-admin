@@ -17,4 +17,5 @@ export { default as CalendarPicker } from './CalendarPicker/CalendarPicker';
 export { default as CalendarWheelPicker } from './CalendarWheelPicker/CalendarWheelPicker';
 export { default as ConfirmationModal } from './ConfirmationModal/ConfirmationModal';
 export { default as SizeDisplay } from './SizeDisplay/SizeDisplay';
+export { default as ModalDropdownTrigger } from './ModalDropdownTrigger/ModalDropdownTrigger';
 export { default as ModalDropdown } from './ModalDropdown/ModalDropdown';

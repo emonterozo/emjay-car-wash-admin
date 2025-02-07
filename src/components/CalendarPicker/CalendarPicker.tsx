@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Dimensions, Modal, StyleSheet, TouchableOpacity } from 'react-native';
-import { add, format, getDaysInMonth, isSameMonth, isValid, sub, subMonths } from 'date-fns';
+import {
+  add,
+  format,
+  getDaysInMonth,
+  isAfter,
+  isBefore,
+  isSameMonth,
+  isValid,
+  sub,
+  subMonths,
+} from 'date-fns';
 
-import { Button, CalendarWheelPicker, MaterialCommunityIcon } from '..';
+import { Button, MaterialCommunityIcon, TextInput } from '..';
 import { color, font } from '@app/styles';
-import { getCurrentDateAtMidnightUTC, getMinimumDateAtMidnightUTC } from '@app/helpers';
+import {
+  getCurrentDateAtMidnightUTC,
+  getMinimumDateAtMidnightUTC,
+  isValidDateString,
+} from '@app/helpers';
 
 const getMaxDayForMonth = (selectedDate: Date, minDate: Date, maxDate: Date) => {
   // Create a date for the specific day
@@ -52,8 +66,6 @@ const CalendarPicker = ({
   const [days, setDays] = useState<number[]>([]);
   const [selectedDate, setSelectedDate] = useState(date);
   const [selectedDay, setSelectedDay] = useState(date.getDate());
-  const [selectedMonth, setSelectedMonth] = useState(date.getMonth());
-  const [selectedYear, setSelectedYear] = useState(date.getFullYear());
   const [currentDate, setCurrentDate] = useState<
     | {
         startingDay: number;
@@ -62,6 +74,8 @@ const CalendarPicker = ({
     | undefined
   >(undefined);
   const [isDefaultSelection, setIsDefaultSelection] = useState(true);
+  const [inputtedDate, setInputtedDate] = useState(format(date, 'MM/dd/yyyy'));
+  const [inputError, setInputError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1); // first day of the month
@@ -92,21 +106,55 @@ const CalendarPicker = ({
       daysInCurrentMonth,
     });
 
-    setSelectedMonth(selectedDate.getMonth());
     setSelectedDay(selectedDate.getDate());
-    setSelectedYear(selectedDate.getFullYear());
     setDays(allDays);
   }, [selectedDate, minDate, maxDate]);
 
   const handlePressConfirm = () => {
-    onSelectedDate(selectedDate);
+    if (isDefaultSelection) {
+      onSelectedDate(selectedDate);
+    } else {
+      if (!isValidDateString(inputtedDate)) {
+        setInputError('Please input a valid date (MM/DD/YYYY)');
+        return;
+      }
+
+      const [month, day, year] = inputtedDate.split('/').map(Number);
+
+      // Check if month is valid (1-12) and day is valid for the given month
+      if (month < 1 || month > 12 || day < 1 || day > 31) {
+        setInputError('Please enter a valid month (1-12) and day (1-31)');
+        return;
+      }
+
+      // Check for days in months with fewer than 31 days
+      const daysInMonth = new Date(year, month, 0).getDate(); // Get last day of the month
+      if (day > daysInMonth) {
+        setInputError(
+          'The day you entered is not valid for the selected month. Please enter a valid day',
+        );
+        return;
+      }
+
+      const formattedDate = new Date(Date.UTC(year, month - 1, day));
+
+      if (isBefore(formattedDate, minDate)) {
+        setInputError(`The date cannot be earlier than ${format(minDate, 'MM/dd/yyyy')}`);
+      } else if (isAfter(formattedDate, maxDate)) {
+        setInputError(`The date cannot be later than ${format(maxDate, 'MM/dd/yyyy')}`);
+      } else {
+        setIsDefaultSelection(true);
+        setSelectedDay(formattedDate.getDate());
+        setSelectedDate(formattedDate);
+        onSelectedDate(formattedDate);
+      }
+    }
   };
 
   const handlePressClose = () => {
     setSelectedDay(date.getDate());
-    setSelectedMonth(date.getMonth());
-    setSelectedYear(date.getFullYear());
     setSelectedDate(date);
+    setIsDefaultSelection(true);
     onClose();
   };
 
@@ -134,6 +182,18 @@ const CalendarPicker = ({
     });
   };
 
+  const formatDate = (text: string) => {
+    let cleaned = text.replace(/\D/g, '');
+
+    if (cleaned.length > 4) {
+      cleaned = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
+    } else if (cleaned.length > 2) {
+      cleaned = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+    }
+
+    setInputtedDate(cleaned);
+  };
+
   return (
     <View style={styles.container}>
       <Modal visible={isVisible} animationType="slide" transparent={true}>
@@ -150,10 +210,11 @@ const CalendarPicker = ({
               )}
               <TouchableOpacity
                 style={styles.content}
-                disabled
                 onPress={() => setIsDefaultSelection(!isDefaultSelection)}
               >
-                <Text style={styles.date}>{format(selectedDate, 'MMMM yyyy')}</Text>
+                <Text style={styles.date}>
+                  {isDefaultSelection ? format(selectedDate, 'MMMM yyyy') : 'Date Manual Input'}
+                </Text>
               </TouchableOpacity>
               {isDefaultSelection && (
                 <TouchableOpacity
@@ -223,13 +284,18 @@ const CalendarPicker = ({
                 </View>
               </View>
             ) : (
-              <CalendarWheelPicker
-                selectedMonth={selectedMonth}
-                selectedYear={selectedYear}
-                minDate={minDate}
-                maxDate={maxDate}
-                onSelected={() => {}}
-              />
+              <View style={styles.manualContainer}>
+                <TextInput
+                  label="Please input a date"
+                  placeholder="MM/DD/YYYY"
+                  error={inputError}
+                  value={inputtedDate}
+                  onChangeText={formatDate}
+                  maxLength={10}
+                  keyboardType="number-pad"
+                  onFocus={() => setInputError(undefined)}
+                />
+              </View>
             )}
             <View style={styles.separator} />
             <View style={styles.buttonContainer}>
@@ -266,7 +332,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(141, 141, 141, 0.43)',
   },
   row: {
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -355,6 +420,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  manualContainer: {
+    width: '100%',
   },
 });
 

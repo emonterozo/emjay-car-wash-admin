@@ -11,7 +11,7 @@ import {
 } from '../../types/services/types';
 import { SizeKey } from '../../types/constant/types';
 import { color, font } from '@app/styles';
-import { AppHeader, ErrorModal, LoadingAnimation } from '@app/components';
+import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { formattedNumber } from '@app/helpers';
 import { getTransactionDetailsRequest } from '@app/services';
 import GlobalContext from '@app/context';
@@ -250,16 +250,22 @@ const TransactionDetails = () => {
           <Text style={[styles.heading, styles.topContent]}>Assigned employees</Text>
         </View>
         <View style={styles.transactionsContainer}>
-          {employees.map((employee) => (
-            <View key={employee.id} style={styles.row}>
-              <Image
-                source={employee.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-                style={styles.image}
-                resizeMode="contain"
-              />
-              <Text style={styles.employee}>{`${employee.first_name} ${employee.last_name}`}</Text>
-            </View>
-          ))}
+          {employees.length > 0 ? (
+            employees.map((employee) => (
+              <View key={employee.id} style={styles.row}>
+                <Image
+                  source={employee.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={styles.employee}
+                >{`${employee.first_name} ${employee.last_name}`}</Text>
+              </View>
+            ))
+          ) : (
+            <EmptyState />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -281,7 +287,7 @@ const styles = StyleSheet.create({
     ...font.regular,
     fontSize: 20,
     lineHeight: 20,
-    color: color.black,
+    color: color.primary,
   },
   infoContainer: {
     gap: 12,

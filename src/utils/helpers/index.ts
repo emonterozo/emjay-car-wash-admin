@@ -21,3 +21,5 @@ export const getMinimumDateAtMidnightUTC = () => {
   now.setUTCHours(0, 0, 0, 0);
   return now;
 };
+
+export const isValidDateString = (dateStr: string) => /^(\d{2})\/(\d{2})\/(\d{4})$/.test(dateStr);

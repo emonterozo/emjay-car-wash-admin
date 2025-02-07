@@ -147,6 +147,9 @@ const Ongoing = () => {
                   navigation.navigate('AvailedServices', {
                     customerId: item.customer_id,
                     transactionId: item.id,
+                    transactionStatus: item.status,
+                    model: item.model,
+                    plateNumber: item.plate_number,
                   })
                 }
               >

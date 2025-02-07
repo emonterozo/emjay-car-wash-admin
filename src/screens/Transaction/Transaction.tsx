@@ -7,6 +7,7 @@ import {
   StatusBar,
   FlatList,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { format } from 'date-fns';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -16,17 +17,22 @@ import { ScreenStatusProps, TransactionItem, TransactionSummary } from '../../ty
 import { color, font } from '@app/styles';
 import {
   AppHeader,
+  CalendarPicker,
   EmptyState,
   ErrorModal,
   FloatingActionButton,
   LoadingAnimation,
   ServiceTransactionItem,
 } from '@app/components';
-import { formattedNumber } from '@app/helpers';
+import {
+  formattedNumber,
+  getCurrentDateAtMidnightUTC,
+  getMinimumDateAtMidnightUTC,
+} from '@app/helpers';
 import { WaterDropIcon } from '@app/icons';
 import { getTransactionsRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { ERR_NETWORK } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
@@ -41,12 +47,14 @@ const Transaction = () => {
   });
   const [summary, setSummary] = useState<TransactionSummary | undefined>(undefined);
   const [transactions, setTransactions] = useState<TransactionItem[]>([]);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const fetchTransactions = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getTransactionsRequest(user.accessToken, {
-      start: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
-      end: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
+      start: format(selectedDate, 'yyyy-MM-dd'),
+      end: format(selectedDate, 'yyyy-MM-dd'),
     });
 
     if (response.success && response.data) {
@@ -64,10 +72,14 @@ const Transaction = () => {
 
   useEffect(() => {
     if (isFocused) {
-      fetchTransactions();
+      setSelectedDate(new Date());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
+
+  useEffect(() => {
+    fetchTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate]);
 
   const summaryDetails = summary
     ? [
@@ -108,6 +120,15 @@ const Transaction = () => {
     navigation.goBack();
   };
 
+  const toggleCalendar = () => setIsCalendarOpen(!isCalendarOpen);
+
+  const onSelectedDate = (date: Date) => {
+    toggleCalendar();
+    setTimeout(() => {
+      setSelectedDate(date);
+    }, 500);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -120,7 +141,13 @@ const Transaction = () => {
         onRetry={fetchTransactions}
       />
       <View style={styles.content}>
-        <Text style={[styles.heading, styles.topContent]}>January 29, 2025 Summary</Text>
+        <TouchableOpacity style={styles.headerContainer} onPress={toggleCalendar}>
+          <Image source={IMAGES.CALENDAR_ACTIVE} resizeMode="contain" />
+          <Text style={[styles.heading, styles.topContent]}>{`${format(
+            selectedDate,
+            'MMMM dd, yyyy',
+          )} Summary`}</Text>
+        </TouchableOpacity>
         <View style={styles.infoContainer}>
           {summaryDetails.map((item, index) => (
             <Text key={index} style={styles.text}>
@@ -132,6 +159,14 @@ const Transaction = () => {
         <Text
           style={styles.heading}
         >{`Total of ${transactions.length} completed transactions`}</Text>
+        <CalendarPicker
+          date={selectedDate}
+          isVisible={isCalendarOpen}
+          onSelectedDate={onSelectedDate}
+          onClose={toggleCalendar}
+          maxDate={getCurrentDateAtMidnightUTC()}
+          minDate={getMinimumDateAtMidnightUTC()}
+        />
       </View>
       <View style={styles.transactionsContainer}>
         <FlatList
@@ -162,10 +197,11 @@ const Transaction = () => {
         />
       </View>
       <FloatingActionButton
+        fabIcon="calculator-variant-outline"
         onPress={() =>
           navigation.navigate('TransactionComputation', {
-            startDate: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
-            endDate: format(new Date('2025-01-29'), 'yyyy-MM-dd'),
+            startDate: format(selectedDate, 'yyyy-MM-dd'),
+            endDate: format(selectedDate, 'yyyy-MM-dd'),
           })
         }
       />
@@ -183,6 +219,13 @@ const styles = StyleSheet.create({
   },
   topContent: {
     marginVertical: 16,
+    color: color.primary,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    marginVertical: 5,
   },
   heading: {
     ...font.regular,

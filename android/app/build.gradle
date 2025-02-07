@@ -99,7 +99,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "0.0.5"
+        versionName "0.0.6"
         resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayadminapp'
     }
     flavorDimensions 'env'

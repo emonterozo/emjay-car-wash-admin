@@ -97,6 +97,7 @@ export const IMAGES = {
   NOT_YET_PAID: require('../../../assets/images/not-yet-paid.png'),
   WALLET_CHECKED: require('../../../assets/images/wallet-checked.png'),
   WALLET_ERROR: require('../../../assets/images/wallet-error.png'),
+  MENU: require('../../../assets/images/menu.png'),
 };
 
 export const ERROR_TYPE = {
@@ -138,6 +139,10 @@ export const CONFIRM_TYPE = {
     title: 'Are you sure you want to delete this consumables?',
     description:
       "By doing this, deleting cannot be undone Please confirm if you'd like to proceed.",
+  CompleteTransaction: {
+    title: 'Are you sure you want to Complete the Transaction?',
+    description:
+      "Once completed, the transaction cannot be undone. Please confirm if you'd like to proceed.",
   },
 };
 

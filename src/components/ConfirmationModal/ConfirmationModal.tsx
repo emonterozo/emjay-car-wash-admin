@@ -77,8 +77,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   titleText: {
-    ...font.bold,
+    ...font.regular,
     fontSize: 19.12,
+    lineHeight: 19.12,
     color: '#050303',
     textAlign: 'center',
     lineHeight: 19.12,
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     ...font.regular,
     fontSize: 12.75,
+    lineHeight: 12.75,
     color: '#5C5C5C',
     textAlign: 'center',
     lineHeight: 12.75,
@@ -106,7 +108,7 @@ const styles = StyleSheet.create({
     ...font.regular,
     fontSize: 19.12,
     textAlign: 'center',
-    lineHeight: 19.72,
+    lineHeight: 19.12,
   },
   image: {
     width: 207,

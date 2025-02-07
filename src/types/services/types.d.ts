@@ -44,7 +44,7 @@ export type Service = {
   title: string;
   description: string;
   image: string;
-  type: VEHICLE_TYPE;
+  type: VehicleType;
   ratings: number;
   reviews_count: number;
   last_review: string | null;
@@ -74,9 +74,9 @@ export type CustomersResponse = {
 export type Employees = {
   first_name: string;
   last_name: string;
-  gender: GENDER;
+  gender: GenderType;
   employee_title: string;
-  employee_status: EMPLOYEE_STATUS;
+  employee_status: EmployeeStatusType;
   id: string;
 };
 
@@ -123,11 +123,11 @@ export type CustomerInformationResponse = {
 export type EmployeeInformation = {
   first_name: string;
   last_name: string;
-  gender: GENDER;
+  gender: GenderType;
   birth_date: string;
   contact_number: string;
   employee_title: string;
-  employee_status: EMPLOYEE_STATUS;
+  employee_status: EmployeeStatusType;
   date_started: string;
   id: string;
   recent_transactions: RecentTransaction[];
@@ -145,7 +145,7 @@ export type AddEmployeePayload = {
   gender: string;
   contact_number: string;
   employee_title: string;
-  employee_status: EMPLOYEE_STATUS;
+  employee_status: EmployeeStatusType;
   date_started: string | undefined;
 };
 
@@ -159,7 +159,7 @@ export type AddEmployeeResponse = {
 export type UpdateEmployeePayload = {
   contact_number: string;
   employee_title: string;
-  employee_status: EMPLOYEE_STATUS;
+  employee_status: EmployeeStatusType;
 };
 
 export type UpdateEmployeeResponse = {
@@ -177,7 +177,7 @@ export type OngoingTransaction = {
   customer_id: string | null;
   first_name: string;
   last_name: string;
-  status: TRANSACTION_STATUS;
+  status: TransactionStatusType;
 };
 
 export type OngoingTransactionResponse = {
@@ -192,8 +192,10 @@ export type TransactionServices = {
   title: string;
   image: string;
   price: number;
-  status: TRANSACTION_SERVICE_STATUS;
+  status: TransactionServiceStatusType;
   is_free: boolean;
+  is_paid: boolean;
+  discount: number;
 };
 
 export type TransactionServicesResponse = {
@@ -227,7 +229,7 @@ export type TransactionServiceDetailsResponse = {
     discount: number;
     company_earnings: number;
     employee_share: number;
-    status: TRANSACTION_SERVICE_STATUS;
+    status: TransactionServiceStatusType;
     is_free: boolean;
     is_paid: boolean;
     start_date: string | null;
@@ -263,7 +265,7 @@ export type AddTransactionServiceResponse = {
 
 export type CreateOngoingTransactionPayload = {
   customer_id?: string;
-  vehicle_type: VEHICLE_TYPE;
+  vehicle_type: VehicleType;
   vehicle_size: string;
   model: string;
   plate_number: string;
@@ -286,7 +288,7 @@ export type UpdateAvailedServicePayload = {
   is_free: boolean;
   is_paid: boolean;
   status: string;
-  assigned_employee?: string;
+  assigned_employee?: string[];
 };
 
 export type UpdateAvailedServiceResponse = {

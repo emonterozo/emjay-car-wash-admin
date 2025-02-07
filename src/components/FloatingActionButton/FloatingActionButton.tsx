@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image, ImageSourcePropType } from 'react-native';
 import MaterialCommunityIcon from '../MaterialCommunityIcon/MaterialCommunityIcon';
 import { color, font } from '@app/styles';
+import { IMAGES } from '@app/constant';
 
 interface AdditionalButton {
   onPress: () => void;
-  icon: ImageSourcePropType;
+  icon: ImageSourcePropType | string;
   label: string;
 }
 
 interface Props {
   onPress?: () => void;
   additionalButtons?: AdditionalButton[];
+  fabIcon?: string;
 }
 
-const FloatingActionButton = ({ onPress, additionalButtons }: Props) => {
+const FloatingActionButton = ({ onPress, additionalButtons, fabIcon = 'plus' }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMainButtonPress = () => {
@@ -39,18 +41,26 @@ const FloatingActionButton = ({ onPress, additionalButtons }: Props) => {
             activeOpacity={0.8}
           >
             <View style={styles.additionalButtonContent}>
-              <Image source={button.icon} style={styles.image} resizeMode="contain" />
+              {typeof button.icon === 'string' ? (
+                <MaterialCommunityIcon name={button.icon} size={30} color="#ffffff" />
+              ) : (
+                <Image source={button.icon} style={styles.image} resizeMode="contain" />
+              )}
               <Text style={styles.buttonText}>{button.label}</Text>
             </View>
           </TouchableOpacity>
         ))}
       <TouchableOpacity onPress={handleMainButtonPress} activeOpacity={0.8}>
         <View style={styles.circle}>
-          <MaterialCommunityIcon
-            name={isExpanded ? 'close' : 'plus'}
-            size={24}
-            color={color.secondary}
-          />
+          {additionalButtons ? (
+            isExpanded ? (
+              <MaterialCommunityIcon name="close" size={25} color="#ffffff" />
+            ) : (
+              <Image source={IMAGES.MENU} style={styles.image} resizeMode="contain" />
+            )
+          ) : (
+            <MaterialCommunityIcon name={fabIcon} size={25} color="#ffffff" />
+          )}
         </View>
       </TouchableOpacity>
     </View>

@@ -31,7 +31,7 @@ import {
   SizeDisplay,
   LoadingAnimation,
   ErrorModal,
-  ModalDropdown,
+  ModalDropdownTrigger,
   Toast,
 } from '@app/components';
 import { ERR_NETWORK, IMAGES, SIZES } from '@app/constant';
@@ -163,19 +163,12 @@ const AddOngoing = () => {
       const type = transaction.vehicle_type as keyof typeof size;
       const selectedSizeIndex = size[type].indexOf(transaction.vehicle_size.toUpperCase());
       onSelectSize(type, selectedSizeIndex);
-
-      //newSizeCount[transaction.vehicle_size]
-      // newSizeCount[type] = newSizeCount[type].map(() => 0);
-      // newSizeCount[type][index] = 10;
     }
     fetchServices();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transaction]);
 
   useEffect(() => {
-    //selectedServices, should still return service with no specific size
-    //console.log(transaction?.availedServices);
-
     const filteredServices = services
       .filter((service) => service.type === selectedVehicle)
       .map((service) => {
@@ -342,6 +335,14 @@ const AddOngoing = () => {
 
   const onToastClose = () => setIsToastVisible(false);
 
+  const onRetry = () => {
+    if (services.length > 0) {
+      handleSubmit();
+    } else {
+      fetchServices();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -351,7 +352,7 @@ const AddOngoing = () => {
         type={screenStatus.type}
         isVisible={screenStatus.hasError}
         onCancel={onCancel}
-        onRetry={fetchServices}
+        onRetry={onRetry}
       />
       <Toast
         isVisible={isToastVisible}
@@ -447,7 +448,7 @@ const AddOngoing = () => {
           maxLength={64}
           readOnly={transaction ? true : false}
         />
-        <ModalDropdown
+        <ModalDropdownTrigger
           label="Service"
           placeholder="Select Service"
           selected={formValues.service}
