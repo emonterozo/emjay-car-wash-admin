@@ -220,7 +220,7 @@ const TransactionComputation = () => {
           title="Select Employee"
           imageColorBackground="#46A6FF"
         />
-        <TouchableOpacity onPress={toggleOption}>
+        <TouchableOpacity style={styles.selection} onPress={toggleOption}>
           <Text style={[styles.heading, styles.topContent]}>{getHeadingTitle()}</Text>
         </TouchableOpacity>
         <View style={styles.infoContainer}>
@@ -274,6 +274,9 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 25,
+  },
+  selection: {
+    marginBottom: 7,
   },
   topContent: {
     marginVertical: 16,

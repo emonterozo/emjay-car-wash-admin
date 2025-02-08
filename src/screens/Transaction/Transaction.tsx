@@ -33,6 +33,7 @@ import { WaterDropIcon } from '@app/icons';
 import { getTransactionsRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { useNativeBackHandler } from '@app/hooks';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
@@ -72,14 +73,10 @@ const Transaction = () => {
 
   useEffect(() => {
     if (isFocused) {
-      setSelectedDate(new Date());
+      fetchTransactions();
     }
-  }, [isFocused]);
-
-  useEffect(() => {
-    fetchTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate]);
+  }, [isFocused, selectedDate]);
 
   const summaryDetails = summary
     ? [
@@ -129,10 +126,20 @@ const Transaction = () => {
     }, 500);
   };
 
+  const onBack = () => {
+    navigation.goBack();
+    setSelectedDate(new Date());
+  };
+
+  useNativeBackHandler(() => {
+    onBack();
+    return true;
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Records" />
+      <AppHeader title="Records" onBack={onBack} />
       <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
       <ErrorModal
         type={screenStatus.type}
@@ -140,6 +147,9 @@ const Transaction = () => {
         onCancel={onCancel}
         onRetry={fetchTransactions}
       />
+      <View style={styles.headingContainer}>
+        <Text style={styles.label}>Record Lists</Text>
+      </View>
       <View style={styles.content}>
         <TouchableOpacity style={styles.headerContainer} onPress={toggleCalendar}>
           <Image source={IMAGES.CALENDAR_ACTIVE} resizeMode="contain" />
@@ -197,7 +207,7 @@ const Transaction = () => {
         />
       </View>
       <FloatingActionButton
-        fabIcon="calculator-variant-outline"
+        fabIcon={IMAGES.CALCULATOR}
         onPress={() =>
           navigation.navigate('TransactionComputation', {
             startDate: format(selectedDate, 'yyyy-MM-dd'),
@@ -214,6 +224,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.background,
   },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 25,
+  },
+  label: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#696969',
+  },
   content: {
     paddingHorizontal: 25,
   },
@@ -224,8 +246,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
-    marginVertical: 5,
+    gap: 8,
+    marginVertical: 3,
   },
   heading: {
     ...font.regular,

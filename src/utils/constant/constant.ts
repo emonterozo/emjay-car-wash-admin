@@ -98,6 +98,7 @@ export const IMAGES = {
   WALLET_CHECKED: require('../../../assets/images/wallet-checked.png'),
   WALLET_ERROR: require('../../../assets/images/wallet-error.png'),
   MENU: require('../../../assets/images/menu.png'),
+  CALCULATOR: require('../../../assets/images/calculator.png'),
 };
 
 export const ERROR_TYPE = {

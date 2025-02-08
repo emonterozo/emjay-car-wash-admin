@@ -228,6 +228,9 @@ const TransactionDetails = () => {
         onRetry={fetchTransactions}
       />
       <ScrollView bounces={false}>
+        <View style={styles.headingContainer}>
+          <Text style={styles.label}>Record Details</Text>
+        </View>
         <View style={styles.content}>
           <Text style={[styles.heading, styles.topContent]}>Customer details</Text>
           <View style={styles.infoContainer}>
@@ -277,6 +280,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.background,
   },
+  headingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 25,
+  },
+  label: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#696969',
+  },
   content: {
     paddingHorizontal: 25,
   },
@@ -287,7 +302,7 @@ const styles = StyleSheet.create({
     ...font.regular,
     fontSize: 20,
     lineHeight: 20,
-    color: color.primary,
+    color: color.black,
   },
   infoContainer: {
     gap: 12,

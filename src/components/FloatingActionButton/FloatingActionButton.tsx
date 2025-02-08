@@ -13,7 +13,7 @@ interface AdditionalButton {
 interface Props {
   onPress?: () => void;
   additionalButtons?: AdditionalButton[];
-  fabIcon?: string;
+  fabIcon?: ImageSourcePropType | string;
 }
 
 const FloatingActionButton = ({ onPress, additionalButtons, fabIcon = 'plus' }: Props) => {
@@ -58,8 +58,10 @@ const FloatingActionButton = ({ onPress, additionalButtons, fabIcon = 'plus' }: 
             ) : (
               <Image source={IMAGES.MENU} style={styles.image} resizeMode="contain" />
             )
-          ) : (
+          ) : typeof fabIcon === 'string' ? (
             <MaterialCommunityIcon name={fabIcon} size={25} color="#ffffff" />
+          ) : (
+            <Image source={fabIcon} style={styles.image} resizeMode="contain" />
           )}
         </View>
       </TouchableOpacity>

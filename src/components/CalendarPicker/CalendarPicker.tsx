@@ -78,6 +78,12 @@ const CalendarPicker = ({
   const [inputError, setInputError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
+    setSelectedDate(date);
+    setSelectedDay(date.getDate());
+    setInputtedDate(format(date, 'MM/dd/yyyy'));
+  }, [date]);
+
+  useEffect(() => {
     const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1); // first day of the month
 
     const daysInCurrentMonth = getDaysInMonth(selectedDate); // Days in the current month
@@ -202,6 +208,7 @@ const CalendarPicker = ({
             <View style={styles.row}>
               {isDefaultSelection && (
                 <TouchableOpacity
+                  style={[styles.arrow, styles.arrowLeft]}
                   onPress={() => onChevronClick('dec')}
                   disabled={isSameMonth(selectedDate, minDate)}
                 >
@@ -218,6 +225,7 @@ const CalendarPicker = ({
               </TouchableOpacity>
               {isDefaultSelection && (
                 <TouchableOpacity
+                  style={[styles.arrow, styles.arrowRight]}
                   onPress={() => onChevronClick('inc')}
                   disabled={isSameMonth(selectedDate, maxDate)}
                 >
@@ -334,7 +342,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    width: Dimensions.get('window').width * 0.9,
   },
   modalViewContainer: {
     width: Dimensions.get('window').width * 0.9,
@@ -418,11 +426,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 12,
   },
+  manualContainer: {
+    width: '100%',
+  },
   content: {
     flex: 1,
   },
-  manualContainer: {
-    width: '100%',
+  arrow: {
+    width: 25,
+  },
+  arrowLeft: {
+    marginLeft: 20,
+  },
+  arrowRight: {
+    marginRight: 20,
   },
 });
 
