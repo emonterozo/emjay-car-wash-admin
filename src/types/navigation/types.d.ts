@@ -83,6 +83,7 @@ export type AuthStackParamList = {
   };
   TransactionDetails: { transactionId: string; transactionServiceId: string };
   TransactionComputation: { startDate: string; endDate: string };
+  ConsumablesForm: undefined;
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -109,3 +110,5 @@ export type TransactionComputationRouteProp = RouteProp<
   AuthStackParamList,
   'TransactionComputation'
 >;
+
+// export type AddConsumablesRouteProp = RouteProp<AuthStackParamList, 'ConsumablesForm'>;
