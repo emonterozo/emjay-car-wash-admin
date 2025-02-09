@@ -110,5 +110,3 @@ export type TransactionComputationRouteProp = RouteProp<
   AuthStackParamList,
   'TransactionComputation'
 >;
-
-// export type AddConsumablesRouteProp = RouteProp<AuthStackParamList, 'ConsumablesForm'>;

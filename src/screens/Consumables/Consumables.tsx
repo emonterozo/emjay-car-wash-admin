@@ -1,56 +1,95 @@
+import React, { useContext, useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   AppHeader,
   ConfirmationModal,
   EmptyState,
-  FloatingActionButton /*LoadingAnimation*/,
+  ErrorModal,
+  FloatingActionButton,
+  LoadingAnimation,
+  Toast,
 } from '@app/components';
-import { IMAGES } from '@app/constant';
-import { ConsumablesIcon } from '@app/icons';
+import { ERR_NETWORK, LIMIT } from '@app/constant';
+import GlobalContext from '@app/context';
+import { CloseIcon, ConsumablesIcon } from '@app/icons';
+import { deleteConsumableItemRequest, getConsumableItemsRequest } from '@app/services';
 import { color, font } from '@app/styles';
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity, Image } from 'react-native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { /*AddConsumablesRouteProp,*/ NavigationProp } from 'src/types/navigation/types';
-// import { ScreenStatusProps } from 'src/types/services/types';
+import { NavigationProp } from 'src/types/navigation/types';
+import { ConsumableItem, ScreenStatusProps } from 'src/types/services/types';
+
+type ToastMessage = {
+  message: string;
+  toastType: 'success' | 'error';
+};
 
 const renderSeparator = () => <View style={styles.separator} />;
 
-interface Consumable {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-const CONSUMABLES_DATA: Consumable[] = [
-  { id: 1, name: 'Micro Fiber Cloth', price: 1500, quantity: 5 },
-  { id: 2, name: 'Car Shampoo', price: 700, quantity: 4 },
-  { id: 3, name: 'Tire Black Lotion', price: 500, quantity: 4 },
-  { id: 4, name: 'Micro Fiber Cloth', price: 1000, quantity: 4 },
-  { id: 5, name: 'Tire Black Lotion', price: 500, quantity: 4 },
-  { id: 6, name: 'Micro Fiber Cloth', price: 1000, quantity: 4 },
-];
-
 const Consumables = () => {
+  const { user } = useContext(GlobalContext);
   const navigation = useNavigation<NavigationProp>();
+  const [consumables, setConsumables] = useState<ConsumableItem[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
-  //   isLoading: false,
-  //   hasError: false,
-  //   type: 'error',
-  // });
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
+  const [totalCount, setTotalCount] = useState(0);
+  const [selectedConsumableId, setSelectedConsumableId] = useState<string | null>(null);
+  const [shouldFetchItems, setShouldFetchItems] = useState(false);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [message, setMessage] = useState<string>('');
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [isFetching, setIsFetching] = useState(false);
+  const isFocused = useIsFocused();
 
   const toggleConfirmModal = () => setIsModalVisible(!isModalVisible);
+  const onToastClose = () => setIsToastVisible(false);
 
-  const renderCardItem = ({ item }: { item: Consumable }) => (
+  const fetchConsumableItems = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getConsumableItemsRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
+
+    if (response.success && response.data) {
+      setConsumables(response.data.consumables);
+      setTotalCount(response.data.totalCount);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused || shouldFetchItems) {
+      fetchConsumableItems();
+      setShouldFetchItems(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused, shouldFetchItems]);
+
+  const renderCardItem = ({ item }: { item: ConsumableItem }) => (
     <View style={styles.card}>
-      <TouchableOpacity style={styles.closeButton} onPress={toggleConfirmModal}>
-        <Image source={IMAGES.CANCELLED} style={styles.closeIcon} resizeMode="contain" />
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() => {
+          setSelectedConsumableId(item.id);
+          toggleConfirmModal();
+        }}
+      >
+        <View style={styles.closeIcon}>
+          <CloseIcon />
+        </View>
       </TouchableOpacity>
       <View style={styles.mainIcon}>
-        <ConsumablesIcon />
+        <ConsumablesIcon width={50} height={50} />
       </View>
       <View style={styles.details}>
         <Text style={styles.name}>{item.name}</Text>
@@ -60,44 +99,126 @@ const Consumables = () => {
     </View>
   );
 
-  const handleYes = () => {
-    toggleConfirmModal();
+  const handleYes = async () => {
+    if (selectedConsumableId) {
+      handleDeleteConsumableItem(selectedConsumableId);
+      toggleConfirmModal();
+    }
   };
 
-  const navigateConsumablesForm = () => {
+  const handleAddConsumableItem = () => {
     navigation.navigate('ConsumablesForm');
+  };
+
+  const handleDeleteConsumableItem = async (id: string) => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+
+    const response = await deleteConsumableItemRequest(user.accessToken, id);
+
+    if (response.success && response.data) {
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+      setShouldFetchItems(true);
+      const toastData: ToastMessage = getToastMessage('success');
+      setMessage(toastData.message);
+      setToastType(toastData.toastType);
+      setIsToastVisible(true);
+    } else {
+      const toastData: ToastMessage = getToastMessage('error');
+      setMessage(toastData.message);
+      setToastType(toastData.toastType);
+      setIsToastVisible(true);
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  const onEndReached = async () => {
+    if (isFetching || consumables.length >= totalCount) {
+      return;
+    }
+
+    setIsFetching(true);
+    const response = await getConsumableItemsRequest(
+      user.accessToken,
+      '_id',
+      'asc',
+      LIMIT,
+      consumables.length,
+    );
+
+    if (response.success && response.data) {
+      setConsumables((prev) => [...prev, ...response.data?.consumables!]);
+      setTotalCount(response.data.totalCount);
+    }
+    setIsFetching(false);
+  };
+
+  const onCancel = () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    navigation.goBack();
+  };
+
+  const getToastMessage = (status: 'success' | 'error'): ToastMessage => {
+    if (status === 'success') {
+      return {
+        message: 'Consumables have been successfully deleted!',
+        toastType: 'success',
+      };
+    } else {
+      return {
+        message: 'Error occur, please try again!',
+        toastType: 'error',
+      };
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Consumables" />
-      {/* <LoadingAnimation isLoading={screenStatus.isLoading} /> */}
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchConsumableItems}
+      />
       <ConfirmationModal
         type={'DeleteConsumables'}
         isVisible={isModalVisible}
         onNo={toggleConfirmModal}
         onYes={handleYes}
       />
+      <Toast
+        isVisible={isToastVisible}
+        message={message}
+        duration={3000}
+        type={toastType}
+        onClose={onToastClose}
+      />
       <View style={styles.heading}>
         <Text style={styles.label}>Consumable Lists</Text>
       </View>
 
-      {CONSUMABLES_DATA.length === 0 ? (
+      {consumables.length === 0 ? (
         <EmptyState />
       ) : (
         <FlatList
-          data={CONSUMABLES_DATA}
+          data={consumables}
           renderItem={renderCardItem}
           keyExtractor={(item) => item.id.toString()}
-          // numColumns={2}
-          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={styles.list}
           ItemSeparatorComponent={renderSeparator}
-          // columnWrapperStyle={styles.columnWrapper}
+          onEndReached={onEndReached}
+          ListFooterComponent={<ActivityIndicator isLoading={isFetching} />}
         />
       )}
 
-      <FloatingActionButton onPress={navigateConsumablesForm} />
+      <FloatingActionButton onPress={handleAddConsumableItem} />
     </SafeAreaView>
   );
 };
@@ -118,21 +239,12 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#696969',
   },
-  // card: {
-  //   backgroundColor: '#F3F2EF',
-  //   borderRadius: 24,
-  //   shadowColor: '#000000',
-  //   shadowOffset: { width: 0, height: 4 },
-  //   shadowOpacity: 0.25,
-  //   shadowRadius: 5,
-  //   elevation: 5,
-  //   flexDirection: 'column',
-  //   alignItems: 'center',
-  //   paddingVertical: 24,
-  //   paddingHorizontal: 12,
-  //   // width: '48%',
-  //   width: '100%',
-  // },
+  list: {
+    flexGrow: 1,
+    paddingHorizontal: 25,
+    paddingBottom: 25,
+    backgroundColor: color.background,
+  },
   card: {
     backgroundColor: '#F3F2EF',
     borderRadius: 24,
@@ -147,30 +259,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  // content: {
-  //   alignItems: 'center',
-  // },
   mainIcon: {
     padding: 24,
   },
-  // textContainer: {
-  //   width: '100%',
-  //   alignItems: 'flex-start',
-  //   // alignItems: 'center',
-  //   gap: 8,
-  // },
   name: {
     fontSize: 20,
     lineHeight: 20,
     ...font.regular,
-    marginBottom: 4,
     color: color.black,
   },
   price: {
     fontSize: 16,
     lineHeight: 16,
     ...font.light,
-    marginBottom: 4,
     color: color.primary,
   },
   quantity: {
@@ -189,19 +290,9 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  listContent: {
-    paddingHorizontal: 12,
-    paddingVertical: 24,
-  },
-  // columnWrapper: {
-  //   justifyContent: 'space-between',
-  //   paddingHorizontal: 12,
-  //   marginBottom: 16,
-  // },
   separator: {
     marginTop: 24,
   },
-
   details: {
     gap: 8,
     flex: 1,

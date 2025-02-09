@@ -2,7 +2,7 @@ import * as React from 'react';
 import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
 const ConsumablesIcon = ({ width = 40, height = 40 }: IconProps) => (
   <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect width={40} height={40} fill="url(#pattern0_177_28)" />
+    <Rect width={width} height={height} fill="url(#pattern0_177_28)" />
     <Defs>
       <Pattern id="pattern0_177_28" patternContentUnits="objectBoundingBox" width={1} height={1}>
         <Use xlinkHref="#image0_177_28" transform="scale(0.0208333)" />

@@ -346,7 +346,7 @@ export type AddConsumablesPayload = {
   name: string;
   price: number;
   quantity: number;
-  date: string;
+  date_purchased: string;
 };
 
 export type AddConsumablesResponse = {
@@ -356,8 +356,29 @@ export type AddConsumablesResponse = {
   errors: ErrorProps[];
 };
 
+export type GetConsumablesResponse = {
+  consumables: ConsumableItem[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type ConsumableItem = {
+  name: string;
+  price: number;
+  quantity: number;
+  date_purchased: string;
+  id: string;
+};
+
 export type WeeklySalesResponse = {
   results: Result[];
   transactions: TransactionItem[];
+  errors: ErrorProps[];
+};
+
+export type DeleteConsumablesResponse = {
+  consumable: {
+    id: string;
+  };
   errors: ErrorProps[];
 };
