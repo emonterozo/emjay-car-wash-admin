@@ -30,6 +30,7 @@ import {
   UpdateTransactionResponse,
   AddConsumablesPayload,
   AddConsumablesResponse,
+  WeeklySalesResponse,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -373,6 +374,25 @@ export const addConsumablesRequest = (
       method: 'put',
       headers: requestHeader(accessToken),
       data: payload,
+    },
+  );
+};
+
+export const getWeeklySalesRequest = (
+  accessToken: string,
+  dateRange: {
+    start: string;
+    end: string;
+  },
+): ApiResponse<WeeklySalesResponse> => {
+  return apiRequest<null, WeeklySalesResponse>(
+    `${Config.API_BASE_URL}/admin/statistics/weekly/sales`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        date_range: JSON.stringify(dateRange),
+      },
     },
   );
 };

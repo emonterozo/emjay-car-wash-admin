@@ -19,3 +19,4 @@ export { default as ConfirmationModal } from './ConfirmationModal/ConfirmationMo
 export { default as SizeDisplay } from './SizeDisplay/SizeDisplay';
 export { default as ModalDropdownTrigger } from './ModalDropdownTrigger/ModalDropdownTrigger';
 export { default as ModalDropdown } from './ModalDropdown/ModalDropdown';
+export { default as BarGraph } from './BarGraph/BarGraph';

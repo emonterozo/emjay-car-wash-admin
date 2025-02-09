@@ -132,6 +132,11 @@ export const CONFIRM_TYPE = {
     description:
       "Once canceled, the transaction cannot be undone. Please confirm if you'd like to proceed.",
   },
+  CompleteTransaction: {
+    title: 'Are you sure you want to Complete the Transaction?',
+    description:
+      "Once completed, the transaction cannot be undone. Please confirm if you'd like to proceed.",
+  },
   AddConsumables: {
     title: 'Are you sure you want to cancel adding consumables?',
     description: 'By doing this, you will lose any unsaved changes.',
@@ -140,10 +145,6 @@ export const CONFIRM_TYPE = {
     title: 'Are you sure you want to delete this consumables?',
     description:
       "By doing this, deleting cannot be undone Please confirm if you'd like to proceed.",
-  CompleteTransaction: {
-    title: 'Are you sure you want to Complete the Transaction?',
-    description:
-      "Once completed, the transaction cannot be undone. Please confirm if you'd like to proceed.",
   },
 };
 

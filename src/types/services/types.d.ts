@@ -355,3 +355,9 @@ export type AddConsumablesResponse = {
   };
   errors: ErrorProps[];
 };
+
+export type WeeklySalesResponse = {
+  results: Result[];
+  transactions: TransactionItem[];
+  errors: ErrorProps[];
+};
