@@ -11,7 +11,7 @@ export const isStringEmpty = (value: string) => {
 };
 
 export const getCurrentDateAtMidnightUTC = () => {
-  const now = new Date('2025-02-18');
+  const now = new Date();
   now.setUTCHours(0, 0, 0, 0);
   return now;
 };
