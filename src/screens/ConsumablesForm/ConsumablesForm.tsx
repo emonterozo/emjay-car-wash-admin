@@ -35,8 +35,19 @@ import { addConsumablesRequest } from '@app/services';
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
-  price: Yup.string().required('Price is required'),
-  quantity: Yup.string().required('Quantity is required'),
+
+  price: Yup.number()
+    .typeError('Price must be a valid number')
+    .integer('Price must be a whole number')
+    .min(0, 'Price cannot be negative')
+    .test('no-negative-zero', 'Price cannot be negative', (value) => value !== -0),
+
+  quantity: Yup.number()
+    .typeError('Quantity must be a valid number')
+    .integer('Quantity must be a whole number')
+    .min(0, 'Quantity cannot be negative')
+    .test('no-negative-zero', 'Quantity cannot be negative', (value) => value !== -0),
+
   date: Yup.date().required('Date is required'),
 });
 

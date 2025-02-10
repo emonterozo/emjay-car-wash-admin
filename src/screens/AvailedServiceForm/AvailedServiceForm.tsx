@@ -31,8 +31,17 @@ import { getEmployeesRequest, updateAvailedServiceRequest } from '@app/services'
 import GlobalContext from '@app/context';
 
 const validationSchema = Yup.object({
-  deduction: Yup.string().required('Deduction is required'),
-  discount: Yup.string().required('Discount is required'),
+  deduction: Yup.number()
+    .typeError('Deduction must be a valid number')
+    .integer('Deduction must be a whole number')
+    .min(0, 'Deduction cannot be negative')
+    .test('no-negative-zero', 'Deduction cannot be negative', (value) => value !== -0),
+
+  discount: Yup.number()
+    .typeError('Discount must be a valid number')
+    .integer('Discount must be a whole number')
+    .min(0, 'Discount cannot be negative')
+    .test('no-negative-zero', 'Discount cannot be negative', (value) => value !== -0),
 });
 
 type FormValues = {
