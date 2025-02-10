@@ -33,19 +33,22 @@ const BarGraph = ({
   shortenDisplay,
 }: BarGraphProps) => {
   const [graphData, setGraphData] = useState<ExtendedDataProps[]>([]);
+  const [maxValue, setMaxValue] = useState(0);
   const totalBars = data.length; // Number of bars
   const chartWidth = totalBars * (barWidth + barSpacing) + barSpacing - 5; // Dynamic chart width
   const isScrollable = chartWidth > width; // Check if scrolling is needed
 
   useEffect(() => {
     // Find the max value in the dataset
-    const maxValue = Math.max(...data.map((d) => d.value));
+    const maxValueHolder = Math.max(...data.map((d) => d.value));
+    setMaxValue(maxValueHolder);
     // Convert values to whole number percentages
     const dataHolder = data.map((item) => ({
       ...item,
-      value: Math.round((item.value / maxValue) * chartHeight) || 0,
+      value: Math.round((item.value / maxValueHolder) * chartHeight) || 0,
       display: item.value,
     }));
+
     setGraphData(dataHolder);
   }, [data, chartHeight]);
 
@@ -84,22 +87,23 @@ const BarGraph = ({
         ))}
 
         {/* Bars */}
-        {graphData.map((item, index) => {
-          let barHeight = (item.value / Math.max(...graphData.map((d) => d.value))) * chartHeight;
-          barHeight = barHeight >= chartHeight ? barHeight - 30 : barHeight;
+        {maxValue > 0 &&
+          graphData.map((item, index) => {
+            let barHeight = (item.value / Math.max(...graphData.map((d) => d.value))) * chartHeight;
+            barHeight = barHeight >= chartHeight ? barHeight - 30 : barHeight;
 
-          return (
-            <Rect
-              key={index}
-              x={index * (barWidth + barSpacing) + (isScrollable ? 0 : (width - chartWidth) / 2)}
-              y={chartHeight - barHeight}
-              width={barWidth}
-              height={barHeight}
-              rx={6}
-              fill={color.primary_pressed_state} // Blue bars
-            />
-          );
-        })}
+            return (
+              <Rect
+                key={index}
+                x={index * (barWidth + barSpacing) + (isScrollable ? 0 : (width - chartWidth) / 2)}
+                y={chartHeight - barHeight}
+                width={barWidth}
+                height={barHeight}
+                rx={6}
+                fill={color.primary_pressed_state} // Blue bars
+              />
+            );
+          })}
 
         {graphData.map((item, index) => {
           let barHeight = (item.value / Math.max(...graphData.map((d) => d.value))) * chartHeight;
@@ -113,7 +117,7 @@ const BarGraph = ({
                 barWidth / 2 +
                 (isScrollable ? 0 : (width - chartWidth) / 2)
               }
-              y={chartHeight - barHeight - 6} // Position label at the top of the bar
+              y={maxValue > 0 ? chartHeight - barHeight - 6 : chartHeight} // Position label at the top of the bar
               fontSize="12"
               fill={color.black}
               fontWeight="regular"
