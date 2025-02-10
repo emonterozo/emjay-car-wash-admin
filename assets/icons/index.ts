@@ -30,3 +30,4 @@ export { default as CarIcon } from './CarIcon';
 export { default as MotorcycleIcon } from './MotorcycleIcon';
 export { default as EllipseIcon } from './EllipseIcon';
 export { default as EditIcon } from './EditIcon';
+export { default as CloseIcon } from './CloseIcon';

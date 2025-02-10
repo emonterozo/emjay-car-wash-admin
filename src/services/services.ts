@@ -31,6 +31,8 @@ import {
   AddConsumablesPayload,
   AddConsumablesResponse,
   WeeklySalesResponse,
+  GetConsumablesResponse,
+  DeleteConsumablesResponse,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -371,7 +373,7 @@ export const addConsumablesRequest = (
   return apiRequest<AddConsumablesPayload, AddConsumablesResponse>(
     `${Config.API_BASE_URL}/admin/consumables`,
     {
-      method: 'put',
+      method: 'post',
       headers: requestHeader(accessToken),
       data: payload,
     },
@@ -393,6 +395,37 @@ export const getWeeklySalesRequest = (
       params: {
         date_range: JSON.stringify(dateRange),
       },
+    },
+  );
+};
+
+export const getConsumableItemsRequest = (
+  accessToken: string,
+  field?: string,
+  direction?: 'asc' | 'desc',
+  limit?: number,
+  offset?: number,
+): ApiResponse<GetConsumablesResponse> => {
+  return apiRequest<null, GetConsumablesResponse>(`${Config.API_BASE_URL}/admin/consumables`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: {
+      order_by: JSON.stringify({ field: field ?? 'name', direction: direction ?? 'asc' }),
+      limit,
+      offset,
+    },
+  });
+};
+
+export const deleteConsumableItemRequest = (
+  accessToken: string,
+  id: string,
+): ApiResponse<DeleteConsumablesResponse> => {
+  return apiRequest<null, DeleteConsumablesResponse>(
+    `${Config.API_BASE_URL}/admin/consumables/${id}`,
+    {
+      method: 'delete',
+      headers: requestHeader(accessToken),
     },
   );
 };
