@@ -389,6 +389,34 @@ export type DeleteConsumablesResponse = {
   errors: ErrorProps[];
 };
 
+export type AddExpensePayload = {
+  category: string;
+  description: string;
+  amount: number;
+  date: string;
+};
+
+export type AddExpenseResponse = {
+  expense: {
+    id: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type GetExpenseResponse = {
+  expenses: ExpenseItem[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type ExpenseItem = {
+  category: string;
+  description: number;
+  amount: number;
+  date: string;
+  id: string;
+};
+
 export type SalesStatisticsResult = {
   period: string;
 } & TransactionSummary;

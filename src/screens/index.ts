@@ -23,4 +23,5 @@ export { default as AvailedServiceForm } from './AvailedServiceForm/AvailedServi
 export { default as TransactionDetails } from './TransactionDetails/TransactionDetails';
 export { default as TransactionComputation } from './TransactionComputation/TransactionComputation';
 export { default as ConsumablesForm } from './ConsumablesForm/ConsumablesForm';
+export { default as ExpensesForm } from './ExpensesForm/ExpensesForm';
 export { default as Statistics } from './Statistics/Statistics';

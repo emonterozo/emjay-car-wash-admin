@@ -33,8 +33,11 @@ import {
   WeeklySalesResponse,
   GetConsumablesResponse,
   DeleteConsumablesResponse,
+  GetExpenseResponse,
   SalesStatisticsResponse,
   StatisticsFilter,
+  AddExpenseResponse,
+  AddExpensePayload,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -448,4 +451,45 @@ export const getSalesStatisticsRequest = (
       },
     },
   );
+};
+
+export const addExpenseRequest = (
+  accessToken: string,
+  payload: AddExpensePayload,
+): ApiResponse<AddExpenseResponse> => {
+  return apiRequest<AddExpensePayload, AddExpenseResponse>(
+    `${Config.API_BASE_URL}/admin/expenses`,
+    {
+      method: 'post',
+      headers: requestHeader(accessToken),
+      data: payload,
+    },
+  );
+};
+
+export const getExpenseItemsRequest = (
+  accessToken: string,
+  field?: string,
+  direction?: 'asc' | 'desc',
+  limit?: number,
+  offset?: number,
+  dateRange?: {
+    start: string;
+    end: string;
+  },
+): ApiResponse<GetExpenseResponse> => {
+  let params: any = {
+    order_by: JSON.stringify({ field: field ?? 'date', direction: direction ?? 'desc' }),
+    offset,
+    limit,
+  };
+
+  if (dateRange) {
+    params.date_range = JSON.stringify(dateRange);
+  }
+  return apiRequest<null, GetExpenseResponse>(`${Config.API_BASE_URL}/admin/expenses`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: params,
+  });
 };

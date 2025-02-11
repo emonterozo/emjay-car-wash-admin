@@ -32,8 +32,8 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: 'emjay_admin',
-    password: 'password',
+    username: '',
+    password: '',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
 
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     width: 245,
     height: 147,
     alignSelf: 'center',
-    marginTop: verticalScale(60),
+    marginTop: verticalScale(30),
   },
   header: {
     ...font.bold,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     minHeight: 40,
   },
   button: {
-    marginTop: verticalScale(120),
+    marginTop: verticalScale(130),
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderRadius: 49,
