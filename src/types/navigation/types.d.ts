@@ -84,6 +84,7 @@ export type AuthStackParamList = {
   TransactionDetails: { transactionId: string; transactionServiceId: string };
   TransactionComputation: { startDate: string; endDate: string };
   ConsumablesForm: undefined;
+  ExpensesForm: undefined;
   Statistics: undefined;
 };
 

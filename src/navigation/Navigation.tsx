@@ -23,6 +23,7 @@ import {
   TransactionDetails,
   TransactionComputation,
   ConsumablesForm,
+  ExpensesForm,
   Statistics,
 } from '@app/screens';
 import GlobalContext from '@app/context';
@@ -72,6 +73,7 @@ const Navigation = () => {
             <AuthStack.Screen name="TransactionDetails" component={TransactionDetails} />
             <AuthStack.Screen name="TransactionComputation" component={TransactionComputation} />
             <AuthStack.Screen name="ConsumablesForm" component={ConsumablesForm} />
+            <AuthStack.Screen name="ExpensesForm" component={ExpensesForm} />
             <AuthStack.Screen name="Statistics" component={Statistics} />
           </AuthStack.Navigator>
         ) : (

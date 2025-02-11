@@ -99,6 +99,11 @@ export const IMAGES = {
   WALLET_ERROR: require('../../../assets/images/wallet-error.png'),
   MENU: require('../../../assets/images/menu.png'),
   CALCULATOR: require('../../../assets/images/calculator.png'),
+  MAN_POWER: require('../../../assets/images/man-power.png'),
+  CONSUMABLES_OTHER: require('../../../assets/images/consumables-other.png'),
+  RENT: require('../../../assets/images/rent.png'),
+  OTHER: require('../../../assets/images/other.png'),
+  ELECTRICITY: require('../../../assets/images/electricity.png'),
 };
 
 export const ERROR_TYPE = {
@@ -145,6 +150,10 @@ export const CONFIRM_TYPE = {
     title: 'Are you sure you want to delete this consumables?',
     description:
       "By doing this, deleting cannot be undone Please confirm if you'd like to proceed.",
+  },
+  AddExpense: {
+    title: 'Are you sure you want to cancel adding expense item?',
+    description: 'By doing this, you will lose any unsaved changes.',
   },
 };
 
