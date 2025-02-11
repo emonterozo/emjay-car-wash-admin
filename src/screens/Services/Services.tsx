@@ -112,7 +112,7 @@ const Services = () => {
         onRetry={fetchService}
       />
       <View style={styles.heading}>
-        <Text style={styles.label}>Available Lists of Services</Text>
+        <Text style={styles.label}>List of Services</Text>
         {filteredServices.length > 0 && (
           <TouchableOpacity ref={touchableRef} style={styles.filterContainer} onPress={showPopover}>
             <FilterIcon />

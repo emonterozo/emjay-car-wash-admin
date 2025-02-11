@@ -5,8 +5,6 @@ import Svg, { Rect, Text as SvgText, Line } from 'react-native-svg';
 import { color } from '@app/styles';
 import { formattedNumber, shortenNumber } from '@app/helpers';
 
-const { width } = Dimensions.get('window');
-
 export type DataProps = {
   label: string;
   subLabel?: string;
@@ -36,7 +34,6 @@ const BarGraph = ({
   const [maxValue, setMaxValue] = useState(0);
   const totalBars = data.length; // Number of bars
   const chartWidth = totalBars * (barWidth + barSpacing) + barSpacing - 5; // Dynamic chart width
-  const isScrollable = chartWidth > width; // Check if scrolling is needed
 
   useEffect(() => {
     // Find the max value in the dataset
@@ -53,12 +50,7 @@ const BarGraph = ({
   }, [data, chartHeight]);
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      bounces={false}
-      contentContainerStyle={!isScrollable ? styles.container : {}}
-    >
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} bounces={false}>
       <Svg width={chartWidth} height={chartHeight + 60} style={styles.svg}>
         {/* Horizontal Grid Lines */}
         {[1, 0.75, 0.5, 0.25].map((y, index) => (
@@ -66,7 +58,7 @@ const BarGraph = ({
             key={`h-${index}`}
             x1="0"
             y1={chartHeight * (1 - y)}
-            x2={isScrollable ? chartWidth : width}
+            x2={chartWidth}
             y2={chartHeight * (1 - y)}
             stroke="rgba(0,0,0,0.1)"
             strokeDasharray="4"
@@ -95,7 +87,7 @@ const BarGraph = ({
             return (
               <Rect
                 key={index}
-                x={index * (barWidth + barSpacing) + (isScrollable ? 0 : (width - chartWidth) / 2)}
+                x={index * (barWidth + barSpacing)}
                 y={chartHeight - barHeight}
                 width={barWidth}
                 height={barHeight}
@@ -112,11 +104,7 @@ const BarGraph = ({
           return (
             <SvgText
               key={index}
-              x={
-                index * (barWidth + barSpacing) +
-                barWidth / 2 +
-                (isScrollable ? 0 : (width - chartWidth) / 2)
-              }
+              x={index * (barWidth + barSpacing) + barWidth / 2}
               y={maxValue > 0 ? chartHeight - barHeight - 6 : chartHeight} // Position label at the top of the bar
               fontSize="12"
               fill={color.black}
@@ -170,10 +158,6 @@ const BarGraph = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    width: '100%',
-  },
   svg: {
     overflow: 'visible',
   },

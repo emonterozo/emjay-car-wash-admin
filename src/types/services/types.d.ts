@@ -8,6 +8,8 @@ export type GenderType = 'MALE' | 'FEMALE';
 export type VehicleType = 'car' | 'motorcycle';
 export type ServiceChargeType = 'free' | 'not free';
 
+export type StatisticsFilter = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
 export type ScreenStatusProps = {
   isLoading: boolean;
   hasError: boolean;
@@ -370,8 +372,12 @@ export type ConsumableItem = {
   id: string;
 };
 
+export type WeeklySalesResult = {
+  date: string;
+} & TransactionSummary;
+
 export type WeeklySalesResponse = {
-  results: Result[];
+  results: WeeklySalesResult[];
   transactions: TransactionItem[];
   errors: ErrorProps[];
 };
@@ -380,5 +386,15 @@ export type DeleteConsumablesResponse = {
   consumable: {
     id: string;
   };
+  errors: ErrorProps[];
+};
+
+export type SalesStatisticsResult = {
+  period: string;
+} & TransactionSummary;
+
+export type SalesStatisticsResponse = {
+  results: SalesStatisticsResult[];
+  transactions: TransactionItem[];
   errors: ErrorProps[];
 };

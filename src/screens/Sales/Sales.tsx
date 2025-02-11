@@ -55,15 +55,13 @@ const Sales = () => {
 
     if (response.success && response.data) {
       const { transactions: resultTransactions, results } = response.data;
-      if (resultTransactions.length > 0) {
-        const graphDataHolder: DataProps[] = results.map((item) => ({
-          label: format(item.date, 'E'),
-          subLabel: format(item.date, 'd'),
-          value: item.gross_income,
-        }));
-        setGraphData(graphDataHolder);
-        setTransactions(resultTransactions);
-      }
+      const graphDataHolder: DataProps[] = results.map((item) => ({
+        label: format(item.date, 'E'),
+        subLabel: format(item.date, 'd'),
+        value: item.gross_income,
+      }));
+      setGraphData(graphDataHolder);
+      setTransactions(resultTransactions);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -106,46 +104,37 @@ const Sales = () => {
             'MMM dd',
           )})`}</Text>
         </Text>
-        {graphData.length > 0 && <BarGraph data={graphData} />}
+        <BarGraph data={graphData} />
       </View>
-      {transactions.length > 0 ? (
-        <>
-          <Text
-            style={styles.heading}
-          >{`Total of ${transactions.length} completed transactions`}</Text>
-          <View style={styles.transactionsContainer}>
-            <FlatList
-              bounces={false}
-              data={transactions}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('TransactionDetails', {
-                      transactionId: item.transaction_id,
-                      transactionServiceId: item.id,
-                    })
-                  }
-                >
-                  <ServiceTransactionItem
-                    icon={<WaterDropIcon />}
-                    serviceName={item.service_name}
-                    price={formattedNumber(item.price)}
-                    date={format(new Date(item.date), 'dd MMM, hh:mm a')}
-                  />
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item.id.toString()}
-              showsVerticalScrollIndicator={true}
-              contentContainerStyle={styles.list}
-              ItemSeparatorComponent={renderSeparator}
-            />
-          </View>
-        </>
-      ) : (
-        <View style={styles.empty}>
-          <EmptyState />
-        </View>
-      )}
+      <Text style={styles.heading}>{`Total of ${transactions.length} completed transactions`}</Text>
+      <View style={styles.transactionsContainer}>
+        <FlatList
+          bounces={false}
+          data={transactions}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('TransactionDetails', {
+                  transactionId: item.transaction_id,
+                  transactionServiceId: item.id,
+                })
+              }
+            >
+              <ServiceTransactionItem
+                icon={<WaterDropIcon />}
+                serviceName={item.service_name}
+                price={formattedNumber(item.price)}
+                date={format(new Date(item.date), 'dd MMM, hh:mm a')}
+              />
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id.toString() + item.transaction_id.toString()}
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={styles.list}
+          ItemSeparatorComponent={renderSeparator}
+          ListEmptyComponent={<EmptyState />}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -185,10 +174,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginHorizontal: 25,
     marginTop: 15,
-  },
-  empty: {
-    flex: 1,
-    paddingHorizontal: 10,
   },
 });
 

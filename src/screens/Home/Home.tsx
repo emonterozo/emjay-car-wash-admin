@@ -128,10 +128,13 @@ const Home = () => {
                 {' in 1 week'}
               </Text>
             </View>
-            <View style={styles.footer}>
+            <TouchableOpacity
+              style={styles.footer}
+              onPress={() => navigation.navigate('Statistics')}
+            >
               <Text style={styles.footerText}>View Statistics</Text>
               <ChevronRightIcon />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.dashboardContainer}>

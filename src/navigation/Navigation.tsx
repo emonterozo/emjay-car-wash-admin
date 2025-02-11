@@ -23,6 +23,7 @@ import {
   TransactionDetails,
   TransactionComputation,
   ConsumablesForm,
+  Statistics,
 } from '@app/screens';
 import GlobalContext from '@app/context';
 import { AuthStackParamList } from '../types/navigation/types';
@@ -71,6 +72,7 @@ const Navigation = () => {
             <AuthStack.Screen name="TransactionDetails" component={TransactionDetails} />
             <AuthStack.Screen name="TransactionComputation" component={TransactionComputation} />
             <AuthStack.Screen name="ConsumablesForm" component={ConsumablesForm} />
+            <AuthStack.Screen name="Statistics" component={Statistics} />
           </AuthStack.Navigator>
         ) : (
           <UnAuthStack.Navigator screenOptions={{ headerShown: false }}>
