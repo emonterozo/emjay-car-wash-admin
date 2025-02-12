@@ -34,7 +34,7 @@ import {
   ModalDropdownTrigger,
   Toast,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES, SIZES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, SIZE_DESCRIPTION, SIZES } from '@app/constant';
 import { CarIcon, MotorcycleIcon } from '@app/icons';
 import {
   addTransactionServiceRequest,
@@ -107,7 +107,7 @@ const AddOngoing = () => {
   const { user } = useContext(GlobalContext);
   const navigation = useNavigation<NavigationProp>();
   const initialFormValues: FormValues = {
-    vehicleModel: transaction?.model,
+    vehicleModel: transaction?.model ?? 'Car Small',
     plateNumber: transaction?.plate_number,
     service: [],
     serviceCharge: SERVICE_CHARGE_OPTION[1],
@@ -225,20 +225,36 @@ const AddOngoing = () => {
     });
   };
 
+  const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   const handleSelectVehicle = (vehicle: keyof typeof sizeCount) => {
     setSelectedVehicle(vehicle);
     setSizeCount({
       car: [10, 0, 0, 0, 0],
       motorcycle: [10, 0, 0],
     });
-    setFormValues({ ...formValues, service: [] });
+
+    setFormValues({
+      ...formValues,
+      vehicleModel: `${capitalizeFirstLetter(vehicle)} Small`,
+      service: [],
+    });
   };
 
   const onSelectSize = (type: keyof typeof sizeCount, index: number) => {
     const newSizeCount = { ...sizeCount };
     newSizeCount[type] = newSizeCount[type].map(() => 0);
+    const sizeValue = size[type][index].toLowerCase();
     newSizeCount[type][index] = 10;
+
     setSizeCount(newSizeCount);
+    setFormValues({
+      ...formValues,
+      // @ts-ignore
+      vehicleModel: `${capitalizeFirstLetter(selectedVehicle)} ${SIZE_DESCRIPTION[sizeValue]}`,
+    });
   };
 
   const onCancel = () => {

@@ -104,7 +104,7 @@ const Ongoing = () => {
         onRetry={fetchTransactions}
       />
       <View style={styles.heading}>
-        <Text style={styles.label}>Status</Text>
+        <Text style={styles.label}>{`Total of ${transactions.length} transactions`}</Text>
       </View>
       <View style={styles.statusContainer}>
         {STATUSES.map((status) => (

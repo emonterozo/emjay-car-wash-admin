@@ -34,14 +34,11 @@ const validationSchema = Yup.object({
   deduction: Yup.number()
     .typeError('Deduction must be a valid number')
     .integer('Deduction must be a whole number')
-    .min(0, 'Deduction cannot be negative')
-    .test('no-negative-zero', 'Deduction cannot be negative', (value) => value !== -0),
-
+    .min(0, 'Deduction cannot be negative'),
   discount: Yup.number()
     .typeError('Discount must be a valid number')
     .integer('Discount must be a whole number')
-    .min(0, 'Discount cannot be negative')
-    .test('no-negative-zero', 'Discount cannot be negative', (value) => value !== -0),
+    .min(0, 'Discount cannot be negative'),
 });
 
 type FormValues = {
