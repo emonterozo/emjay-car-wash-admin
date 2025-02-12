@@ -1,4 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { NavigationProp } from '../../types/navigation/types';
+import { ConsumableItem, ScreenStatusProps } from '../../types/services/types';
 import {
   ActivityIndicator,
   AppHeader,
@@ -11,15 +17,10 @@ import {
 } from '@app/components';
 import { ERR_NETWORK, LIMIT } from '@app/constant';
 import GlobalContext from '@app/context';
-import { CloseIcon, ConsumablesIcon } from '@app/icons';
+import { CloseIcon, ConsumablesListIcon } from '@app/icons';
 import { deleteConsumableItemRequest, getConsumableItemsRequest } from '@app/services';
 import { color, font } from '@app/styles';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { NavigationProp } from 'src/types/navigation/types';
-import { ConsumableItem, ScreenStatusProps } from 'src/types/services/types';
+import { formattedNumber } from '@app/helpers';
 
 type ToastMessage = {
   message: string;
@@ -89,12 +90,12 @@ const Consumables = () => {
         </View>
       </TouchableOpacity>
       <View style={styles.mainIcon}>
-        <ConsumablesIcon width={50} height={50} />
+        <ConsumablesListIcon />
       </View>
       <View style={styles.details}>
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.quantity}>Qty. of items: {item.quantity}</Text>
-        <Text style={styles.price}>₱{item.price.toLocaleString()}</Text>
+        <Text style={styles.price}>{formattedNumber(item.price)}</Text>
       </View>
     </View>
   );
@@ -202,22 +203,17 @@ const Consumables = () => {
       <View style={styles.heading}>
         <Text style={styles.label}>Consumable Lists</Text>
       </View>
-
-      {consumables.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <FlatList
-          data={consumables}
-          renderItem={renderCardItem}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={true}
-          contentContainerStyle={styles.list}
-          ItemSeparatorComponent={renderSeparator}
-          onEndReached={onEndReached}
-          ListFooterComponent={<ActivityIndicator isLoading={isFetching} />}
-        />
-      )}
-
+      <FlatList
+        data={consumables}
+        renderItem={renderCardItem}
+        keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={styles.list}
+        ItemSeparatorComponent={renderSeparator}
+        onEndReached={onEndReached}
+        ListFooterComponent={<ActivityIndicator isLoading={isFetching} />}
+        ListEmptyComponent={<EmptyState />}
+      />
       <FloatingActionButton onPress={handleAddConsumableItem} />
     </SafeAreaView>
   );

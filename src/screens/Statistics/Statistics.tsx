@@ -18,6 +18,7 @@ import { color, font } from '@app/styles';
 import {
   AppHeader,
   BarGraph,
+  CalendarPicker,
   EmptyState,
   ErrorModal,
   LoadingAnimation,
@@ -28,7 +29,11 @@ import { getSalesStatisticsRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { ERR_NETWORK } from '@app/constant';
 import { FilterIcon, WaterDropIcon } from '@app/icons';
-import { formattedNumber } from '@app/helpers';
+import {
+  formattedNumber,
+  getCurrentDateAtMidnightUTC,
+  getMinimumDateAtMidnightUTC,
+} from '@app/helpers';
 import { useMeasure } from '@app/hooks';
 import FilterOption from './FilterOption';
 
@@ -62,6 +67,7 @@ const Statistics = () => {
   const { layout, measure } = useMeasure(touchableRef);
   const [isOptionVisible, setIsOptionVisible] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState(['Income']);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const showPopover = () => {
     measure();
@@ -77,32 +83,50 @@ const Statistics = () => {
     );
 
     if (response.success && response.data) {
-      const { transactions: resultTransactions, results } = response.data;
-      const graphDataHolder: DataProps[] = results.map((item, index) => {
+      const { transactions: resultTransactions, income, expenses } = response.data;
+      const mergedData = income.map((item) => {
+        const matchingExpense = expenses.find((expense) => item.period === expense.period);
+
+        return {
+          ...item,
+          expenses: matchingExpense ? matchingExpense.amount : 0,
+        };
+      });
+
+      const graphDataHolder: DataProps[] = [];
+      mergedData.forEach((item, index) => {
         switch (filter) {
           case 'weekly':
-            return {
+            graphDataHolder.push({
               label: format(item.period, 'MMM'),
               subLabel: `W${index + 1}`,
-              value: item.company_earnings,
-            };
+              income: item.company_earnings,
+              expenses: item.expenses,
+            });
+            break;
           case 'monthly':
-            return {
+            graphDataHolder.push({
               label: format(item.period, 'MMM'),
               subLabel: format(item.period, 'yyyy'),
-              value: item.company_earnings,
-            };
+              income: item.company_earnings,
+              expenses: item.expenses,
+            });
+            break;
           case 'yearly':
-            return {
+            graphDataHolder.push({
               label: item.period,
-              value: item.company_earnings,
-            };
+              income: item.company_earnings,
+              expenses: item.expenses,
+            });
+            break;
           default:
-            return {
+            graphDataHolder.push({
               label: format(item.period, 'MMM'),
               subLabel: format(item.period, 'd'),
-              value: item.company_earnings,
-            };
+              income: item.company_earnings,
+              expenses: item.expenses,
+            });
+            break;
         }
       });
 
@@ -127,18 +151,58 @@ const Statistics = () => {
     navigation.goBack();
   };
 
+  const toggleCalendar = () => setIsCalendarOpen(!isCalendarOpen);
+
+  const onSelectedDate = (date: Date) => {
+    toggleCalendar();
+    setTimeout(() => {
+      setOption({ ...option, date: date });
+    }, 500);
+  };
+
+  const filterGraphData = () => {
+    if (selectedFilters.length > 1) {
+      return graphData;
+    } else {
+      switch (selectedFilters[0]) {
+        case 'Income':
+          return graphData.map((item) => ({ ...item, expenses: 0 }));
+        default:
+          return graphData.map((item) => ({ ...item, income: 0 }));
+      }
+    }
+  };
+
+  const getDisplay = () => {
+    return selectedFilters.map((item) => item.toLowerCase()) as ('income' | 'expenses')[];
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader
         title="Statistics"
         leftContent={
-          <View style={styles.leftContent}>
-            <Text style={styles.date}>November 10, 2024</Text>
-            <MaterialCommunityIcon name={'chevron-down'} color="#888888" size={20} />
-          </View>
+          <TouchableOpacity style={styles.leftContent} onPress={toggleCalendar}>
+            <Text style={styles.date}>{format(option.date, 'MMMM dd, yyyy')}</Text>
+            <MaterialCommunityIcon
+              name={isCalendarOpen ? 'chevron-up' : 'chevron-down'}
+              color="#888888"
+              size={20}
+            />
+          </TouchableOpacity>
         }
       />
+      <View>
+        <CalendarPicker
+          date={option.date}
+          isVisible={isCalendarOpen}
+          onSelectedDate={onSelectedDate}
+          onClose={toggleCalendar}
+          maxDate={getCurrentDateAtMidnightUTC()}
+          minDate={getMinimumDateAtMidnightUTC()}
+        />
+      </View>
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         type={screenStatus.type}
@@ -190,7 +254,9 @@ const Statistics = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.content}>{graphData.length > 0 && <BarGraph data={graphData} />}</View>
+      <View style={styles.content}>
+        {graphData.length > 0 && <BarGraph data={filterGraphData()} display={getDisplay()} />}
+      </View>
       {transactions.length > 0 ? (
         <>
           <Text style={styles.heading}>Previous 14 Days Transactions</Text>
@@ -331,7 +397,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     borderWidth: 1,
     borderColor: '#CECECE',
-    gap: 10,
+    gap: 3,
   },
 });
 

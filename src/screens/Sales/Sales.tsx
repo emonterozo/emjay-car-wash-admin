@@ -58,7 +58,8 @@ const Sales = () => {
       const graphDataHolder: DataProps[] = results.map((item) => ({
         label: format(item.date, 'E'),
         subLabel: format(item.date, 'd'),
-        value: item.gross_income,
+        income: item.gross_income,
+        expenses: 0,
       }));
       setGraphData(graphDataHolder);
       setTransactions(resultTransactions);
@@ -74,8 +75,8 @@ const Sales = () => {
 
   useEffect(() => {
     const today = new Date();
-    const start = startOfWeek(today, { weekStartsOn: 0 });
-    const end = endOfWeek(today, { weekStartsOn: 0 });
+    const start = startOfWeek(today, { weekStartsOn: 1 });
+    const end = endOfWeek(today, { weekStartsOn: 1 });
     setWeek({ start, end });
     fetchWeeklySales(start, end);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,9 +105,13 @@ const Sales = () => {
             'MMM dd',
           )})`}</Text>
         </Text>
-        <BarGraph data={graphData} />
+        {!screenStatus.isLoading && <BarGraph data={graphData} />}
       </View>
-      <Text style={styles.heading}>{`Total of ${transactions.length} completed transactions`}</Text>
+      {!screenStatus.isLoading && (
+        <Text
+          style={styles.heading}
+        >{`Total of ${transactions.length} completed transactions`}</Text>
+      )}
       <View style={styles.transactionsContainer}>
         <FlatList
           bounces={false}
@@ -160,6 +165,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   list: {
+    flexGrow: 1,
     paddingHorizontal: 25,
     paddingBottom: 25,
     backgroundColor: color.background,

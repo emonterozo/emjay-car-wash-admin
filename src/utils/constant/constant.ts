@@ -157,7 +157,7 @@ export const CONFIRM_TYPE = {
   },
 };
 
-export const LIMIT = 50;
+export const LIMIT = 7;
 
 type ImageKeys = keyof typeof IMAGES;
 export const MESSAGE: Record<

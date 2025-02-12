@@ -7,12 +7,17 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
 import { useNavigation } from '@react-navigation/native';
+import { format } from 'date-fns';
 
+import { Option } from '../../components/Dropdown/Dropdown';
+import { NavigationProp } from '../../types/navigation/types';
+import { AddExpensePayload, ScreenStatusProps } from '../../types/services/types';
 import { color, font } from '@app/styles';
 import {
   AppHeader,
@@ -27,13 +32,9 @@ import {
 } from '@app/components';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { useNativeBackHandler } from '@app/hooks';
-import { NavigationProp } from 'src/types/navigation/types';
-import { AddExpensePayload, ScreenStatusProps } from 'src/types/services/types';
 import GlobalContext from '@app/context';
 import { getCurrentDateAtMidnightUTC } from '@app/helpers';
-import { format } from 'date-fns';
 import { addExpenseRequest } from '@app/services';
-import { Option } from 'src/components/Dropdown/Dropdown';
 
 const validationSchema = Yup.object({
   category: Yup.object().required('Category is required'),
@@ -288,7 +289,7 @@ const ExpensesForm = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Select Consumables" onBack={handleCancel} />
+      <AppHeader title="Expenses" onBack={handleCancel} />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <ErrorModal
         type={screenStatus.type}
@@ -313,6 +314,9 @@ const ExpensesForm = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.avoidingView}
       >
+        <View style={styles.heading}>
+          <Text style={styles.text}>Expenses Add Form</Text>
+        </View>
         <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
           <Dropdown
             label="Category"
@@ -359,7 +363,7 @@ const ExpensesForm = () => {
               onPress={handleCancel}
             />
             <Button
-              title={'Add'}
+              title="Submit"
               variant="primary"
               buttonStyle={styles.button}
               textStyle={styles.textStyle}
@@ -393,13 +397,24 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   button: {
-    paddingHorizontal: 23,
-    paddingVertical: 18,
+    padding: 12,
     borderRadius: 24,
   },
   textStyle: {
     ...font.regular,
     fontSize: 16,
+  },
+  heading: {
+    alignItems: 'flex-start',
+    marginTop: 16,
+    marginBottom: 35,
+    paddingHorizontal: 25,
+  },
+  text: {
+    ...font.regular,
+    fontSize: 16,
+    color: '#696969',
+    lineHeight: 16,
   },
 });
 

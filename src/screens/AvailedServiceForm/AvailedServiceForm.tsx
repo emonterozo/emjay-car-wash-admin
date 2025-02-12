@@ -656,6 +656,7 @@ const styles = StyleSheet.create({
   textStyle: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
   },
 });
 

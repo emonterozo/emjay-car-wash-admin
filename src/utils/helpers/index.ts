@@ -12,12 +12,15 @@ export const isStringEmpty = (value: string) => {
 
 export const getCurrentDateAtMidnightUTC = () => {
   const now = new Date();
+  now.setUTCDate(now.getUTCDate() + 1);
   now.setUTCHours(0, 0, 0, 0);
+
   return now;
 };
 
 export const getMinimumDateAtMidnightUTC = () => {
   const now = new Date('1900-01-31');
+  now.setUTCDate(now.getUTCDate() + 1);
   now.setUTCHours(0, 0, 0, 0);
   return now;
 };

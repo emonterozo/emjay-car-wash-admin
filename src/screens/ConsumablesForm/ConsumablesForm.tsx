@@ -309,7 +309,7 @@ const ConsumablesForm = () => {
               onPress={handleCancel}
             />
             <Button
-              title={'Add'}
+              title="Submit"
               variant="primary"
               buttonStyle={styles.button}
               textStyle={styles.textStyle}
@@ -355,13 +355,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   button: {
-    paddingHorizontal: 23,
-    paddingVertical: 18,
+    padding: 12,
     borderRadius: 24,
   },
   textStyle: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
   },
 });
 

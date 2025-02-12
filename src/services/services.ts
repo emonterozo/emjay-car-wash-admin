@@ -440,17 +440,14 @@ export const getSalesStatisticsRequest = (
   filter: StatisticsFilter,
   end: string,
 ): ApiResponse<SalesStatisticsResponse> => {
-  return apiRequest<null, SalesStatisticsResponse>(
-    `${Config.API_BASE_URL}/admin/statistics/sales`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-      params: {
-        filter,
-        end,
-      },
+  return apiRequest<null, SalesStatisticsResponse>(`${Config.API_BASE_URL}/admin/statistics`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: {
+      filter,
+      end,
     },
-  );
+  });
 };
 
 export const addExpenseRequest = (

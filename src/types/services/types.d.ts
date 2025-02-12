@@ -421,8 +421,14 @@ export type SalesStatisticsResult = {
   period: string;
 } & TransactionSummary;
 
+export type ExpenseResult = {
+  amount: number;
+  period: string;
+};
+
 export type SalesStatisticsResponse = {
-  results: SalesStatisticsResult[];
+  income: SalesStatisticsResult[];
+  expenses: ExpenseResult[];
   transactions: TransactionItem[];
   errors: ErrorProps[];
 };

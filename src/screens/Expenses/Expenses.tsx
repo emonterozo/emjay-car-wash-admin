@@ -1,5 +1,20 @@
+import React, { useContext, useEffect, useState } from 'react';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { format, startOfMonth } from 'date-fns';
 import {
-  ActivityIndicator,
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+
+import { NavigationProp } from '../../types/navigation/types';
+import { ExpenseItem, ScreenStatusProps } from '../../types/services/types';
+import {
   AppHeader,
   CalendarPicker,
   EmptyState,
@@ -8,20 +23,16 @@ import {
   LoadingAnimation,
   MaterialCommunityIcon,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 import GlobalContext from '@app/context';
-import { getCurrentDateAtMidnightUTC } from '@app/helpers';
+import {
+  formattedNumber,
+  getCurrentDateAtMidnightUTC,
+  getMinimumDateAtMidnightUTC,
+} from '@app/helpers';
 import { getExpenseItemsRequest } from '@app/services';
 import { color, font } from '@app/styles';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { format } from 'date-fns';
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, FlatList, Image } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { NavigationProp } from 'src/types/navigation/types';
-import { ExpenseItem, ScreenStatusProps } from 'src/types/services/types';
 
-const currentDate = getCurrentDateAtMidnightUTC();
 const renderSeparator = () => <View style={styles.separator} />;
 
 const CATEGORY_ICONS: { [key: string]: JSX.Element } = {
@@ -41,16 +52,8 @@ const Expenses = () => {
     hasError: false,
     type: 'error',
   });
-  const [totalCount, setTotalCount] = useState(0);
-  const [isFetching, setIsFetching] = useState(false);
-  const [shouldFetchItems, setShouldFetchItems] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const formattedDate = selectedDate
-    ? format(selectedDate, 'MMM dd yyyy')
-    : format(currentDate, 'MMM dd yyyy');
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCalendarVisible, setCalendarVisible] = useState(false);
-  const maxDate = new Date();
-  const minDate = new Date(2023, 0, 1);
 
   const isFocused = useIsFocused();
 
@@ -67,12 +70,14 @@ const Expenses = () => {
       <View style={styles.card}>
         {IconComponent}
         <View style={[styles.middleSection, styles.textContainer]}>
-          <Text style={styles.category}>{item.category}</Text>
+          <Text style={styles.category}>
+            {item.category.charAt(0) + item.category.slice(1).toLowerCase()}
+          </Text>
           <Text style={[styles.description, styles.text]}>{item.description}</Text>
         </View>
         <View style={styles.textContainer}>
           <Text style={[styles.amount, styles.text, styles.textRight]}>
-            ₱{item.amount.toLocaleString()}
+            {formattedNumber(item.amount)}
           </Text>
           <Text style={[styles.date, styles.text, styles.textRight]}>
             {format(new Date(item.date), 'MMM dd, yyyy')}
@@ -83,30 +88,28 @@ const Expenses = () => {
   };
 
   useEffect(() => {
-    if (isFocused || shouldFetchItems) {
-      fetchExpenseItems();
-      setShouldFetchItems(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused, shouldFetchItems]);
-
-  useEffect(() => {
-    if (selectedDate) {
+    if (isFocused) {
       fetchExpenseItems();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate]);
+  }, [isFocused, selectedDate]);
 
   const fetchExpenseItems = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getExpenseItemsRequest(user.accessToken, 'date', 'desc', LIMIT, 0, {
-      start: formattedDate,
-      end: formattedDate,
-    });
+    const response = await getExpenseItemsRequest(
+      user.accessToken,
+      'date',
+      'desc',
+      undefined,
+      undefined,
+      {
+        start: format(startOfMonth(selectedDate), 'yyyy-MM-dd'),
+        end: format(selectedDate, 'yyyy-MM-dd'),
+      },
+    );
 
     if (response.success && response.data) {
       setExpenses(response.data.expenses);
-      setTotalCount(response.data.totalCount);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -121,35 +124,13 @@ const Expenses = () => {
     navigation.navigate('ExpensesForm');
   };
 
+  const toggleCalendar = () => {
+    setCalendarVisible(!isCalendarVisible);
+  };
+
   const handleCalendarChange = (date: Date) => {
     setSelectedDate(date);
-    setCalendarVisible(false);
-  };
-
-  const getDateValue = () => {
-    return selectedDate ? format(new Date(selectedDate), 'MMM dd, yyyy') : formattedDate;
-  };
-
-  const onClose = () => {
-    setCalendarVisible(false);
-  };
-
-  const onEndReached = async () => {
-    if (isFetching || expenses.length >= totalCount) {
-      return;
-    }
-
-    setIsFetching(true);
-    const response = await getExpenseItemsRequest(user.accessToken, 'date', 'desc', LIMIT, 0, {
-      start: formattedDate,
-      end: formattedDate,
-    });
-
-    if (response.success && response.data) {
-      setExpenses((prev) => [...prev, ...response.data?.expenses!]);
-      setTotalCount(response.data.totalCount);
-    }
-    setIsFetching(false);
+    toggleCalendar();
   };
 
   return (
@@ -158,11 +139,13 @@ const Expenses = () => {
       <AppHeader
         title="Expenses"
         leftContent={
-          <TouchableOpacity onPress={() => setCalendarVisible(true)}>
-            <View style={styles.leftContent}>
-              <Text style={styles.filter_date}>{getDateValue()}</Text>
-              <MaterialCommunityIcon name={'chevron-down'} color="#888888" size={20} />
-            </View>
+          <TouchableOpacity style={styles.leftContent} onPress={toggleCalendar}>
+            <Text style={styles.filterDate}>{format(selectedDate, 'MMMM dd, yyyy')}</Text>
+            <MaterialCommunityIcon
+              name={isCalendarVisible ? 'chevron-up' : 'chevron-down'}
+              color="#888888"
+              size={20}
+            />
           </TouchableOpacity>
         }
       />
@@ -174,34 +157,27 @@ const Expenses = () => {
         onRetry={fetchExpenseItems}
       />
       <View style={styles.heading}>
-        <Text style={styles.label}>Expenses</Text>
+        <Text style={styles.label}>Expenses Lists</Text>
       </View>
-
-      {expenses.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <FlatList
-          data={expenses}
-          renderItem={renderCardItem}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={true}
-          contentContainerStyle={styles.list}
-          ItemSeparatorComponent={renderSeparator}
-          onEndReached={onEndReached}
-          ListFooterComponent={<ActivityIndicator isLoading={isFetching} />}
-        />
-      )}
+      <FlatList
+        data={expenses}
+        renderItem={renderCardItem}
+        keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={styles.list}
+        ItemSeparatorComponent={renderSeparator}
+        ListEmptyComponent={<EmptyState />}
+      />
       {isCalendarVisible && (
         <CalendarPicker
-          date={selectedDate || currentDate}
+          date={selectedDate}
           isVisible={isCalendarVisible}
-          onSelectedDate={(date) => handleCalendarChange(date)}
-          onClose={onClose}
-          maxDate={maxDate}
-          minDate={minDate}
+          onSelectedDate={handleCalendarChange}
+          onClose={toggleCalendar}
+          maxDate={getCurrentDateAtMidnightUTC()}
+          minDate={getMinimumDateAtMidnightUTC()}
         />
       )}
-
       <FloatingActionButton onPress={handleAddExpenseItem} />
     </SafeAreaView>
   );
@@ -253,7 +229,7 @@ const styles = StyleSheet.create({
   date: {
     color: '#888888',
   },
-  filter_date: {
+  filterDate: {
     ...font.regular,
     fontSize: 12,
     lineHeight: 12,
