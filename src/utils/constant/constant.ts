@@ -187,7 +187,7 @@ export const MESSAGE: Record<
 
 export const VEHICLE_TYPES = ['Car', 'Motorcycle'];
 export const CAR_SIZES = ['Small', 'Medium', 'Large', 'Extra Large', 'Extra Extra Large'];
-export const MOTORCYCLE_SIZES = ['Small', 'Medium', 'Large'];
+export const MOTORCYCLE_SIZES = ['Small', 'Medium', 'Large', 'Extra Large'];
 export const STATISTICS_FILTER = ['Income', 'Expenses'];
 export const SIZES = ['sm', 'md', 'lg', 'xl', 'xxl'];
 export const SIZE_DESCRIPTION: Record<SizeKey, string> = {

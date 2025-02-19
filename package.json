@@ -1,6 +1,6 @@
 {
   "name": "EmJayCarWash",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": true,
   "scripts": {
     "android": "react-native run-android --mode=developmentDebug --appIdSuffix=development",
@@ -8,7 +8,7 @@
     "android:staging": "react-native run-android --mode=stagingDebug --appIdSuffix=staging",
     "ios:staging": "ENVFILE=.env.staging react-native run-ios",
     "android:production": "react-native run-android --mode=production --appIdSuffix=production",
-    "ios:production": "ENVFILE=.env.staging react-native run-ios",
+    "ios:production": "ENVFILE=.env.production react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",

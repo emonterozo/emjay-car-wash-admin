@@ -63,7 +63,17 @@ const Services = () => {
 
   useEffect(() => {
     if (!isOptionVisible && services.length > 0) {
-      setFilteredServices(services.filter((service) => service.type === filter.type.toLowerCase()));
+      const sizeKey = Object.keys(SIZE_DESCRIPTION).find(
+        (key) => SIZE_DESCRIPTION[key as SizeKey] === filter.size,
+      );
+
+      setFilteredServices(
+        services.filter(
+          (service) =>
+            service.type === filter.type.toLowerCase() &&
+            service.price_list.some((price) => price.size === sizeKey),
+        ),
+      );
     }
   }, [isOptionVisible, services, filter]);
 

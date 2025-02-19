@@ -85,7 +85,7 @@ const OPTIONS = [
 
 const size = {
   car: ['SM', 'MD', 'LG', 'XL', 'XXL'],
-  motorcycle: ['SM', 'MD', 'LG'],
+  motorcycle: ['SM', 'MD', 'LG', 'XL'],
 };
 
 const validationSchema = Yup.object({
@@ -115,7 +115,7 @@ const AddOngoing = () => {
   };
   const [sizeCount, setSizeCount] = useState({
     car: [10, 0, 0, 0, 0],
-    motorcycle: [10, 0, 0],
+    motorcycle: [10, 0, 0, 0],
   });
   const [selectedVehicle, setSelectedVehicle] = useState<keyof typeof size>(
     (transaction?.vehicle_type as keyof typeof size) ?? 'car',
@@ -169,8 +169,13 @@ const AddOngoing = () => {
   }, [transaction]);
 
   useEffect(() => {
+    const selectedSize = getSelectedVehicleSize();
     const filteredServices = services
-      .filter((service) => service.type === selectedVehicle)
+      .filter(
+        (service) =>
+          service.type === selectedVehicle &&
+          service.price_list.some((price) => price.size === selectedSize),
+      )
       .map((service) => {
         const price = service.price_list.find(
           (item) => item.size === getSelectedVehicleSize(),
@@ -233,7 +238,7 @@ const AddOngoing = () => {
     setSelectedVehicle(vehicle);
     setSizeCount({
       car: [10, 0, 0, 0, 0],
-      motorcycle: [10, 0, 0],
+      motorcycle: [10, 0, 0, 0],
     });
 
     setFormValues({
