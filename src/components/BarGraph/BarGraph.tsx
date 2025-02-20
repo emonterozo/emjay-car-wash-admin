@@ -9,6 +9,7 @@ export type DataProps = {
   label: string;
   subLabel?: string;
   income: number;
+  actualIncome?: number;
   expenses?: number;
 };
 
@@ -160,6 +161,21 @@ const BarGraph = ({
                   {shortenDisplay
                     ? shortenNumber(item.expenses!)
                     : formattedNumber(item.expenses!, 0)}
+                </SvgText>
+              )}
+              {item.actualIncome! > 0 && (
+                <SvgText
+                  x={barX + barWidth / 2}
+                  y={chartHeight - totalHeight - 22 + 40}
+                  fontSize="12"
+                  fill="#4BB543"
+                  fontWeight="normal"
+                  fontFamily="AeonikTRIAL-Regular"
+                  textAnchor="middle"
+                >
+                  {shortenDisplay
+                    ? shortenNumber(item.actualIncome!)
+                    : formattedNumber(item.actualIncome!, 0)}
                 </SvgText>
               )}
             </React.Fragment>
