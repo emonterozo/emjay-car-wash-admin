@@ -309,58 +309,65 @@ const AvailedServices = () => {
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
       />
-      {transactionService &&
-        (selectedStatus === 'Pending' || selectedStatus === 'Done') &&
-        transactionStatus === 'ONGOING' && (
-          <FloatingActionButton
-            additionalButtons={(() => {
-              let actions = [];
-              switch (selectedStatus) {
-                case 'Pending':
-                  actions = [
-                    {
-                      icon: IMAGES.WALLET_ERROR,
-                      label: 'Cancel the Transaction',
-                      onPress: () => {
-                        setConfirmation({
-                          type: 'CancelTransaction',
-                          isVisible: true,
-                        });
-                      },
+      {transactionService && selectedStatus !== 'Cancel' && (
+        <FloatingActionButton
+          additionalButtons={(() => {
+            let actions = [];
+            switch (selectedStatus) {
+              case 'Pending':
+                actions = [
+                  {
+                    icon: IMAGES.WALLET_ERROR,
+                    label: 'Cancel the Transaction',
+                    onPress: () => {
+                      setConfirmation({
+                        type: 'CancelTransaction',
+                        isVisible: true,
+                      });
                     },
-                    {
-                      icon: 'plus',
-                      label: 'Add service',
-                      onPress: navigateToAddOngoing,
-                    },
-                  ];
+                  },
+                  {
+                    icon: 'plus',
+                    label: 'Add service',
+                    onPress: navigateToAddOngoing,
+                  },
+                ];
 
-                  return checkAvailedServices('PENDING') ? actions : actions.slice(1);
-                case 'Done':
-                  actions = [
-                    {
-                      icon: IMAGES.WALLET_CHECKED,
-                      label: 'Complete the Transaction',
-                      onPress: () => {
-                        setConfirmation({
-                          type: 'CompleteTransaction',
-                          isVisible: true,
-                        });
-                      },
+                return checkAvailedServices('PENDING') ? actions : actions.slice(1);
+              case 'Ongoing':
+                actions = [
+                  {
+                    icon: 'plus',
+                    label: 'Add service',
+                    onPress: navigateToAddOngoing,
+                  },
+                ];
+                return actions;
+              case 'Done':
+                actions = [
+                  {
+                    icon: IMAGES.WALLET_CHECKED,
+                    label: 'Complete the Transaction',
+                    onPress: () => {
+                      setConfirmation({
+                        type: 'CompleteTransaction',
+                        isVisible: true,
+                      });
                     },
-                    {
-                      icon: 'plus',
-                      label: 'Add service',
-                      onPress: navigateToAddOngoing,
-                    },
-                  ];
-                  return checkAvailedServices('DONE') ? actions : actions.slice(1);
-                default:
-                  return [];
-              }
-            })()}
-          />
-        )}
+                  },
+                  {
+                    icon: 'plus',
+                    label: 'Add service',
+                    onPress: navigateToAddOngoing,
+                  },
+                ];
+                return checkAvailedServices('DONE') ? actions : actions.slice(1);
+              default:
+                return [];
+            }
+          })()}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -448,6 +455,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 25,
     paddingBottom: 25,
+    paddingTop: 10,
     backgroundColor: color.background,
   },
   tag: {

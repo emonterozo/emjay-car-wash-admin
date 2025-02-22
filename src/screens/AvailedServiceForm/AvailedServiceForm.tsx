@@ -265,7 +265,8 @@ const AvailedServiceForm = () => {
       case 'ongoing':
         setFilteredServiceStatusOption(
           SERVICE_STATUS_OPTIONS.filter(
-            (option) => option.label === 'DONE' || option.label === 'ONGOING',
+            (option) =>
+              option.label === 'DONE' || option.label === 'ONGOING' || option.label === 'CANCEL',
           ),
         );
         break;
