@@ -280,7 +280,9 @@ const AvailedServiceForm = () => {
         break;
       case 'done':
         setFilteredServiceStatusOption(
-          SERVICE_STATUS_OPTIONS.filter((option) => option.label === 'DONE'),
+          SERVICE_STATUS_OPTIONS.filter(
+            (option) => option.label === 'DONE' || option.label === 'CANCEL',
+          ),
         );
         break;
       case 'cancelled':
