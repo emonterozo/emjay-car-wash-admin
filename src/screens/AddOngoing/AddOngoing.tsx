@@ -170,7 +170,7 @@ const AddOngoing = () => {
 
   useEffect(() => {
     const selectedSize = getSelectedVehicleSize();
-    const filteredServices = services
+    let filteredServices = services
       .filter(
         (service) =>
           service.type === selectedVehicle &&
@@ -190,27 +190,27 @@ const AddOngoing = () => {
         };
       });
 
+    filteredServices = filteredServices.filter(
+      (service) => !transaction?.availedServices.includes(service.id),
+    );
+
     // extract services that can be multiple select
-    const servicesWithoutSize: string[] = [];
     services
       .filter((service) => service.type === selectedVehicle)
       .forEach((service) => {
         const noSize = service.price_list.find((item) => !SIZES.includes(item.size));
         if (noSize) {
-          servicesWithoutSize.push(service.id);
+          filteredServices.push({
+            id: service.id,
+            image: service.image,
+            title: service.title,
+            description: formattedNumber(service.price_list[0].price),
+            value: service.price_list[0].price,
+          });
         }
       });
 
-    // filter out currently selected services
-    const selectedServices = transaction?.availedServices.filter(
-      (item) => !servicesWithoutSize.includes(item),
-    );
-
-    setServiceSelection(
-      selectedServices
-        ? filteredServices.filter((item) => !selectedServices.includes(item.id))
-        : filteredServices,
-    );
+    setServiceSelection(filteredServices);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services, selectedVehicle, sizeCount]);
 

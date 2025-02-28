@@ -13,7 +13,7 @@ import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { color, font } from '@app/styles';
 import { useMeasure } from '@app/hooks';
-import { ERR_NETWORK, SIZE_DESCRIPTION } from '@app/constant';
+import { ERR_NETWORK, SIZE_DESCRIPTION, SIZES } from '@app/constant';
 import { formattedNumber } from '@app/helpers';
 
 const renderSeparator = () => <View style={styles.separator} />;
@@ -67,13 +67,24 @@ const Services = () => {
         (key) => SIZE_DESCRIPTION[key as SizeKey] === filter.size,
       );
 
-      setFilteredServices(
-        services.filter(
-          (service) =>
-            service.type === filter.type.toLowerCase() &&
-            service.price_list.some((price) => price.size === sizeKey),
-        ),
+      const servicesWithoutSize: Service[] = [];
+
+      services
+        .filter((service) => service.type === filter.type.toLowerCase())
+        .forEach((service) => {
+          const noSize = service.price_list.find((item) => !SIZES.includes(item.size));
+          if (noSize) {
+            servicesWithoutSize.push(service);
+          }
+        });
+
+      const filterServices = services.filter(
+        (service) =>
+          service.type === filter.type.toLowerCase() &&
+          service.price_list.some((price) => price.size === sizeKey),
       );
+
+      setFilteredServices([...filterServices, ...servicesWithoutSize]);
     }
   }, [isOptionVisible, services, filter]);
 
