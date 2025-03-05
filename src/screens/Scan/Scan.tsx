@@ -25,6 +25,8 @@ import {
 import { NavigationProp } from 'src/types/navigation/types';
 import { ScreenStatusProps } from 'src/types/services/types';
 
+const { width, height } = Dimensions.get('window');
+
 type MessageType = keyof typeof MESSAGE;
 type OnButtonPress = () => void;
 
@@ -57,7 +59,6 @@ const Scan = () => {
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (codes) => {
       setIsScannerActive(false);
-      setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
       setCodeValue(codes[0].value);
       checkIfCustomerExist(codes[0].value);
     },
@@ -71,6 +72,7 @@ const Scan = () => {
   };
 
   const fetchEmployeeFreeWash = async (id: string) => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getCustomerFreeWashServiceRequest(user.accessToken, id);
 
     if (response.success && response.data) {
@@ -115,13 +117,6 @@ const Scan = () => {
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={color.background} barStyle="dark-content" />
         <AppHeader title="QR Scan" />
-        <LoadingAnimation isLoading={screenStatus.isLoading} />
-        <ErrorModal
-          type={screenStatus.type}
-          isVisible={screenStatus.hasError}
-          onCancel={toggleModal}
-          onRetry={() => checkIfCustomerExist(codeValue)}
-        />
         <View style={styles.displayContainer}>
           <View style={styles.iconContainer}>
             <Image source={IMAGES[image]} style={styles.image} resizeMode="contain" />
@@ -170,7 +165,7 @@ const Scan = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="QR Scan" />
-      <LoadingAnimation isLoading={screenStatus.isLoading} />
+      <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
       <ErrorModal
         type={screenStatus.type}
         isVisible={screenStatus.hasError}
@@ -178,14 +173,21 @@ const Scan = () => {
         onRetry={() => checkIfCustomerExist(codeValue)}
       />
       <View style={styles.cameraContainer}>
-        {isScannerActive && (
-          <Camera
-            style={StyleSheet.absoluteFill}
-            device={device}
-            isActive={isScannerActive}
-            codeScanner={codeScanner}
-          />
-        )}
+        <Camera
+          style={StyleSheet.absoluteFill}
+          device={device}
+          isActive={isScannerActive}
+          codeScanner={codeScanner}
+        />
+        <Text style={styles.instruction}>{'Scan the QR Code to get\nstarted!'}</Text>
+        <View style={styles.overlay}>
+          <View style={styles.frame}>
+            <View style={styles.cornerTopLeft} />
+            <View style={styles.cornerTopRight} />
+            <View style={styles.cornerBottomLeft} />
+            <View style={styles.cornerBottomRight} />
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -240,6 +242,69 @@ const styles = StyleSheet.create({
     width: 90,
     height: 97,
     alignSelf: 'center',
+  },
+  overlay: {
+    position: 'absolute',
+    top: height * 0.25,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  frame: {
+    width: width * 0.6,
+    height: width * 0.6,
+    position: 'relative',
+  },
+  cornerTopLeft: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 30,
+    height: 30,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: 'white',
+  },
+  cornerTopRight: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 30,
+    height: 30,
+    borderTopWidth: 4,
+    borderRightWidth: 4,
+    borderColor: 'white',
+  },
+  cornerBottomLeft: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 30,
+    height: 30,
+    borderBottomWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: 'white',
+  },
+  cornerBottomRight: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 30,
+    height: 30,
+    borderBottomWidth: 4,
+    borderRightWidth: 4,
+    borderColor: 'white',
+  },
+  instruction: {
+    ...font.regular,
+    fontSize: 24,
+    lineHeight: 24,
+    color: 'white',
+    textAlign: 'center',
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
   },
 });
 

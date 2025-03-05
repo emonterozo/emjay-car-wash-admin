@@ -177,16 +177,18 @@ const AddOngoing = () => {
           service.price_list.some((price) => price.size === selectedSize),
       )
       .map((service) => {
-        const price = service.price_list.find(
+        const serviceItem = service.price_list.find(
           (item) => item.size === getSelectedVehicleSize(),
-        )?.price;
+        );
 
         return {
           id: service.id,
           image: service.image,
           title: service.title,
-          description: formattedNumber(price ?? service.price_list[0].price),
-          value: price ?? service.price_list[0].price,
+          description: formattedNumber(serviceItem?.price ?? service.price_list[0].price),
+          value: serviceItem?.price ?? service.price_list[0].price,
+          points: serviceItem?.points,
+          earningPoints: serviceItem?.earning_points,
         };
       });
 
@@ -206,6 +208,8 @@ const AddOngoing = () => {
             title: service.title,
             description: formattedNumber(service.price_list[0].price),
             value: service.price_list[0].price,
+            points: service.price_list[0].points,
+            earningPoints: service.price_list[0].earning_points,
           });
         }
       });

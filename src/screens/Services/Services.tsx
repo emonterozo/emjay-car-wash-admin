@@ -7,7 +7,7 @@ import FastImage from '@d11/react-native-fast-image';
 import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
 import { Price, ScreenStatusProps, Service } from '../../types/services/types';
-import { FilterIcon, StarIcon } from '@app/icons';
+import { FilterIcon, FreeIcon, StarIcon } from '@app/icons';
 import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
@@ -121,6 +121,20 @@ const Services = () => {
     return `${formattedNumber(priceList[0].price)} ${priceList[0].size}`;
   };
 
+  const getServicePricePoints = (priceList: Price[], type: 'points' | 'earning_points') => {
+    const sizeKey = Object.keys(SIZE_DESCRIPTION).find(
+      (key) => SIZE_DESCRIPTION[key as SizeKey] === filter.size,
+    );
+
+    const service = priceList.find((item) => item.size === sizeKey);
+
+    if (service) {
+      return type === 'points' ? service?.points : service?.earning_points;
+    }
+
+    return type === 'points' ? priceList[0].points : priceList[0].earning_points;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -150,6 +164,7 @@ const Services = () => {
           />
         )}
       </View>
+
       <FlatList
         bounces={false}
         showsVerticalScrollIndicator={true}
@@ -157,22 +172,46 @@ const Services = () => {
         data={filteredServices}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <FastImage
-              style={styles.image}
-              source={{
-                uri: item.image,
-                priority: FastImage.priority.normal,
-              }}
-              resizeMode={FastImage.resizeMode.cover}
-            />
-            <View style={styles.ratingsContainer}>
-              <StarIcon width={20} height={16} />
-              <Text style={styles.ratings}>{item.ratings}</Text>
+            <View style={styles.top}>
+              <FastImage
+                style={styles.image}
+                source={{
+                  uri: item.image,
+                  priority: FastImage.priority.normal,
+                }}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+              <View style={styles.details}>
+                <Text style={styles.name}>{item.title}</Text>
+                <Text style={styles.description}>{item.description}</Text>
+                <View style={styles.content}>
+                  <View style={styles.ratingsContainer}>
+                    <StarIcon width={16} height={16} />
+                    <Text style={styles.ratings}>{item.ratings}</Text>
+                  </View>
+                  <View style={styles.pointsContainer}>
+                    <FreeIcon />
+                    <Text style={styles.points}>
+                      {getServicePricePoints(item.price_list, 'points') > 0
+                        ? `${getServicePricePoints(item.price_list, 'points')} points`
+                        : '10 wash'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
             </View>
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.name}>{item.title}</Text>
-              <Text style={styles.description}>{item.description}</Text>
-              <Text style={styles.price}>{getServicePrice(item.price_list)}</Text>
+            <View style={styles.bottom}>
+              <View style={styles.bottomContent}>
+                <Text style={styles.priceLabel}>Price</Text>
+                <Text style={styles.priceValue}>{getServicePrice(item.price_list)}</Text>
+              </View>
+              <View style={styles.earningContainer}>
+                <Text style={styles.earningPoints}>
+                  {getServicePricePoints(item.price_list, 'earning_points') > 0
+                    ? `Earn ${getServicePricePoints(item.price_list, 'earning_points')} Points!`
+                    : 'Earn 1 Wash Count!'}
+                </Text>
+              </View>
             </View>
           </View>
         )}
@@ -211,31 +250,12 @@ const styles = StyleSheet.create({
   list: {
     flexGrow: 1,
     paddingHorizontal: 25,
-    paddingBottom: 25,
     backgroundColor: color.background,
-  },
-  name: {
-    ...font.regular,
-    fontSize: 24,
-    lineHeight: 24,
-    color: '#000000',
+    paddingTop: 10,
+    paddingBottom: 20,
   },
   separator: {
     marginTop: 24,
-  },
-  description: {
-    ...font.regular,
-    fontSize: 20,
-    lineHeight: 20,
-    flex: 1,
-    color: '#888888',
-  },
-  price: {
-    ...font.regular,
-    fontSize: 20,
-    lineHeight: 20,
-    flex: 1,
-    color: color.primary,
   },
   card: {
     backgroundColor: color.background,
@@ -245,34 +265,96 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 5,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 24,
   },
-  image: {
-    height: 201,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-  },
-  descriptionContainer: {
-    padding: 16,
-    gap: 10,
-    marginVertical: 15,
-  },
-  ratingsContainer: {
-    position: 'absolute',
-    right: 13,
-    top: 13,
-    backgroundColor: '#F4F9FD',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+  bottom: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    borderRadius: 12,
+    justifyContent: 'space-between',
+  },
+  priceLabel: {
+    ...font.regular,
+    fontSize: 16,
+    color: '#696969',
+  },
+  priceValue: {
+    ...font.regular,
+    fontSize: 16,
+    color: '#050303',
+    marginTop: 8,
+  },
+  earningContainer: {
+    backgroundColor: '#1F93E1',
+    padding: 10,
+    borderRadius: 10,
+    flex: 1,
+    alignItems: 'center',
+  },
+  earningPoints: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#F3F2EF',
+  },
+  top: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  name: {
+    ...font.regular,
+    fontSize: 20,
+    color: '#000000',
+  },
+  description: {
+    ...font.regular,
+    fontSize: 16,
+    color: '#888888',
+  },
+  ratingsContainer: {
+    backgroundColor: '#F9ECD9',
+    padding: 8,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   ratings: {
     ...font.regular,
     fontSize: 16,
     color: '#050303',
-    letterSpacing: 1,
+  },
+  pointsContainer: {
+    backgroundColor: '#CAF9C7',
+    padding: 8,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flex: 1,
+  },
+  points: {
+    ...font.regular,
+    fontSize: 16,
+    color: '#050303',
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  details: {
+    gap: 8,
+    flex: 1,
+  },
+  image: {
+    width: 108,
+    borderRadius: 8,
+  },
+  bottomContent: {
+    flex: 1,
   },
 });
 

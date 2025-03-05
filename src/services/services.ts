@@ -190,7 +190,7 @@ export const getCustomerFreeWashServiceRequest = (
   id: string,
 ): ApiResponse<CustomerFreeWashServiceResponse> => {
   return apiRequest<null, CustomerFreeWashServiceResponse>(
-    `${Config.API_BASE_URL}/admin/customers/${id}/free-wash-service`,
+    `${Config.API_BASE_URL}/admin/customers/${id}/wash-points`,
     {
       method: 'get',
       headers: requestHeader(accessToken),

@@ -21,6 +21,8 @@ export type ModalDropdownOption = {
   title: string;
   description: string;
   value?: string | number;
+  points?: number;
+  earningPoints?: number;
 };
 
 export type ModalDropdownProps = {
@@ -104,6 +106,18 @@ const ModalDropdown = ({
                       resizeMode={FastImage.resizeMode.cover}
                     />
                     <Text style={styles.optionTitle}>{item.title}</Text>
+                    {item.points !== undefined && (
+                      <View style={styles.content}>
+                        <Text style={styles.label}>Points required</Text>
+                        <Text style={styles.value}>{item.points}</Text>
+                      </View>
+                    )}
+                    {item.earningPoints !== undefined && (
+                      <View style={styles.content}>
+                        <Text style={styles.label}>Points earned</Text>
+                        <Text style={styles.value}>{item.earningPoints}</Text>
+                      </View>
+                    )}
                     <Text style={styles.optionDescription}>{item.description}</Text>
                   </View>
                 </TouchableWithoutFeedback>
@@ -181,7 +195,6 @@ const styles = StyleSheet.create({
   },
   option: {
     width: '49%',
-    height: 164,
     gap: 8,
     padding: 12,
     backgroundColor: '#FAFAFA',
@@ -231,6 +244,24 @@ const styles = StyleSheet.create({
   selected: {
     borderWidth: 1,
     borderColor: color.primary,
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    ...font.regular,
+    fontSize: 12,
+    color: '#696969',
+    flex: 2,
+  },
+  value: {
+    ...font.regular,
+    fontSize: 12,
+    color: '#050303',
+    flex: 1,
+    textAlign: 'right',
   },
 });
 

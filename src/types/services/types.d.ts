@@ -39,6 +39,8 @@ export type LoginResponse = {
 export type Price = {
   size: string;
   price: number;
+  points: number;
+  earning_points: number;
 };
 
 export type Service = {
