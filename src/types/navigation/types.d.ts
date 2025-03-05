@@ -28,6 +28,7 @@ export type AuthStackParamList = {
     customerId: string | null;
     contactNumber: string | null;
     freeWash: { type: string; size: string }[];
+    points?: number;
     transaction:
       | (Omit<TransactionServicesResponse['transaction'], 'availed_services' | 'contact_number'> & {
           availedServices: string[];

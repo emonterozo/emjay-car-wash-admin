@@ -102,7 +102,7 @@ const validationSchema = Yup.object({
 });
 
 const AddOngoing = () => {
-  const { customerId, contactNumber, freeWash, transaction } =
+  const { customerId, contactNumber, freeWash, transaction, points } =
     useRoute<AddOngoingRouteProp>().params;
   const { user } = useContext(GlobalContext);
   const navigation = useNavigation<NavigationProp>();
@@ -386,31 +386,41 @@ const AddOngoing = () => {
         type={toast.type}
         onClose={onToastClose}
       />
-      {freeWash.length > 0 && (
-        <>
+      {points && (
+        <View>
           <View style={styles.heading}>
-            <Text style={styles.text}>Free Carwash Details</Text>
+            <Text style={styles.text}>
+              {`Customer Earned Points${freeWash.length > 0 ? ' & Free Wash' : ''}`}
+            </Text>
           </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.washList}
-            contentContainerStyle={styles.washContainer}
-          >
-            {freeWash.map((item, index) => (
-              <View key={index} style={styles.washCard}>
-                <View style={[styles.tag, item.type === 'motorcycle' && styles.motorcycle]}>
-                  <Text style={styles.size}>{item.size.toUpperCase()}</Text>
+          <View style={styles.points}>
+            <Image source={IMAGES.COIN} resizeMode="contain" />
+            <View>
+              <Text style={styles.pointsValue}>{`${points.toLocaleString()} pts`}</Text>
+              <Text style={styles.pointsLabel}>Current points earned</Text>
+            </View>
+          </View>
+          {freeWash.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.washContainer}
+            >
+              {freeWash.map((item, index) => (
+                <View key={index} style={styles.washCard}>
+                  <View style={[styles.tag, item.type === 'motorcycle' && styles.motorcycle]}>
+                    <Text style={styles.size}>{item.size.toUpperCase()}</Text>
+                  </View>
+                  {item.type === 'car' ? (
+                    <CarIcon width={60} height={60} fill={color.primary} />
+                  ) : (
+                    <MotorcycleIcon width={60} height={60} fill={color.primary} />
+                  )}
                 </View>
-                {item.type === 'car' ? (
-                  <CarIcon width={60} height={60} fill={color.primary} />
-                ) : (
-                  <MotorcycleIcon width={60} height={60} fill={color.primary} />
-                )}
-              </View>
-            ))}
-          </ScrollView>
-        </>
+              ))}
+            </ScrollView>
+          )}
+        </View>
       )}
       <View style={styles.heading}>
         <Text style={styles.text}>Customer Vehicle Details</Text>
@@ -575,9 +585,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     gap: 16,
     alignItems: 'center',
-  },
-  washList: {
-    height: 200,
+    paddingVertical: 10,
   },
   washCard: {
     backgroundColor: '#F3F2EF',
@@ -610,6 +618,31 @@ const styles = StyleSheet.create({
   },
   motorcycle: {
     backgroundColor: '#FB8500',
+  },
+  points: {
+    backgroundColor: '#F3F2EF',
+    borderRadius: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4.5 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
+    marginHorizontal: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 24,
+    gap: 24,
+    marginBottom: 24,
+  },
+  pointsValue: {
+    ...font.bold,
+    fontSize: 20,
+    color: '#050303',
+  },
+  pointsLabel: {
+    ...font.regular,
+    fontSize: 16,
+    color: '#696969',
   },
 });
 export default AddOngoing;

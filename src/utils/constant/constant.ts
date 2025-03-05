@@ -104,6 +104,7 @@ export const IMAGES = {
   RENT: require('../../../assets/images/rent.png'),
   OTHER: require('../../../assets/images/other.png'),
   ELECTRICITY: require('../../../assets/images/electricity.png'),
+  COIN: require('../../../assets/images/coin.png'),
 };
 
 export const ERROR_TYPE = {

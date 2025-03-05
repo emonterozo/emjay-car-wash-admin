@@ -90,6 +90,7 @@ const Scan = () => {
         customerId: response.data.customer.id,
         contactNumber: response.data.customer.contact_number,
         freeWash: transformedFreeWash,
+        points: response.data.customer.points,
         transaction: undefined,
       });
     } else {

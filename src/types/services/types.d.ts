@@ -250,6 +250,7 @@ export type CustomerFreeWashServiceResponse = {
     last_name: string;
     contact_number: string;
     free_wash: { size: string; count: number; vehicle_type: string }[];
+    points: number;
   };
   errors: ErrorProps[];
 };
