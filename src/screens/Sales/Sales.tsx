@@ -58,8 +58,7 @@ const Sales = () => {
       const graphDataHolder: DataProps[] = results.map((item) => ({
         label: format(item.date, 'E'),
         subLabel: format(item.date, 'd'),
-        income: item.gross_income,
-        actualIncome: item.gross_income - item.deduction - item.discount,
+        income: item.gross_income - item.deduction - item.discount,
         expenses: 0,
       }));
       setGraphData(graphDataHolder);
