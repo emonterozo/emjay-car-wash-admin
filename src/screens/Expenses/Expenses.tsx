@@ -162,7 +162,7 @@ const Expenses = () => {
       <FlatList
         data={expenses}
         renderItem={renderCardItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={renderSeparator}

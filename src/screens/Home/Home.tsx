@@ -171,7 +171,7 @@ const Home = () => {
           <>
             <View style={styles.serviceContainer}>
               {services.map((item) => (
-                <View style={styles.row} key={item.id}>
+                <View style={styles.row} key={item._id}>
                   <FastImage
                     style={styles.serviceImage}
                     source={{

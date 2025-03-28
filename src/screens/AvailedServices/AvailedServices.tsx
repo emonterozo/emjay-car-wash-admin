@@ -76,6 +76,7 @@ const AvailedServices = () => {
     TransactionServicesResponse['transaction'] | undefined
   >(undefined);
   const [freeWash, setFreeWash] = useState<{ type: string; size: string }[]>([]);
+  const [points, setPoints] = useState<number | undefined>(undefined);
   const [confirmation, setConfirmation] = useState<{
     isVisible: boolean;
     type: keyof typeof CONFIRM_TYPE;
@@ -96,6 +97,8 @@ const AvailedServices = () => {
             size: item.size,
           }),
         );
+
+        setPoints(response.data.customer.points);
         setFreeWash(transformedFreeWash);
         fetchTransactionServices();
       } else {
@@ -161,8 +164,9 @@ const AvailedServices = () => {
       customerId: null,
       contactNumber: transactionService.contact_number,
       freeWash: freeWash,
+      points: points,
       transaction: {
-        id: transactionService.id,
+        _id: transactionService._id,
         vehicle_size: transactionService.vehicle_size,
         vehicle_type: transactionService.vehicle_type,
         model: transactionService.model,
@@ -289,13 +293,13 @@ const AvailedServices = () => {
               </View>
               <TouchableOpacity
                 style={styles.viewDetailsContainer}
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate('AvailedServiceDetails', {
                     transactionId: transactionId,
-                    transactionServiceId: item.transaction_service_id,
+                    transactionServiceId: item._id,
                     transactionStatus,
-                  })
-                }
+                  });
+                }}
               >
                 <Text style={styles.viewDetails}>View full details</Text>
                 <CircleArrowRightIcon />
@@ -303,7 +307,7 @@ const AvailedServices = () => {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.transaction_service_id.toString()}
+        keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={renderSeparator}

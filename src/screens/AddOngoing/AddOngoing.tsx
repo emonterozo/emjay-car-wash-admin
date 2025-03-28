@@ -182,7 +182,7 @@ const AddOngoing = () => {
         );
 
         return {
-          id: service.id,
+          id: service._id,
           image: service.image,
           title: service.title,
           description: formattedNumber(serviceItem?.price ?? service.price_list[0].price),
@@ -203,7 +203,7 @@ const AddOngoing = () => {
         const noSize = service.price_list.find((item) => !SIZES.includes(item.size));
         if (noSize) {
           filteredServices.push({
-            id: service.id,
+            id: service._id,
             image: service.image,
             title: service.title,
             description: formattedNumber(service.price_list[0].price),
@@ -283,7 +283,7 @@ const AddOngoing = () => {
         const price = serviceSelection.find((item) => item.id === selectedServiceId)?.value;
 
         if (transaction) {
-          const response = await addTransactionServiceRequest(user.accessToken, transaction.id, {
+          const response = await addTransactionServiceRequest(user.accessToken, transaction._id, {
             service_id: selectedServiceId,
             price: price as number,
             service_charge: serviceCharge?.label.toLowerCase() as ServiceChargeType,
@@ -386,7 +386,7 @@ const AddOngoing = () => {
         type={toast.type}
         onClose={onToastClose}
       />
-      {points && (
+      {points !== undefined && (
         <View>
           <View style={styles.heading}>
             <Text style={styles.text}>

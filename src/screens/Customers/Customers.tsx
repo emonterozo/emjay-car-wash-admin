@@ -107,7 +107,7 @@ const Customers = () => {
         contentContainerStyle={styles.list}
         data={customers}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item.id)}>
+          <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item._id)}>
             <Image
               source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
               style={styles.image}
@@ -124,7 +124,7 @@ const Customers = () => {
             </View>
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
         onEndReached={onEndReached}

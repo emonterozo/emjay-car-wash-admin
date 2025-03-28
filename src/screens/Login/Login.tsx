@@ -32,8 +32,8 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: '',
-    password: '',
+    username: 'emjay_admin',
+    password: 'password',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
 
@@ -45,7 +45,7 @@ const Login = () => {
     if (response.success && response.data) {
       const { user, accessToken } = response.data;
       setUser({
-        id: user.id,
+        id: user._id,
         username: user.username,
         type: user.type,
         accessToken: accessToken,

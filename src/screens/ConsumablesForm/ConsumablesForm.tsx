@@ -204,9 +204,9 @@ const ConsumablesForm = () => {
 
     const payload = {
       name: formValues.name,
-      price: formValues.price,
-      quantity: formValues.quantity,
-      date_purchased: formValues.date ? formValues.date.toISOString() : '',
+      price: Number(formValues.price),
+      quantity: Number(formValues.quantity),
+      date: formValues.date ? format(formValues.date, 'yyyy-MM-dd') : '',
     };
 
     const response = await addConsumablesRequest(user.accessToken, payload);

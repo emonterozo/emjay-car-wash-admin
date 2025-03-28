@@ -81,7 +81,7 @@ const Consumables = () => {
       <TouchableOpacity
         style={styles.closeButton}
         onPress={() => {
-          setSelectedConsumableId(item.id);
+          setSelectedConsumableId(item._id);
           toggleConfirmModal();
         }}
       >
@@ -206,7 +206,7 @@ const Consumables = () => {
       <FlatList
         data={consumables}
         renderItem={renderCardItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={renderSeparator}

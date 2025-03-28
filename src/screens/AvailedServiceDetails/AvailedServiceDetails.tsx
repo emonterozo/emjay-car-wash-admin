@@ -154,7 +154,7 @@ const AvailedServiceDetails = () => {
     if (!transactionService) {
       return;
     }
-    const employeesId = transactionService.assigned_employees.map((employee) => employee.id);
+    const employeesId = transactionService.assigned_employees.map((employee) => employee._id);
 
     navigation.navigate('AvailedServiceForm', {
       service: {
@@ -224,7 +224,7 @@ const AvailedServiceDetails = () => {
         <View style={styles.list}>
           {transactionService && transactionService?.assigned_employees.length > 0 ? (
             transactionService?.assigned_employees.map((item) => (
-              <View key={item.id} style={styles.row}>
+              <View key={item._id} style={styles.row}>
                 <Image
                   source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
                   style={styles.image}

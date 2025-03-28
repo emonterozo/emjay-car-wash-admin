@@ -100,9 +100,9 @@ const Employee = () => {
     gender,
     employee_title,
     employee_status,
-    id,
+    _id,
   }: Employees) => (
-    <TouchableOpacity style={styles.card} onPress={() => handleCardPress(id)}>
+    <TouchableOpacity style={styles.card} onPress={() => handleCardPress(_id)}>
       <Image
         source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
         style={styles.image}
@@ -140,7 +140,7 @@ const Employee = () => {
       <FlatList
         data={employees}
         renderItem={({ item }) => renderEmployeeList(item)}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={renderSeparator}

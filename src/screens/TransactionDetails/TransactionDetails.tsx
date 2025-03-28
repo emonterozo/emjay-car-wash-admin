@@ -255,7 +255,7 @@ const TransactionDetails = () => {
         <View style={styles.transactionsContainer}>
           {employees.length > 0 ? (
             employees.map((employee) => (
-              <View key={employee.id} style={styles.row}>
+              <View key={employee._id} style={styles.row}>
                 <Image
                   source={employee.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
                   style={styles.image}

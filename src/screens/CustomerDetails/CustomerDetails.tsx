@@ -132,7 +132,7 @@ const CustomerDetails = () => {
     if (response.success && response.data) {
       const { customer } = response.data;
       setCustomerInformation(customer);
-      setTransactions(customer.recent_transactions);
+      setTransactions(customer.transactions);
       setServicesCount({
         car: customer.car_wash_service_count.map((item) => item.count),
         motorcycle: customer.moto_wash_service_count.map((item) => item.count),
@@ -235,7 +235,7 @@ const CustomerDetails = () => {
           ) : (
             transactions.map((item) => (
               <ServiceTransactionItem
-                key={`${item.id}-${item.date}`}
+                key={item.transaction_availed_service_id}
                 icon={<WaterDropIcon />}
                 serviceName={item.service_name}
                 price={formattedNumber(item.price)}
@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
   transactionsContainer: {
     gap: 24,
     marginBottom: 10,
+    paddingHorizontal: 25,
   },
   emptyState: {
     paddingTop: 20,

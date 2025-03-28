@@ -31,7 +31,7 @@ import {
 } from '@app/components';
 import { formattedNumber } from '@app/helpers';
 import { WaterDropIcon } from '@app/icons';
-import { getEmployeesRequest, getTransactionsComputationRequest } from '@app/services';
+import { getEmployeesRequest, getTransactionsRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 
@@ -85,7 +85,7 @@ const TransactionComputation = () => {
 
   const fetchTransactions = async (selected: string[]) => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getTransactionsComputationRequest(
+    const response = await getTransactionsRequest(
       user.accessToken,
       {
         start: startDate,
@@ -112,11 +112,11 @@ const TransactionComputation = () => {
       .filter((employee) => employee.employee_status === 'ACTIVE')
       .map((employee) => {
         return {
-          id: employee.id,
+          id: employee._id,
           image: employee.gender === 'MALE' ? ICON_GENDER[0].icon : ICON_GENDER[1].icon,
           title: `${employee.first_name} ${employee.last_name}`,
           description: employee.employee_title,
-          value: employee.id,
+          value: employee._id,
         };
       });
 
@@ -244,7 +244,7 @@ const TransactionComputation = () => {
               onPress={() =>
                 navigation.navigate('TransactionDetails', {
                   transactionId: item.transaction_id,
-                  transactionServiceId: item.id,
+                  transactionServiceId: item.transaction_availed_service_id,
                 })
               }
             >
@@ -256,7 +256,7 @@ const TransactionComputation = () => {
               />
             </TouchableOpacity>
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.transaction_availed_service_id.toString()}
           showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.list}
           ItemSeparatorComponent={renderSeparator}

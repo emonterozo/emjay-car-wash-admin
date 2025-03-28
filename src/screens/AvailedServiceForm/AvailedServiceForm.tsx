@@ -248,11 +248,11 @@ const AvailedServiceForm = () => {
       .filter((employee) => employee.employee_status === 'ACTIVE')
       .map((employee) => {
         return {
-          id: employee.id,
+          id: employee._id,
           image: employee.gender === 'MALE' ? ICON_GENDER[0].icon : ICON_GENDER[1].icon,
           title: `${employee.first_name} ${employee.last_name}`,
           description: employee.employee_title,
-          value: employee.id,
+          value: employee._id,
         };
       });
 
@@ -438,15 +438,15 @@ const AvailedServiceForm = () => {
       formValues.status?.label === 'CANCEL' ? 'CANCELLED' : formValues.status?.label;
 
     const payload: UpdateAvailedServicePayload = {
-      discount: formValues.discount,
-      deduction: formValues.deduction,
+      discount: Number(formValues.discount),
+      deduction: Number(formValues.deduction),
       is_free: formattedServiceCharge,
       is_paid: formattedPaymentStatus,
       status: formattedStatus!,
     };
 
     if ((formValues.employees ?? []).length > 0) {
-      payload.assigned_employee = formValues.employees;
+      payload.assigned_employees = formValues.employees;
     }
 
     const response = await updateAvailedServiceRequest(

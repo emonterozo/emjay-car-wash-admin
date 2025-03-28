@@ -247,15 +247,11 @@ const ExpensesForm = () => {
 
     const formattedDescription = formValues.description !== undefined ? formValues.description : '';
 
-    const formattedDate = formValues.date
-      ? formValues.date.toISOString()
-      : new Date().toISOString();
-
     const payload: AddExpensePayload = {
       category: formattedCategory,
       description: formattedDescription,
-      amount: formValues.amount,
-      date: formattedDate,
+      amount: Number(formValues.amount),
+      date: format(formValues.date!, 'yyyy-MM-dd'),
     };
 
     const response = await addExpenseRequest(user.accessToken, payload);

@@ -133,7 +133,7 @@ const EmployeeDetails = () => {
     if (response.success && response.data) {
       const { employee } = response.data;
       setEmployeeInformation(employee);
-      setTransactions(employee.recent_transactions);
+      setTransactions(employee.transactions);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -220,7 +220,7 @@ const EmployeeDetails = () => {
           ) : (
             transactions.map((item) => (
               <ServiceTransactionItem
-                key={item.id}
+                key={item.transaction_availed_service_id}
                 icon={<WaterDropIcon />}
                 serviceName={item.service_name}
                 price={formattedNumber(item.price)}

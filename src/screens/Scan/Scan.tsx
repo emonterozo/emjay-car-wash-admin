@@ -87,7 +87,7 @@ const Scan = () => {
       );
 
       navigation.navigate('AddOngoing', {
-        customerId: response.data.customer.id,
+        customerId: response.data.customer._id,
         contactNumber: response.data.customer.contact_number,
         freeWash: transformedFreeWash,
         points: response.data.customer.points,

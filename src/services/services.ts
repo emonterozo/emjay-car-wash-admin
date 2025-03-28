@@ -48,7 +48,7 @@ const requestHeader = (accessToken: string) => {
 };
 
 export const loginRequest = (payload: LoginPayload): ApiResponse<LoginResponse> => {
-  return apiRequest<LoginPayload, LoginResponse>(`${Config.API_BASE_URL}/admin/login`, {
+  return apiRequest<LoginPayload, LoginResponse>(`${Config.API_BASE_URL}/accounts/login`, {
     method: 'post',
     data: payload,
   });
@@ -79,7 +79,7 @@ export const getCustomersRequest = (
   limit?: number,
   offset?: number,
 ): ApiResponse<CustomersResponse> => {
-  return apiRequest<null, CustomersResponse>(`${Config.API_BASE_URL}/admin/customers`, {
+  return apiRequest<null, CustomersResponse>(`${Config.API_BASE_URL}/customers`, {
     method: 'get',
     headers: requestHeader(accessToken),
     params: {
@@ -94,13 +94,10 @@ export const getCustomerInformationRequest = (
   accessToken: string,
   id: string,
 ): ApiResponse<CustomerInformationResponse> => {
-  return apiRequest<null, CustomerInformationResponse>(
-    `${Config.API_BASE_URL}/admin/customers/${id}`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-    },
-  );
+  return apiRequest<null, CustomerInformationResponse>(`${Config.API_BASE_URL}/customers/${id}`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+  });
 };
 
 export const getEmployeesRequest = (
@@ -110,7 +107,7 @@ export const getEmployeesRequest = (
   limit?: number,
   offset?: number,
 ): ApiResponse<EmployeesResponse> => {
-  return apiRequest<null, EmployeesResponse>(`${Config.API_BASE_URL}/admin/employees`, {
+  return apiRequest<null, EmployeesResponse>(`${Config.API_BASE_URL}/employees`, {
     method: 'get',
     headers: requestHeader(accessToken),
     params: {
@@ -125,13 +122,10 @@ export const getEmployeeInformationRequest = (
   accessToken: string,
   id: string,
 ): ApiResponse<EmployeeInformationResponse> => {
-  return apiRequest<null, EmployeeInformationResponse>(
-    `${Config.API_BASE_URL}/admin/employees/${id}`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-    },
-  );
+  return apiRequest<null, EmployeeInformationResponse>(`${Config.API_BASE_URL}/employees/${id}`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+  });
 };
 
 export const addEmployeeRequest = (
@@ -145,23 +139,20 @@ export const addEmployeeRequest = (
   employee_status: EmployeeStatusType,
   date_started: string,
 ): ApiResponse<AddEmployeeResponse> => {
-  return apiRequest<AddEmployeePayload, AddEmployeeResponse>(
-    `${Config.API_BASE_URL}/admin/employees`,
-    {
-      method: 'post',
-      headers: requestHeader(accessToken),
-      data: {
-        first_name,
-        last_name,
-        birth_date,
-        gender,
-        contact_number,
-        employee_title,
-        employee_status,
-        date_started,
-      },
+  return apiRequest<AddEmployeePayload, AddEmployeeResponse>(`${Config.API_BASE_URL}/employees`, {
+    method: 'post',
+    headers: requestHeader(accessToken),
+    data: {
+      first_name,
+      last_name,
+      birth_date,
+      gender,
+      contact_number,
+      employee_title,
+      employee_status,
+      date_started,
     },
-  );
+  });
 };
 
 export const updateEmployeeRequest = (
@@ -172,9 +163,9 @@ export const updateEmployeeRequest = (
   employee_status: EmployeeStatusType,
 ): ApiResponse<UpdateEmployeeResponse> => {
   return apiRequest<UpdateEmployeePayload, UpdateEmployeeResponse>(
-    `${Config.API_BASE_URL}/admin/employees/${id}`,
+    `${Config.API_BASE_URL}/employees/${id}`,
     {
-      method: 'put',
+      method: 'patch',
       headers: requestHeader(accessToken),
       data: {
         contact_number,
@@ -190,7 +181,7 @@ export const getCustomerFreeWashServiceRequest = (
   id: string,
 ): ApiResponse<CustomerFreeWashServiceResponse> => {
   return apiRequest<null, CustomerFreeWashServiceResponse>(
-    `${Config.API_BASE_URL}/admin/customers/${id}/wash-points`,
+    `${Config.API_BASE_URL}/customers/${id}/free-wash-points`,
     {
       method: 'get',
       headers: requestHeader(accessToken),
@@ -221,14 +212,11 @@ export const getOngoingTransactionsRequest = (
     params.date_range = JSON.stringify(dateRange);
   }
 
-  return apiRequest<null, OngoingTransactionResponse>(
-    `${Config.API_BASE_URL}/admin/ongoing/transactions`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-      params: params,
-    },
-  );
+  return apiRequest<null, OngoingTransactionResponse>(`${Config.API_BASE_URL}/transactions`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: params,
+  });
 };
 
 export const getTransactionServicesRequest = (
@@ -236,7 +224,7 @@ export const getTransactionServicesRequest = (
   id: string,
 ): ApiResponse<TransactionServicesResponse> => {
   return apiRequest<null, TransactionServicesResponse>(
-    `${Config.API_BASE_URL}/admin/ongoing/transactions/${id}/services`,
+    `${Config.API_BASE_URL}/transactions/${id}`,
     {
       method: 'get',
       headers: requestHeader(accessToken),
@@ -250,7 +238,7 @@ export const getTransactionServiceDetailsRequest = (
   transactionServiceId: string,
 ): ApiResponse<TransactionServiceDetailsResponse> => {
   return apiRequest<null, TransactionServiceDetailsResponse>(
-    `${Config.API_BASE_URL}/admin/ongoing/transactions/${transactionId}/services/${transactionServiceId}`,
+    `${Config.API_BASE_URL}/transactions/${transactionId}/availed-services/${transactionServiceId}`,
     {
       method: 'get',
       headers: requestHeader(accessToken),
@@ -263,7 +251,7 @@ export const createOngoingTransactionRequest = (
   payload: CreateOngoingTransactionPayload,
 ): ApiResponse<CreateOngoingTransactionResponse> => {
   return apiRequest<CreateOngoingTransactionPayload, CreateOngoingTransactionResponse>(
-    `${Config.API_BASE_URL}/admin/ongoing/transactions`,
+    `${Config.API_BASE_URL}/transactions`,
     {
       method: 'post',
       headers: requestHeader(accessToken),
@@ -278,9 +266,9 @@ export const addTransactionServiceRequest = (
   payload: AddTransactionServicePayload,
 ): ApiResponse<AddTransactionServiceResponse> => {
   return apiRequest<AddTransactionServicePayload, AddTransactionServiceResponse>(
-    `${Config.API_BASE_URL}/admin/ongoing/transactions/${id}/services`,
+    `${Config.API_BASE_URL}/transactions/${id}/availed-services`,
     {
-      method: 'put',
+      method: 'patch',
       headers: requestHeader(accessToken),
       data: payload,
     },
@@ -294,9 +282,9 @@ export const updateAvailedServiceRequest = (
   payload: UpdateAvailedServicePayload,
 ): ApiResponse<UpdateAvailedServiceResponse> => {
   return apiRequest<UpdateAvailedServicePayload, UpdateAvailedServiceResponse>(
-    `${Config.API_BASE_URL}/admin/ongoing/transactions/${transaction_id}/services/${transaction_service_id}`,
+    `${Config.API_BASE_URL}/transactions/${transaction_id}/availed-services/${transaction_service_id}`,
     {
-      method: 'put',
+      method: 'patch',
       headers: requestHeader(accessToken),
       data: payload,
     },
@@ -309,12 +297,14 @@ export const getTransactionsRequest = (
     start: string;
     end: string;
   },
+  assignedEmployees?: string[],
 ): ApiResponse<TransactionResponse> => {
-  return apiRequest<null, TransactionResponse>(`${Config.API_BASE_URL}/admin/transactions`, {
+  return apiRequest<null, TransactionResponse>(`${Config.API_BASE_URL}/transactions/completed`, {
     method: 'get',
     headers: requestHeader(accessToken),
     params: {
       date_range: JSON.stringify(dateRange),
+      assigned_employees: assignedEmployees?.join(',') ?? undefined,
     },
   });
 };
@@ -325,30 +315,13 @@ export const getTransactionDetailsRequest = (
   transactionServiceId: string,
 ): ApiResponse<TransactionDetailsResponse> => {
   return apiRequest<null, TransactionDetailsResponse>(
-    `${Config.API_BASE_URL}/admin/transactions/${transactionId}/services/${transactionServiceId}`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-    },
-  );
-};
-
-export const getTransactionsComputationRequest = (
-  accessToken: string,
-  dateRange: {
-    start: string;
-    end: string;
-  },
-  employeeId: string[],
-): ApiResponse<TransactionResponse> => {
-  return apiRequest<null, TransactionResponse>(
-    `${Config.API_BASE_URL}/admin/transactions/computation`,
+    `${Config.API_BASE_URL}/transactions/details`,
     {
       method: 'get',
       headers: requestHeader(accessToken),
       params: {
-        date_range: JSON.stringify(dateRange),
-        employee_id: employeeId.toString(),
+        transaction_id: transactionId,
+        availed_service_id: transactionServiceId,
       },
     },
   );
@@ -360,9 +333,9 @@ export const updateTransactionRequest = (
   status: 'CANCELLED' | 'COMPLETED',
 ): ApiResponse<UpdateTransactionResponse> => {
   return apiRequest<{ status: string }, UpdateTransactionResponse>(
-    `${Config.API_BASE_URL}/admin/ongoing/transactions/${transaction_id}`,
+    `${Config.API_BASE_URL}/transactions/${transaction_id}`,
     {
-      method: 'put',
+      method: 'patch',
       headers: requestHeader(accessToken),
       data: {
         status,
@@ -376,7 +349,7 @@ export const addConsumablesRequest = (
   payload: AddConsumablesPayload,
 ): ApiResponse<AddConsumablesResponse> => {
   return apiRequest<AddConsumablesPayload, AddConsumablesResponse>(
-    `${Config.API_BASE_URL}/admin/consumables`,
+    `${Config.API_BASE_URL}/consumables`,
     {
       method: 'post',
       headers: requestHeader(accessToken),
@@ -392,16 +365,13 @@ export const getWeeklySalesRequest = (
     end: string;
   },
 ): ApiResponse<WeeklySalesResponse> => {
-  return apiRequest<null, WeeklySalesResponse>(
-    `${Config.API_BASE_URL}/admin/statistics/weekly/sales`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-      params: {
-        date_range: JSON.stringify(dateRange),
-      },
+  return apiRequest<null, WeeklySalesResponse>(`${Config.API_BASE_URL}/transactions/week-sales`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: {
+      date_range: JSON.stringify(dateRange),
     },
-  );
+  });
 };
 
 export const getConsumableItemsRequest = (
@@ -411,7 +381,7 @@ export const getConsumableItemsRequest = (
   limit?: number,
   offset?: number,
 ): ApiResponse<GetConsumablesResponse> => {
-  return apiRequest<null, GetConsumablesResponse>(`${Config.API_BASE_URL}/admin/consumables`, {
+  return apiRequest<null, GetConsumablesResponse>(`${Config.API_BASE_URL}/consumables`, {
     method: 'get',
     headers: requestHeader(accessToken),
     params: {
@@ -426,13 +396,10 @@ export const deleteConsumableItemRequest = (
   accessToken: string,
   id: string,
 ): ApiResponse<DeleteConsumablesResponse> => {
-  return apiRequest<null, DeleteConsumablesResponse>(
-    `${Config.API_BASE_URL}/admin/consumables/${id}`,
-    {
-      method: 'delete',
-      headers: requestHeader(accessToken),
-    },
-  );
+  return apiRequest<null, DeleteConsumablesResponse>(`${Config.API_BASE_URL}/consumables/${id}`, {
+    method: 'delete',
+    headers: requestHeader(accessToken),
+  });
 };
 
 export const getSalesStatisticsRequest = (
@@ -440,28 +407,28 @@ export const getSalesStatisticsRequest = (
   filter: StatisticsFilter,
   end: string,
 ): ApiResponse<SalesStatisticsResponse> => {
-  return apiRequest<null, SalesStatisticsResponse>(`${Config.API_BASE_URL}/admin/statistics`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      filter,
-      end,
+  return apiRequest<null, SalesStatisticsResponse>(
+    `${Config.API_BASE_URL}/transactions/statistics`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        filter,
+        end,
+      },
     },
-  });
+  );
 };
 
 export const addExpenseRequest = (
   accessToken: string,
   payload: AddExpensePayload,
 ): ApiResponse<AddExpenseResponse> => {
-  return apiRequest<AddExpensePayload, AddExpenseResponse>(
-    `${Config.API_BASE_URL}/admin/expenses`,
-    {
-      method: 'post',
-      headers: requestHeader(accessToken),
-      data: payload,
-    },
-  );
+  return apiRequest<AddExpensePayload, AddExpenseResponse>(`${Config.API_BASE_URL}/expenses`, {
+    method: 'post',
+    headers: requestHeader(accessToken),
+    data: payload,
+  });
 };
 
 export const getExpenseItemsRequest = (
@@ -484,7 +451,7 @@ export const getExpenseItemsRequest = (
   if (dateRange) {
     params.date_range = JSON.stringify(dateRange);
   }
-  return apiRequest<null, GetExpenseResponse>(`${Config.API_BASE_URL}/admin/expenses`, {
+  return apiRequest<null, GetExpenseResponse>(`${Config.API_BASE_URL}/expenses`, {
     method: 'get',
     headers: requestHeader(accessToken),
     params: params,

@@ -146,7 +146,7 @@ const Ongoing = () => {
                 onPress={() =>
                   navigation.navigate('AvailedServices', {
                     customerId: item.customer_id,
-                    transactionId: item.id,
+                    transactionId: item._id,
                     transactionStatus: item.status,
                     model: item.model,
                     plateNumber: item.plate_number,
@@ -159,7 +159,7 @@ const Ongoing = () => {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={renderSeparator}

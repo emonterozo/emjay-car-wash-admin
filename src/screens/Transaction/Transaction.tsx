@@ -187,7 +187,7 @@ const Transaction = () => {
               onPress={() =>
                 navigation.navigate('TransactionDetails', {
                   transactionId: item.transaction_id,
-                  transactionServiceId: item.id,
+                  transactionServiceId: item.transaction_availed_service_id,
                 })
               }
             >
@@ -199,7 +199,7 @@ const Transaction = () => {
               />
             </TouchableOpacity>
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.transaction_availed_service_id.toString()}
           showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.list}
           ItemSeparatorComponent={renderSeparator}

@@ -29,7 +29,7 @@ export type LoginPayload = {
 export type LoginResponse = {
   accessToken: string;
   user: {
-    id: string;
+    _id: string;
     type: string;
     username: string;
   };
@@ -44,7 +44,7 @@ export type Price = {
 };
 
 export type Service = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   image: string;
@@ -61,7 +61,7 @@ export type ServicesResponse = {
 };
 
 export type Customer = {
-  id: string;
+  _id: string;
   contact_number: string;
   first_name: string;
   last_name: string;
@@ -81,7 +81,7 @@ export type Employees = {
   gender: GenderType;
   employee_title: string;
   employee_status: EmployeeStatusType;
-  id: string;
+  _id: string;
 };
 
 export type EmployeesResponse = {
@@ -96,14 +96,15 @@ export type ServiceCount = {
 };
 
 export type RecentTransaction = {
-  id: string;
+  transaction_id: string;
+  transaction_availed_service_id: string;
   service_name: string;
   price: number;
   date: string;
 };
 
 export type CustomerInformation = {
-  id: string;
+  _id: string;
   first_name: string;
   last_name: string;
   gender: string;
@@ -114,7 +115,7 @@ export type CustomerInformation = {
   province: string | null;
   birth_date: string;
   registered_on: string;
-  recent_transactions: RecentTransaction[];
+  transactions: RecentTransaction[];
   car_wash_service_count: ServiceCount[];
   moto_wash_service_count: ServiceCount[];
 };
@@ -133,8 +134,8 @@ export type EmployeeInformation = {
   employee_title: string;
   employee_status: EmployeeStatusType;
   date_started: string;
-  id: string;
-  recent_transactions: RecentTransaction[];
+  _id: string;
+  transactions: RecentTransaction[];
 };
 
 export type EmployeeInformationResponse = {
@@ -155,7 +156,7 @@ export type AddEmployeePayload = {
 
 export type AddEmployeeResponse = {
   employee: {
-    id: string;
+    _id: string;
   };
   errors: ErrorProps[];
 };
@@ -168,16 +169,17 @@ export type UpdateEmployeePayload = {
 
 export type UpdateEmployeeResponse = {
   employee: {
-    id: string;
+    _id: string;
   };
   errors: ErrorProps[];
 };
 
 export type OngoingTransaction = {
-  id: string;
+  _id: string;
   model: string;
   plate_number: string;
   check_in: string;
+  check_in: string | null;
   customer_id: string | null;
   first_name: string;
   last_name: string;
@@ -191,7 +193,7 @@ export type OngoingTransactionResponse = {
 };
 
 export type TransactionServices = {
-  transaction_service_id: string;
+  _id: string;
   service_id: string;
   title: string;
   image: string;
@@ -204,7 +206,7 @@ export type TransactionServices = {
 
 export type TransactionServicesResponse = {
   transaction: {
-    id: string;
+    _id: string;
     contact_number: string | null;
     vehicle_type: string;
     vehicle_size: string;
@@ -216,7 +218,7 @@ export type TransactionServicesResponse = {
 };
 
 export type TransactionServiceEmployee = {
-  id: string;
+  _id: string;
   first_name: string;
   last_name: string;
   gender: string;
@@ -224,8 +226,8 @@ export type TransactionServiceEmployee = {
 
 export type TransactionServiceDetailsResponse = {
   transaction: {
-    id: string;
-    transaction_service_id: string;
+    _id: string;
+    availed_service_id: string;
     image: string;
     title: string;
     price: number;
@@ -245,7 +247,7 @@ export type TransactionServiceDetailsResponse = {
 
 export type CustomerFreeWashServiceResponse = {
   customer: {
-    id: string;
+    _id: string;
     first_name: string;
     last_name: string;
     contact_number: string;
@@ -262,8 +264,8 @@ export type AddTransactionServicePayload = {
 };
 
 export type AddTransactionServiceResponse = {
-  transaction_service: {
-    id: string;
+  transaction: {
+    _id: string;
   };
   errors: ErrorProps[];
 };
@@ -281,8 +283,8 @@ export type CreateOngoingTransactionPayload = {
 };
 
 export type CreateOngoingTransactionResponse = {
-  ongoing: {
-    id: string;
+  transaction: {
+    _id: string;
   };
   errors: ErrorProps[];
 };
@@ -293,7 +295,7 @@ export type UpdateAvailedServicePayload = {
   is_free: boolean;
   is_paid: boolean;
   status: string;
-  assigned_employee?: string[];
+  assigned_employees?: string[];
 };
 
 export type UpdateAvailedServiceResponse = {
@@ -304,8 +306,8 @@ export type UpdateAvailedServiceResponse = {
 };
 
 export type TransactionItem = {
-  id: string;
   transaction_id: string;
+  transaction_availed_service_id: string;
   service_name: string;
   price: number;
   date: string;
@@ -342,7 +344,7 @@ export type TransactionDetailsResponse = {
 
 export type UpdateTransactionResponse = {
   transaction: {
-    id: string;
+    _id: string;
   };
   errors: ErrorProps[];
 };
@@ -351,12 +353,12 @@ export type AddConsumablesPayload = {
   name: string;
   price: number;
   quantity: number;
-  date_purchased: string;
+  date: string;
 };
 
 export type AddConsumablesResponse = {
   consumables: {
-    id: string;
+    _id: string;
   };
   errors: ErrorProps[];
 };
@@ -371,8 +373,7 @@ export type ConsumableItem = {
   name: string;
   price: number;
   quantity: number;
-  date_purchased: string;
-  id: string;
+  _id: string;
 };
 
 export type WeeklySalesResult = {
@@ -417,7 +418,7 @@ export type ExpenseItem = {
   description: number;
   amount: number;
   date: string;
-  id: string;
+  _id: string;
 };
 
 export type SalesStatisticsResult = {
