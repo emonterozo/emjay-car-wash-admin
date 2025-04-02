@@ -265,7 +265,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#7F7A7A',
     borderRadius: 8,
-    width: 85,
     position: 'absolute',
     top: 8,
     right: 16,
