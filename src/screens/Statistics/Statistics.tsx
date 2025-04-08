@@ -78,6 +78,7 @@ const Statistics = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getSalesStatisticsRequest(
       user.accessToken,
+      user.refreshToken,
       filter,
       format(date, 'yyyy-MM-dd'),
     );

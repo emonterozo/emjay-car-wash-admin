@@ -69,7 +69,14 @@ const TransactionComputation = () => {
 
   const fetchEmployees = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getEmployeesRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
+    const response = await getEmployeesRequest(
+      user.accessToken,
+      user.refreshToken,
+      '_id',
+      'asc',
+      LIMIT,
+      0,
+    );
 
     if (response.success && response.data) {
       setEmployees(response.data.employees);
@@ -87,6 +94,7 @@ const TransactionComputation = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getTransactionsRequest(
       user.accessToken,
+      user.refreshToken,
       {
         start: startDate,
         end: endDate,

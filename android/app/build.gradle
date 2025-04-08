@@ -93,14 +93,14 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.quindigitalsolutions.emjayadminapp"
+    namespace "com.quindigitalsolutions.emjayrewardsplus"
     defaultConfig {
-        applicationId "com.quindigitalsolutions.emjayadminapp"
+        applicationId "com.quindigitalsolutions.emjayrewardsplus"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "0.0.12"
-        resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayadminapp'
+        versionName "0.0.13"
+        resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayrewardsplus'
     }
     flavorDimensions "env"
     signingConfigs {

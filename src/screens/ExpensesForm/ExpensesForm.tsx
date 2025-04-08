@@ -254,7 +254,7 @@ const ExpensesForm = () => {
       date: format(formValues.date!, 'yyyy-MM-dd'),
     };
 
-    const response = await addExpenseRequest(user.accessToken, payload);
+    const response = await addExpenseRequest(user.accessToken, user.refreshToken, payload);
 
     if (response.success && response.data) {
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });

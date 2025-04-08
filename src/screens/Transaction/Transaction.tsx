@@ -53,7 +53,7 @@ const Transaction = () => {
 
   const fetchTransactions = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getTransactionsRequest(user.accessToken, {
+    const response = await getTransactionsRequest(user.accessToken, user.refreshToken, {
       start: format(selectedDate, 'yyyy-MM-dd'),
       end: format(selectedDate, 'yyyy-MM-dd'),
     });

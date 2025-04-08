@@ -88,7 +88,11 @@ const AvailedServices = () => {
   const fetchCustomerFreeWash = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, request: 'default', isLoading: true });
     if (customerId !== null) {
-      const response = await getCustomerFreeWashServiceRequest(user.accessToken, customerId);
+      const response = await getCustomerFreeWashServiceRequest(
+        user.accessToken,
+        user.refreshToken,
+        customerId,
+      );
 
       if (response.success && response.data) {
         const transformedFreeWash = response.data.customer.free_wash.map(
@@ -115,7 +119,11 @@ const AvailedServices = () => {
   };
 
   const fetchTransactionServices = async () => {
-    const response = await getTransactionServicesRequest(user.accessToken, transactionId);
+    const response = await getTransactionServicesRequest(
+      user.accessToken,
+      user.refreshToken,
+      transactionId,
+    );
 
     if (response.success && response.data) {
       setTransactionService(response.data.transaction);
@@ -180,7 +188,12 @@ const AvailedServices = () => {
     setConfirmation({ ...confirmation, isVisible: false });
     setScreenStatus({ ...screenStatus, hasError: false, request: 'default', isLoading: true });
 
-    const response = await updateTransactionRequest(user.accessToken, transactionId, status);
+    const response = await updateTransactionRequest(
+      user.accessToken,
+      user.refreshToken,
+      transactionId,
+      status,
+    );
 
     if (response.success && response.data) {
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });

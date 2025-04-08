@@ -58,6 +58,7 @@ const Home = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getServicesRequest(
       user.accessToken,
+      user.refreshToken,
       FILTER_VALUE[filter].field,
       FILTER_VALUE[filter].direction as 'asc' | 'desc',
       5,

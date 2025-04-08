@@ -43,7 +43,7 @@ const Services = () => {
 
   const fetchService = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getServicesRequest(user.accessToken, '_id', 'asc');
+    const response = await getServicesRequest(user.accessToken, user.refreshToken, '_id', 'asc');
     if (response.success && response.data) {
       setServices(response.data.services);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });

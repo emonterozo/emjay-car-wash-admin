@@ -43,12 +43,13 @@ const Login = () => {
 
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     if (response.success && response.data) {
-      const { user, accessToken } = response.data;
+      const { user, accessToken, refreshToken } = response.data;
       setUser({
         id: user._id,
         username: user.username,
         type: user.type,
         accessToken: accessToken,
+        refreshToken: refreshToken,
       });
     } else {
       switch (response.status) {

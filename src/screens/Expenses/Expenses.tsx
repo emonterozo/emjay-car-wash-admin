@@ -53,7 +53,7 @@ const Expenses = () => {
     type: 'error',
   });
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isCalendarVisible, setCalendarVisible] = useState(false);
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const isFocused = useIsFocused();
 
@@ -98,6 +98,7 @@ const Expenses = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getExpenseItemsRequest(
       user.accessToken,
+      user.refreshToken,
       'date',
       'desc',
       undefined,
@@ -125,7 +126,7 @@ const Expenses = () => {
   };
 
   const toggleCalendar = () => {
-    setCalendarVisible(!isCalendarVisible);
+    setIsCalendarVisible(!isCalendarVisible);
   };
 
   const handleCalendarChange = (date: Date) => {

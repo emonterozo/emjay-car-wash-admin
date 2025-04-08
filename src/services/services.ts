@@ -56,80 +56,109 @@ export const loginRequest = (payload: LoginPayload): ApiResponse<LoginResponse> 
 
 export const getServicesRequest = (
   accessToken: string,
+  refreshToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
   offset?: number,
 ): ApiResponse<ServicesResponse> => {
-  return apiRequest<null, ServicesResponse>(`${Config.API_BASE_URL}/services`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      order_by: JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' }),
-      limit,
-      offset,
+  return apiRequest<null, ServicesResponse>(
+    `${Config.API_BASE_URL}/services`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        order_by: JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' }),
+        limit,
+        offset,
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const getCustomersRequest = (
   accessToken: string,
+  refreshToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
   offset?: number,
 ): ApiResponse<CustomersResponse> => {
-  return apiRequest<null, CustomersResponse>(`${Config.API_BASE_URL}/customers`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      order_by: JSON.stringify({ field: field ?? 'registered_on', direction: direction ?? 'desc' }),
-      limit,
-      offset,
+  return apiRequest<null, CustomersResponse>(
+    `${Config.API_BASE_URL}/customers`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        order_by: JSON.stringify({
+          field: field ?? 'registered_on',
+          direction: direction ?? 'desc',
+        }),
+        limit,
+        offset,
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const getCustomerInformationRequest = (
   accessToken: string,
+  refreshToken: string,
   id: string,
 ): ApiResponse<CustomerInformationResponse> => {
-  return apiRequest<null, CustomerInformationResponse>(`${Config.API_BASE_URL}/customers/${id}`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-  });
+  return apiRequest<null, CustomerInformationResponse>(
+    `${Config.API_BASE_URL}/customers/${id}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+    refreshToken,
+  );
 };
 
 export const getEmployeesRequest = (
   accessToken: string,
+  refreshToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
   offset?: number,
 ): ApiResponse<EmployeesResponse> => {
-  return apiRequest<null, EmployeesResponse>(`${Config.API_BASE_URL}/employees`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      order_by: JSON.stringify({ field: field ?? 'date_started', direction: direction ?? 'asc' }),
-      limit,
-      offset,
+  return apiRequest<null, EmployeesResponse>(
+    `${Config.API_BASE_URL}/employees`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        order_by: JSON.stringify({ field: field ?? 'date_started', direction: direction ?? 'asc' }),
+        limit,
+        offset,
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const getEmployeeInformationRequest = (
   accessToken: string,
+  refreshToken: string,
   id: string,
 ): ApiResponse<EmployeeInformationResponse> => {
-  return apiRequest<null, EmployeeInformationResponse>(`${Config.API_BASE_URL}/employees/${id}`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-  });
+  return apiRequest<null, EmployeeInformationResponse>(
+    `${Config.API_BASE_URL}/employees/${id}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+    refreshToken,
+  );
 };
 
 export const addEmployeeRequest = (
   accessToken: string,
+  refreshToken: string,
   first_name: string,
   last_name: string,
   birth_date: string,
@@ -139,25 +168,30 @@ export const addEmployeeRequest = (
   employee_status: EmployeeStatusType,
   date_started: string,
 ): ApiResponse<AddEmployeeResponse> => {
-  return apiRequest<AddEmployeePayload, AddEmployeeResponse>(`${Config.API_BASE_URL}/employees`, {
-    method: 'post',
-    headers: requestHeader(accessToken),
-    data: {
-      first_name,
-      last_name,
-      birth_date,
-      gender,
-      contact_number,
-      employee_title,
-      employee_status,
-      date_started,
+  return apiRequest<AddEmployeePayload, AddEmployeeResponse>(
+    `${Config.API_BASE_URL}/employees`,
+    {
+      method: 'post',
+      headers: requestHeader(accessToken),
+      data: {
+        first_name,
+        last_name,
+        birth_date,
+        gender,
+        contact_number,
+        employee_title,
+        employee_status,
+        date_started,
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const updateEmployeeRequest = (
   id: string,
   accessToken: string,
+  refreshToken: string,
   contact_number: string,
   employee_title: string,
   employee_status: EmployeeStatusType,
@@ -173,11 +207,13 @@ export const updateEmployeeRequest = (
         employee_status,
       },
     },
+    refreshToken,
   );
 };
 
 export const getCustomerFreeWashServiceRequest = (
   accessToken: string,
+  refreshToken: string,
   id: string,
 ): ApiResponse<CustomerFreeWashServiceResponse> => {
   return apiRequest<null, CustomerFreeWashServiceResponse>(
@@ -186,11 +222,13 @@ export const getCustomerFreeWashServiceRequest = (
       method: 'get',
       headers: requestHeader(accessToken),
     },
+    refreshToken,
   );
 };
 
 export const getOngoingTransactionsRequest = (
   accessToken: string,
+  refreshToken: string,
   status: TransactionStatusType = 'ONGOING',
   dateRange?: {
     start: string;
@@ -212,15 +250,20 @@ export const getOngoingTransactionsRequest = (
     params.date_range = JSON.stringify(dateRange);
   }
 
-  return apiRequest<null, OngoingTransactionResponse>(`${Config.API_BASE_URL}/transactions`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: params,
-  });
+  return apiRequest<null, OngoingTransactionResponse>(
+    `${Config.API_BASE_URL}/transactions`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: params,
+    },
+    refreshToken,
+  );
 };
 
 export const getTransactionServicesRequest = (
   accessToken: string,
+  refreshToken: string,
   id: string,
 ): ApiResponse<TransactionServicesResponse> => {
   return apiRequest<null, TransactionServicesResponse>(
@@ -229,11 +272,13 @@ export const getTransactionServicesRequest = (
       method: 'get',
       headers: requestHeader(accessToken),
     },
+    refreshToken,
   );
 };
 
 export const getTransactionServiceDetailsRequest = (
   accessToken: string,
+  refreshToken: string,
   transactionId: string,
   transactionServiceId: string,
 ): ApiResponse<TransactionServiceDetailsResponse> => {
@@ -243,11 +288,13 @@ export const getTransactionServiceDetailsRequest = (
       method: 'get',
       headers: requestHeader(accessToken),
     },
+    refreshToken,
   );
 };
 
 export const createOngoingTransactionRequest = (
   accessToken: string,
+  refreshToken: string,
   payload: CreateOngoingTransactionPayload,
 ): ApiResponse<CreateOngoingTransactionResponse> => {
   return apiRequest<CreateOngoingTransactionPayload, CreateOngoingTransactionResponse>(
@@ -257,11 +304,13 @@ export const createOngoingTransactionRequest = (
       headers: requestHeader(accessToken),
       data: payload,
     },
+    refreshToken,
   );
 };
 
 export const addTransactionServiceRequest = (
   accessToken: string,
+  refreshToken: string,
   id: string,
   payload: AddTransactionServicePayload,
 ): ApiResponse<AddTransactionServiceResponse> => {
@@ -272,6 +321,7 @@ export const addTransactionServiceRequest = (
       headers: requestHeader(accessToken),
       data: payload,
     },
+    refreshToken,
   );
 };
 
@@ -279,6 +329,7 @@ export const updateAvailedServiceRequest = (
   transaction_id: string,
   transaction_service_id: string,
   accessToken: string,
+  refreshToken: string,
   payload: UpdateAvailedServicePayload,
 ): ApiResponse<UpdateAvailedServiceResponse> => {
   return apiRequest<UpdateAvailedServicePayload, UpdateAvailedServiceResponse>(
@@ -288,29 +339,36 @@ export const updateAvailedServiceRequest = (
       headers: requestHeader(accessToken),
       data: payload,
     },
+    refreshToken,
   );
 };
 
 export const getTransactionsRequest = (
   accessToken: string,
+  refreshToken: string,
   dateRange: {
     start: string;
     end: string;
   },
   assignedEmployees?: string[],
 ): ApiResponse<TransactionResponse> => {
-  return apiRequest<null, TransactionResponse>(`${Config.API_BASE_URL}/transactions/completed`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      date_range: JSON.stringify(dateRange),
-      assigned_employees: assignedEmployees?.join(',') ?? undefined,
+  return apiRequest<null, TransactionResponse>(
+    `${Config.API_BASE_URL}/transactions/completed`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        date_range: JSON.stringify(dateRange),
+        assigned_employees: assignedEmployees?.join(',') ?? undefined,
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const getTransactionDetailsRequest = (
   accessToken: string,
+  refreshToken: string,
   transactionId: string,
   transactionServiceId: string,
 ): ApiResponse<TransactionDetailsResponse> => {
@@ -324,11 +382,13 @@ export const getTransactionDetailsRequest = (
         availed_service_id: transactionServiceId,
       },
     },
+    refreshToken,
   );
 };
 
 export const updateTransactionRequest = (
   accessToken: string,
+  refreshToken: string,
   transaction_id: string,
   status: 'CANCELLED' | 'COMPLETED',
 ): ApiResponse<UpdateTransactionResponse> => {
@@ -341,11 +401,13 @@ export const updateTransactionRequest = (
         status,
       },
     },
+    refreshToken,
   );
 };
 
 export const addConsumablesRequest = (
   accessToken: string,
+  refreshToken: string,
   payload: AddConsumablesPayload,
 ): ApiResponse<AddConsumablesResponse> => {
   return apiRequest<AddConsumablesPayload, AddConsumablesResponse>(
@@ -355,55 +417,72 @@ export const addConsumablesRequest = (
       headers: requestHeader(accessToken),
       data: payload,
     },
+    refreshToken,
   );
 };
 
 export const getWeeklySalesRequest = (
   accessToken: string,
+  refreshToken: string,
   dateRange: {
     start: string;
     end: string;
   },
 ): ApiResponse<WeeklySalesResponse> => {
-  return apiRequest<null, WeeklySalesResponse>(`${Config.API_BASE_URL}/transactions/week-sales`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      date_range: JSON.stringify(dateRange),
+  return apiRequest<null, WeeklySalesResponse>(
+    `${Config.API_BASE_URL}/transactions/week-sales`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        date_range: JSON.stringify(dateRange),
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const getConsumableItemsRequest = (
   accessToken: string,
+  refreshToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
   offset?: number,
 ): ApiResponse<GetConsumablesResponse> => {
-  return apiRequest<null, GetConsumablesResponse>(`${Config.API_BASE_URL}/consumables`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      order_by: JSON.stringify({ field: field ?? 'name', direction: direction ?? 'asc' }),
-      limit,
-      offset,
+  return apiRequest<null, GetConsumablesResponse>(
+    `${Config.API_BASE_URL}/consumables`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        order_by: JSON.stringify({ field: field ?? 'name', direction: direction ?? 'asc' }),
+        limit,
+        offset,
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const deleteConsumableItemRequest = (
   accessToken: string,
+  refreshToken: string,
   id: string,
 ): ApiResponse<DeleteConsumablesResponse> => {
-  return apiRequest<null, DeleteConsumablesResponse>(`${Config.API_BASE_URL}/consumables/${id}`, {
-    method: 'delete',
-    headers: requestHeader(accessToken),
-  });
+  return apiRequest<null, DeleteConsumablesResponse>(
+    `${Config.API_BASE_URL}/consumables/${id}`,
+    {
+      method: 'delete',
+      headers: requestHeader(accessToken),
+    },
+    refreshToken,
+  );
 };
 
 export const getSalesStatisticsRequest = (
   accessToken: string,
+  refreshToken: string,
   filter: StatisticsFilter,
   end: string,
 ): ApiResponse<SalesStatisticsResponse> => {
@@ -417,22 +496,29 @@ export const getSalesStatisticsRequest = (
         end,
       },
     },
+    refreshToken,
   );
 };
 
 export const addExpenseRequest = (
   accessToken: string,
+  refreshToken: string,
   payload: AddExpensePayload,
 ): ApiResponse<AddExpenseResponse> => {
-  return apiRequest<AddExpensePayload, AddExpenseResponse>(`${Config.API_BASE_URL}/expenses`, {
-    method: 'post',
-    headers: requestHeader(accessToken),
-    data: payload,
-  });
+  return apiRequest<AddExpensePayload, AddExpenseResponse>(
+    `${Config.API_BASE_URL}/expenses`,
+    {
+      method: 'post',
+      headers: requestHeader(accessToken),
+      data: payload,
+    },
+    refreshToken,
+  );
 };
 
 export const getExpenseItemsRequest = (
   accessToken: string,
+  refreshToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
@@ -451,9 +537,13 @@ export const getExpenseItemsRequest = (
   if (dateRange) {
     params.date_range = JSON.stringify(dateRange);
   }
-  return apiRequest<null, GetExpenseResponse>(`${Config.API_BASE_URL}/expenses`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: params,
-  });
+  return apiRequest<null, GetExpenseResponse>(
+    `${Config.API_BASE_URL}/expenses`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: params,
+    },
+    refreshToken,
+  );
 };

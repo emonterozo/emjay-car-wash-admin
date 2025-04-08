@@ -54,6 +54,7 @@ const TransactionDetails = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getTransactionDetailsRequest(
       user.accessToken,
+      user.refreshToken,
       transactionId,
       transactionServiceId,
     );

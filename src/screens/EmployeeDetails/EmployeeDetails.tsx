@@ -128,7 +128,7 @@ const EmployeeDetails = () => {
 
   const fetchEmployeeDetails = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getEmployeeInformationRequest(user.accessToken, id);
+    const response = await getEmployeeInformationRequest(user.accessToken, user.refreshToken, id);
 
     if (response.success && response.data) {
       const { employee } = response.data;

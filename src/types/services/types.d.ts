@@ -28,6 +28,7 @@ export type LoginPayload = {
 
 export type LoginResponse = {
   accessToken: string;
+  refreshToken: string;
   user: {
     _id: string;
     type: string;

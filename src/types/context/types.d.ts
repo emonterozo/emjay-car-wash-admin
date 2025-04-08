@@ -3,4 +3,5 @@ export type TUser = {
   type: string;
   username: string;
   accessToken: string;
+  refreshToken: string;
 };

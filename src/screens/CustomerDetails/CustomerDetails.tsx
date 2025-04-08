@@ -127,7 +127,7 @@ const CustomerDetails = () => {
 
   const fetchCustomerDetails = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getCustomerInformationRequest(user.accessToken, id);
+    const response = await getCustomerInformationRequest(user.accessToken, user.refreshToken, id);
 
     if (response.success && response.data) {
       const { customer } = response.data;

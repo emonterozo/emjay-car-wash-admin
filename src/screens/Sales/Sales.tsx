@@ -48,7 +48,7 @@ const Sales = () => {
 
   const fetchWeeklySales = async (start: Date, end: Date) => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getWeeklySalesRequest(user.accessToken, {
+    const response = await getWeeklySalesRequest(user.accessToken, user.refreshToken, {
       start: format(start, 'yyyy-MM-dd'),
       end: format(end, 'yyyy-MM-dd'),
     });

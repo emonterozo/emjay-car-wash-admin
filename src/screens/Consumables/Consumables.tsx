@@ -53,7 +53,14 @@ const Consumables = () => {
 
   const fetchConsumableItems = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getConsumableItemsRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
+    const response = await getConsumableItemsRequest(
+      user.accessToken,
+      user.refreshToken,
+      '_id',
+      'asc',
+      LIMIT,
+      0,
+    );
 
     if (response.success && response.data) {
       setConsumables(response.data.consumables);
@@ -114,7 +121,7 @@ const Consumables = () => {
   const handleDeleteConsumableItem = async (id: string) => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
 
-    const response = await deleteConsumableItemRequest(user.accessToken, id);
+    const response = await deleteConsumableItemRequest(user.accessToken, user.refreshToken, id);
 
     if (response.success && response.data) {
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -144,6 +151,7 @@ const Consumables = () => {
     setIsFetching(true);
     const response = await getConsumableItemsRequest(
       user.accessToken,
+      user.refreshToken,
       '_id',
       'asc',
       LIMIT,

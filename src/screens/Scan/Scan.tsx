@@ -73,7 +73,11 @@ const Scan = () => {
 
   const fetchEmployeeFreeWash = async (id: string) => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getCustomerFreeWashServiceRequest(user.accessToken, id);
+    const response = await getCustomerFreeWashServiceRequest(
+      user.accessToken,
+      user.refreshToken,
+      id,
+    );
 
     if (response.success && response.data) {
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });

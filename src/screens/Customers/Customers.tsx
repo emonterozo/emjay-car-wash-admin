@@ -38,7 +38,14 @@ const Customers = () => {
 
   const fetchCustomers = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getCustomersRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
+    const response = await getCustomersRequest(
+      user.accessToken,
+      user.refreshToken,
+      '_id',
+      'asc',
+      LIMIT,
+      0,
+    );
 
     if (response.success && response.data) {
       setCustomers(response.data.customers);
@@ -71,6 +78,7 @@ const Customers = () => {
     setIsFetching(true);
     const response = await getCustomersRequest(
       user.accessToken,
+      user.refreshToken,
       '_id',
       'asc',
       LIMIT,

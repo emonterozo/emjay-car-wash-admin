@@ -59,6 +59,7 @@ const Ongoing = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getOngoingTransactionsRequest(
       user.accessToken,
+      user.refreshToken,
       selectedStatus as TransactionStatusType,
       selectedStatus === 'ONGOING'
         ? undefined

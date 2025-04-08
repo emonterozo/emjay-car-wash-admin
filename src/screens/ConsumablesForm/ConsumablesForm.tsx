@@ -209,7 +209,7 @@ const ConsumablesForm = () => {
       date: formValues.date ? format(formValues.date, 'yyyy-MM-dd') : '',
     };
 
-    const response = await addConsumablesRequest(user.accessToken, payload);
+    const response = await addConsumablesRequest(user.accessToken, user.refreshToken, payload);
 
     if (response.success && response.data) {
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });

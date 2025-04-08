@@ -283,11 +283,16 @@ const AddOngoing = () => {
         const price = serviceSelection.find((item) => item.id === selectedServiceId)?.value;
 
         if (transaction) {
-          const response = await addTransactionServiceRequest(user.accessToken, transaction._id, {
-            service_id: selectedServiceId,
-            price: price as number,
-            service_charge: serviceCharge?.label.toLowerCase() as ServiceChargeType,
-          });
+          const response = await addTransactionServiceRequest(
+            user.accessToken,
+            user.refreshToken,
+            transaction._id,
+            {
+              service_id: selectedServiceId,
+              price: price as number,
+              service_charge: serviceCharge?.label.toLowerCase() as ServiceChargeType,
+            },
+          );
 
           if (response.success && response.data) {
             setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -323,7 +328,11 @@ const AddOngoing = () => {
             payload.contact_number = formValues.contactNumber;
           }
 
-          const response = await createOngoingTransactionRequest(user.accessToken, payload);
+          const response = await createOngoingTransactionRequest(
+            user.accessToken,
+            user.refreshToken,
+            payload,
+          );
 
           if (response.success && response.data) {
             setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });

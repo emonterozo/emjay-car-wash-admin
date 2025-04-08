@@ -297,6 +297,7 @@ const EmployeeForm = () => {
 
     const response = await addEmployeeRequest(
       user.accessToken,
+      user.refreshToken,
       firstName,
       lastName,
       formattedBirthDate!,
@@ -357,6 +358,7 @@ const EmployeeForm = () => {
     const response = await updateEmployeeRequest(
       employeeIDValue,
       user.accessToken,
+      user.refreshToken,
       contactNumberValue,
       formValues.employeeTitle,
       employeeStatusValue,

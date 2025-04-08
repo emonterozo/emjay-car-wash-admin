@@ -122,6 +122,7 @@ const AvailedServiceDetails = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getTransactionServiceDetailsRequest(
       user.accessToken,
+      user.refreshToken,
       transactionId,
       transactionServiceId,
     );

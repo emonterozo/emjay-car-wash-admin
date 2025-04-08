@@ -224,7 +224,14 @@ const AvailedServiceForm = () => {
 
   const fetchEmployees = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getEmployeesRequest(user.accessToken, '_id', 'asc', LIMIT, 0);
+    const response = await getEmployeesRequest(
+      user.accessToken,
+      user.refreshToken,
+      '_id',
+      'asc',
+      LIMIT,
+      0,
+    );
 
     if (response.success && response.data) {
       setEmployees(response.data.employees);
@@ -453,6 +460,7 @@ const AvailedServiceForm = () => {
       service.transactionId,
       service.transactionServiceId,
       user.accessToken,
+      user.refreshToken,
       payload,
     );
 
