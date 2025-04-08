@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Dimensions,
@@ -12,16 +12,18 @@ import {
   View,
   Pressable,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 
 import GlobalContext from '@app/context';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { EyeOpenIcon, EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
-import { ErrorModal, LoadingAnimation, Toast } from '@app/components';
+import { ErrorModal, LoadingAnimation, MaterialCommunityIcon, Toast } from '@app/components';
 import { color, font } from '@app/styles';
 import { loginRequest } from '@app/services';
 import { verticalScale } from '@app/metrics';
 import { ScreenStatusProps } from '../../types/services/types';
+import { getCredentials, removeCredentials, storeCredentials } from '@app/helpers';
 
 const Login = () => {
   const { setUser } = useContext(GlobalContext);
@@ -32,10 +34,11 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: 'emjay_admin',
-    password: 'password',
+    username: '',
+    password: '',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [isRemembered, setIsRemembered] = useState(false);
 
   const login = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
@@ -44,6 +47,11 @@ const Login = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     if (response.success && response.data) {
       const { user, accessToken, refreshToken } = response.data;
+      if (isRemembered) {
+        storeCredentials(user.username, input.password);
+      } else {
+        removeCredentials();
+      }
       setUser({
         id: user._id,
         username: user.username,
@@ -88,6 +96,21 @@ const Login = () => {
 
     return { backgroundColor: pressed ? color.primary_pressed_state : color.primary };
   };
+
+  useEffect(() => {
+    const fetchCredential = async () => {
+      const credential = await getCredentials();
+      if (credential) {
+        setInput({
+          username: credential.username,
+          password: credential.password,
+        });
+        setIsRemembered(true);
+      }
+    };
+
+    fetchCredential();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -146,6 +169,14 @@ const Login = () => {
               </Pressable>
             </View>
           </View>
+          <TouchableOpacity style={styles.action} onPress={() => setIsRemembered(!isRemembered)}>
+            <MaterialCommunityIcon
+              name={isRemembered ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
+              size={20}
+              color={isRemembered ? color.primary : '#D9D9D9'}
+            />
+            <Text style={styles.label}>Remember Me</Text>
+          </TouchableOpacity>
           <Pressable
             disabled={hasNoInput()}
             style={({ pressed }) => [styles.button, getButtonStyle(pressed)]}
@@ -231,6 +262,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 24,
     color: '#FFFFFF',
+  },
+  label: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#888888',
+  },
+  action: {
+    marginTop: 16,
+    flexDirection: 'row',
+    width: Dimensions.get('window').width - 48,
+    alignItems: 'center',
+    gap: 3,
   },
 });
 

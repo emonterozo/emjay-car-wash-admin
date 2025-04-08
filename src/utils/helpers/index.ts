@@ -1,3 +1,5 @@
+import * as Keychain from 'react-native-keychain';
+
 export const formattedNumber = (amount: number, fractionDigits?: number) => {
   return `₱${new Intl.NumberFormat('en-US', {
     style: 'decimal',
@@ -38,4 +40,29 @@ export const shortenNumber = (num: number) => {
     return (num / 1_000).toFixed(num % 1_000 === 0 ? 0 : 1) + 'K';
   }
   return num.toString();
+};
+
+export const storeCredentials = async (username: string, password: string) => {
+  try {
+    await Keychain.setGenericPassword(username, password);
+  } catch (error) {}
+};
+
+export const getCredentials = async () => {
+  try {
+    const credentials = await Keychain.getGenericPassword();
+    if (credentials) {
+      return credentials;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+};
+
+export const removeCredentials = async () => {
+  try {
+    await Keychain.resetGenericPassword();
+  } catch (error) {}
 };
