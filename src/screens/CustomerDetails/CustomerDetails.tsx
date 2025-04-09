@@ -49,7 +49,7 @@ const OPTIONS = [
 ];
 
 const size = {
-  car: ['SM', 'MD', 'LG', 'XL', 'XXL'],
+  car: ['SM', 'MD', 'LG', 'XL'],
   motorcycle: ['SM', 'MD', 'LG'],
 };
 

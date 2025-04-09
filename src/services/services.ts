@@ -68,7 +68,10 @@ export const getServicesRequest = (
       method: 'get',
       headers: requestHeader(accessToken),
       params: {
-        order_by: JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' }),
+        order_by:
+          field && direction
+            ? JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' })
+            : undefined,
         limit,
         offset,
       },

@@ -1,1 +1,1 @@
-export type SizeKey = 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+export type SizeKey = 'sm' | 'md' | 'lg' | 'xl';

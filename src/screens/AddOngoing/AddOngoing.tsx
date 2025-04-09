@@ -84,8 +84,8 @@ const OPTIONS = [
 ];
 
 const size = {
-  car: ['SM', 'MD', 'LG', 'XL', 'XXL'],
-  motorcycle: ['SM', 'MD', 'LG', 'XL'],
+  car: ['SM', 'MD', 'LG', 'XL'],
+  motorcycle: ['SM', 'MD', 'LG'],
 };
 
 const validationSchema = Yup.object({
@@ -137,7 +137,7 @@ const AddOngoing = () => {
 
   const fetchServices = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getServicesRequest(user.accessToken, '_id', 'asc');
+    const response = await getServicesRequest(user.accessToken, user.refreshToken);
 
     if (response.success && response.data) {
       setServices(response.data.services);
@@ -395,46 +395,47 @@ const AddOngoing = () => {
         type={toast.type}
         onClose={onToastClose}
       />
-      {points !== undefined && (
-        <View>
-          <View style={styles.heading}>
-            <Text style={styles.text}>
-              {`Customer Earned Points${freeWash.length > 0 ? ' & Free Wash' : ''}`}
-            </Text>
-          </View>
-          <View style={styles.points}>
-            <Image source={IMAGES.COIN} resizeMode="contain" />
-            <View>
-              <Text style={styles.pointsValue}>{`${points.toLocaleString()} pts`}</Text>
-              <Text style={styles.pointsLabel}>Current points earned</Text>
-            </View>
-          </View>
-          {freeWash.length > 0 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.washContainer}
-            >
-              {freeWash.map((item, index) => (
-                <View key={index} style={styles.washCard}>
-                  <View style={[styles.tag, item.type === 'motorcycle' && styles.motorcycle]}>
-                    <Text style={styles.size}>{item.size.toUpperCase()}</Text>
-                  </View>
-                  {item.type === 'car' ? (
-                    <CarIcon width={60} height={60} fill={color.primary} />
-                  ) : (
-                    <MotorcycleIcon width={60} height={60} fill={color.primary} />
-                  )}
-                </View>
-              ))}
-            </ScrollView>
-          )}
-        </View>
-      )}
-      <View style={styles.heading}>
-        <Text style={styles.text}>Customer Vehicle Details</Text>
-      </View>
+
       <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
+        {points !== undefined && (
+          <View>
+            <View style={styles.heading}>
+              <Text style={styles.text}>
+                {`Customer Earned Points${freeWash.length > 0 ? ' & Free Wash' : ''}`}
+              </Text>
+            </View>
+            <View style={styles.points}>
+              <Image source={IMAGES.COIN} resizeMode="contain" />
+              <View>
+                <Text style={styles.pointsValue}>{`${points.toLocaleString()} pts`}</Text>
+                <Text style={styles.pointsLabel}>Current points earned</Text>
+              </View>
+            </View>
+            {freeWash.length > 0 && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.washContainer}
+              >
+                {freeWash.map((item, index) => (
+                  <View key={index} style={styles.washCard}>
+                    <View style={[styles.tag, item.type === 'motorcycle' && styles.motorcycle]}>
+                      <Text style={styles.size}>{item.size.toUpperCase()}</Text>
+                    </View>
+                    {item.type === 'car' ? (
+                      <CarIcon width={60} height={60} fill={color.primary} />
+                    ) : (
+                      <MotorcycleIcon width={60} height={60} fill={color.primary} />
+                    )}
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        )}
+        <View>
+          <Text style={styles.text}>Customer Vehicle Details</Text>
+        </View>
         <View>
           <Text style={styles.label}>Select Vehicle Type</Text>
           <View style={styles.cardContainer}>
@@ -542,7 +543,6 @@ const styles = StyleSheet.create({
   heading: {
     alignItems: 'flex-start',
     marginVertical: 24,
-    paddingHorizontal: 25,
   },
   text: {
     ...font.regular,
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     color: color.black,
   },
   washContainer: {
-    paddingHorizontal: 25,
+    paddingHorizontal: 5,
     gap: 16,
     alignItems: 'center',
     paddingVertical: 10,
@@ -636,7 +636,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 5,
-    marginHorizontal: 25,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 24,
@@ -646,11 +645,13 @@ const styles = StyleSheet.create({
   pointsValue: {
     ...font.bold,
     fontSize: 20,
+    lineHeight: 20,
     color: '#050303',
   },
   pointsLabel: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#696969',
   },
 });
