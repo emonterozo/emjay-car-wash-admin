@@ -254,7 +254,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 25,
     paddingBottom: 25,
-    backgroundColor: color.background,
   },
   leftContent: {
     flexDirection: 'row',

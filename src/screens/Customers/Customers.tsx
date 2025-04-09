@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
   heading: {
     alignItems: 'flex-start',
     marginTop: 16,
-    marginBottom: 35,
     paddingHorizontal: 25,
   },
   separator: {
@@ -161,12 +160,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#696969',
     lineHeight: 16,
+    marginBottom: 16,
   },
   list: {
     flexGrow: 1,
     paddingHorizontal: 25,
     paddingBottom: 25,
-    backgroundColor: color.background,
   },
   card: {
     backgroundColor: '#F3F2EF',

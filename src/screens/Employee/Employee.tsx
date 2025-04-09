@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
   heading: {
     alignItems: 'flex-start',
     marginTop: 16,
-    marginBottom: 35,
     paddingHorizontal: 25,
   },
   employeeList: {
@@ -186,7 +185,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 25,
     paddingBottom: 25,
-    backgroundColor: color.background,
   },
   card: {
     backgroundColor: '#F3F2EF',
