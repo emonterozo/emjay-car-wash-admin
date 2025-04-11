@@ -127,6 +127,16 @@ const AvailedServices = () => {
 
     if (response.success && response.data) {
       setTransactionService(response.data.transaction);
+      switch (response.data.transaction.status) {
+        case 'COMPLETED':
+          setSelectedStatus('Done');
+          break;
+        case 'CANCELLED':
+          setSelectedStatus('Cancel');
+          break;
+        default:
+          break;
+      }
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -266,6 +276,7 @@ const AvailedServices = () => {
       <View style={styles.statusContainer}>
         {STATUSES.map((status) => (
           <TouchableOpacity
+            disabled={transactionService?.status !== 'ONGOING'}
             style={[
               styles.status,
               status.label === selectedStatus && { backgroundColor: status.color },
@@ -326,65 +337,67 @@ const AvailedServices = () => {
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
       />
-      {transactionService && selectedStatus !== 'Cancel' && (
-        <FloatingActionButton
-          additionalButtons={(() => {
-            let actions = [];
-            switch (selectedStatus) {
-              case 'Pending':
-                actions = [
-                  {
-                    icon: IMAGES.WALLET_ERROR,
-                    label: 'Cancel the Transaction',
-                    onPress: () => {
-                      setConfirmation({
-                        type: 'CancelTransaction',
-                        isVisible: true,
-                      });
+      {transactionService &&
+        transactionService.status === 'ONGOING' &&
+        selectedStatus !== 'Cancel' && (
+          <FloatingActionButton
+            additionalButtons={(() => {
+              let actions = [];
+              switch (selectedStatus) {
+                case 'Pending':
+                  actions = [
+                    {
+                      icon: IMAGES.WALLET_ERROR,
+                      label: 'Cancel the Transaction',
+                      onPress: () => {
+                        setConfirmation({
+                          type: 'CancelTransaction',
+                          isVisible: true,
+                        });
+                      },
                     },
-                  },
-                  {
-                    icon: 'plus',
-                    label: 'Add service',
-                    onPress: navigateToAddOngoing,
-                  },
-                ];
+                    {
+                      icon: 'plus',
+                      label: 'Add service',
+                      onPress: navigateToAddOngoing,
+                    },
+                  ];
 
-                return checkAvailedServices('PENDING') ? actions : actions.slice(1);
-              case 'Ongoing':
-                actions = [
-                  {
-                    icon: 'plus',
-                    label: 'Add service',
-                    onPress: navigateToAddOngoing,
-                  },
-                ];
-                return actions;
-              case 'Done':
-                actions = [
-                  {
-                    icon: IMAGES.WALLET_CHECKED,
-                    label: 'Complete the Transaction',
-                    onPress: () => {
-                      setConfirmation({
-                        type: 'CompleteTransaction',
-                        isVisible: true,
-                      });
+                  return checkAvailedServices('PENDING') ? actions : actions.slice(1);
+                case 'Ongoing':
+                  actions = [
+                    {
+                      icon: 'plus',
+                      label: 'Add service',
+                      onPress: navigateToAddOngoing,
                     },
-                  },
-                  {
-                    icon: 'plus',
-                    label: 'Add service',
-                    onPress: navigateToAddOngoing,
-                  },
-                ];
-                return checkAvailedServices('DONE') ? actions : actions.slice(1);
-              default:
-                return [];
-            }
-          })()}
-        />
-      )}
+                  ];
+                  return actions;
+                case 'Done':
+                  actions = [
+                    {
+                      icon: IMAGES.WALLET_CHECKED,
+                      label: 'Complete the Transaction',
+                      onPress: () => {
+                        setConfirmation({
+                          type: 'CompleteTransaction',
+                          isVisible: true,
+                        });
+                      },
+                    },
+                    {
+                      icon: 'plus',
+                      label: 'Add service',
+                      onPress: navigateToAddOngoing,
+                    },
+                  ];
+                  return checkAvailedServices('DONE') ? actions : actions.slice(1);
+                default:
+                  return [];
+              }
+            })()}
+          />
+        )}
     </SafeAreaView>
   );
 };

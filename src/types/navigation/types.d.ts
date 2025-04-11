@@ -30,7 +30,10 @@ export type AuthStackParamList = {
     freeWash: { type: string; size: string }[];
     points?: number;
     transaction:
-      | (Omit<TransactionServicesResponse['transaction'], 'availed_services' | 'contact_number'> & {
+      | (Omit<
+          TransactionServicesResponse['transaction'],
+          'availed_services' | 'contact_number' | 'status'
+        > & {
           availedServices: string[];
         })
       | undefined;

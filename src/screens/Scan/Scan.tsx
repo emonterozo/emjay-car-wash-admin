@@ -52,6 +52,8 @@ const Scan = () => {
     if (isFocused) {
       setIsScannerActive(true);
       setIsCustomerExist(true);
+    } else {
+      setIsScannerActive(false);
     }
   }, [isFocused, requestPermission]);
 
@@ -177,9 +179,9 @@ const Scan = () => {
         onCancel={toggleModal}
         onRetry={() => checkIfCustomerExist(codeValue)}
       />
-      <View style={styles.cameraContainer}>
+      <View style={styles.container}>
         <Camera
-          style={StyleSheet.absoluteFill}
+          style={{ height }}
           device={device}
           isActive={isScannerActive}
           codeScanner={codeScanner}
@@ -200,9 +202,6 @@ const Scan = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  cameraContainer: {
     flex: 1,
   },
   displayContainer: {
