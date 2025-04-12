@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   },
   serviceContainer: {
     gap: 8,
+    flex: 1,
   },
   servicesDetailsContainer: {
     flexDirection: 'row',

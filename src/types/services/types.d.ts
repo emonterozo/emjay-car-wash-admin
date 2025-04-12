@@ -213,6 +213,7 @@ export type TransactionServicesResponse = {
     vehicle_size: string;
     model: string;
     plate_number: string;
+    status: TransactionStatusType;
     availed_services: TransactionServices[];
   };
   errors: ErrorProps[];
