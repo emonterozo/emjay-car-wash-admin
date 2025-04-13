@@ -25,6 +25,7 @@ import {
   ConsumablesForm,
   ExpensesForm,
   Statistics,
+  PublishForm,
 } from '@app/screens';
 import GlobalContext from '@app/context';
 import { AuthStackParamList } from '../types/navigation/types';
@@ -35,7 +36,13 @@ const UnAuthStack = createStackNavigator();
 const AuthStack = createStackNavigator<AuthStackParamList>();
 
 const Navigation = () => {
-  const [user, setUser] = useState<TUser>({ id: '', type: '', username: '', accessToken: '' });
+  const [user, setUser] = useState<TUser>({
+    id: '',
+    type: '',
+    username: '',
+    accessToken: '',
+    refreshToken: '',
+  });
 
   const initialContext = useMemo(
     () => ({
@@ -75,6 +82,7 @@ const Navigation = () => {
             <AuthStack.Screen name="ConsumablesForm" component={ConsumablesForm} />
             <AuthStack.Screen name="ExpensesForm" component={ExpensesForm} />
             <AuthStack.Screen name="Statistics" component={Statistics} />
+            <AuthStack.Screen name="PublishForm" component={PublishForm} />
           </AuthStack.Navigator>
         ) : (
           <UnAuthStack.Navigator screenOptions={{ headerShown: false }}>

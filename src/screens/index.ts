@@ -25,3 +25,4 @@ export { default as TransactionComputation } from './TransactionComputation/Tran
 export { default as ConsumablesForm } from './ConsumablesForm/ConsumablesForm';
 export { default as ExpensesForm } from './ExpensesForm/ExpensesForm';
 export { default as Statistics } from './Statistics/Statistics';
+export { default as PublishForm } from './PublishForm/PublishForm';

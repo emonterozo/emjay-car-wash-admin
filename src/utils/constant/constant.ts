@@ -37,7 +37,7 @@ export const DASHBOARD_ITEMS = [
   },
   {
     id: 5,
-    title: 'Publish',
+    title: 'Promos',
     icon: PublishIcon,
     screen: 'Publish',
   },
@@ -105,6 +105,8 @@ export const IMAGES = {
   OTHER: require('../../../assets/images/other.png'),
   ELECTRICITY: require('../../../assets/images/electricity.png'),
   COIN: require('../../../assets/images/coin.png'),
+  PROMO_FREE: require('../../../assets/images/free.png'),
+  PROMO_PERCENT: require('../../../assets/images/percent.png'),
 };
 
 export const ERROR_TYPE = {

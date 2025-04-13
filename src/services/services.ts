@@ -38,6 +38,9 @@ import {
   StatisticsFilter,
   AddExpenseResponse,
   AddExpensePayload,
+  GetPromoResponse,
+  AddPromoPayload,
+  AddPromoResponse,
 } from '../types/services/types';
 
 const requestHeader = (accessToken: string) => {
@@ -546,6 +549,69 @@ export const getExpenseItemsRequest = (
       method: 'get',
       headers: requestHeader(accessToken),
       params: params,
+    },
+    refreshToken,
+  );
+};
+
+export const getPromos = (
+  accessToken: string,
+  refreshToken: string,
+): ApiResponse<GetPromoResponse> => {
+  return apiRequest<null, GetPromoResponse>(
+    `${Config.API_BASE_URL}/promos`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+    refreshToken,
+  );
+};
+
+export const addPromoRequest = (
+  accessToken: string,
+  refreshToken: string,
+  is_active: boolean,
+  title: string,
+  description: string,
+  percent: number,
+): ApiResponse<AddPromoResponse> => {
+  return apiRequest<AddPromoPayload, AddPromoResponse>(
+    `${Config.API_BASE_URL}/promos`,
+    {
+      method: 'post',
+      headers: requestHeader(accessToken),
+      data: {
+        is_active,
+        title,
+        description,
+        percent,
+      },
+    },
+    refreshToken,
+  );
+};
+
+export const updatePromoRequest = (
+  id: string,
+  accessToken: string,
+  refreshToken: string,
+  is_active: boolean,
+  title: string,
+  description: string,
+  percent: number,
+): ApiResponse<AddPromoResponse> => {
+  return apiRequest<AddPromoPayload, AddPromoResponse>(
+    `${Config.API_BASE_URL}/promos/${id}`,
+    {
+      method: 'patch',
+      headers: requestHeader(accessToken),
+      data: {
+        is_active,
+        title,
+        description,
+        percent,
+      },
     },
     refreshToken,
   );

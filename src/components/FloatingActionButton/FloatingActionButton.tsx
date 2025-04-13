@@ -14,9 +14,15 @@ interface Props {
   onPress?: () => void;
   additionalButtons?: AdditionalButton[];
   fabIcon?: ImageSourcePropType | string;
+  circleColor?: string;
 }
 
-const FloatingActionButton = ({ onPress, additionalButtons, fabIcon = 'plus' }: Props) => {
+const FloatingActionButton = ({
+  onPress,
+  additionalButtons,
+  fabIcon = 'plus',
+  circleColor,
+}: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMainButtonPress = () => {
@@ -51,7 +57,7 @@ const FloatingActionButton = ({ onPress, additionalButtons, fabIcon = 'plus' }: 
           </TouchableOpacity>
         ))}
       <TouchableOpacity onPress={handleMainButtonPress} activeOpacity={0.8}>
-        <View style={styles.circle}>
+        <View style={[styles.circle, circleColor && { backgroundColor: circleColor }]}>
           {additionalButtons ? (
             isExpanded ? (
               <MaterialCommunityIcon name="close" size={25} color="#ffffff" />

@@ -438,3 +438,31 @@ export type SalesStatisticsResponse = {
   transactions: TransactionItem[];
   errors: ErrorProps[];
 };
+
+export type PromoItem = {
+  _id: string;
+  percent: number;
+  title: string;
+  description: string;
+  is_free: boolean;
+  is_active: boolean;
+};
+
+export type GetPromoResponse = {
+  promos: PromoItem[];
+  errors: ErrorProps[];
+};
+
+export type AddPromoPayload = {
+  is_active: boolean;
+  title: string;
+  description: string;
+  percent: number;
+};
+
+export type AddPromoResponse = {
+  promo: {
+    _id: string;
+  };
+  errors: ErrorProps[];
+};

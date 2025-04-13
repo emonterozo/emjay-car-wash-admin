@@ -90,6 +90,18 @@ export type AuthStackParamList = {
   ConsumablesForm: undefined;
   ExpensesForm: undefined;
   Statistics: undefined;
+  PublishForm:
+    | { type: 'Add'; promo?: never }
+    | {
+        type: 'Update';
+        promo: {
+          id: string;
+          percent: number;
+          title: string;
+          description: string;
+          isActive: boolean;
+        };
+      };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -116,3 +128,5 @@ export type TransactionComputationRouteProp = RouteProp<
   AuthStackParamList,
   'TransactionComputation'
 >;
+
+export type PublishFormRouteProp = RouteProp<AuthStackParamList, 'PublishForm'>;
