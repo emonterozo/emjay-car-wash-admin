@@ -41,7 +41,12 @@ import {
   GetPromoResponse,
   AddPromoPayload,
   AddPromoResponse,
+  MessagesResponse,
+  ConversationsResponse,
+  UpdateMessageStatePayload,
+  UpdateMessageStateResponse,
 } from '../types/services/types';
+import { ChatReference } from '../types/constant/types';
 
 const requestHeader = (accessToken: string) => {
   return {
@@ -611,6 +616,66 @@ export const updatePromoRequest = (
         title,
         description,
         percent,
+      },
+    },
+    refreshToken,
+  );
+};
+
+export const getMessagesRequest = (
+  accessToken: string,
+  refreshToken: string,
+  customerId: string,
+  limit?: number,
+  offset?: number,
+): ApiResponse<MessagesResponse> => {
+  return apiRequest<null, MessagesResponse>(
+    `${Config.API_BASE_URL}/messages/${customerId}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        limit,
+        offset,
+      },
+    },
+    refreshToken,
+  );
+};
+
+export const getConversationsRequest = (
+  accessToken: string,
+  refreshToken: string,
+  limit?: number,
+  offset?: number,
+): ApiResponse<ConversationsResponse> => {
+  return apiRequest<null, ConversationsResponse>(
+    `${Config.API_BASE_URL}/messages/`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        limit,
+        offset,
+      },
+    },
+    refreshToken,
+  );
+};
+
+export const updateMessageStateRequest = (
+  accessToken: string,
+  refreshToken: string,
+  customerId: string,
+  view_by: ChatReference,
+): ApiResponse<UpdateMessageStateResponse> => {
+  return apiRequest<UpdateMessageStatePayload, UpdateMessageStateResponse>(
+    `${Config.API_BASE_URL}/messages/${customerId}`,
+    {
+      method: 'patch',
+      headers: requestHeader(accessToken),
+      data: {
+        view_by,
       },
     },
     refreshToken,

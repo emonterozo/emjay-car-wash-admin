@@ -8,7 +8,7 @@ import {
   SalesIcon,
   ServicesIcon,
 } from '@app/icons';
-import { SizeKey } from '../../types/constant/types';
+import { ChatReference, SizeKey } from '../../types/constant/types';
 
 export const DASHBOARD_ITEMS = [
   {
@@ -107,6 +107,7 @@ export const IMAGES = {
   COIN: require('../../../assets/images/coin.png'),
   PROMO_FREE: require('../../../assets/images/free.png'),
   PROMO_PERCENT: require('../../../assets/images/percent.png'),
+  SEND: require('../../../assets/images/send.png'),
 };
 
 export const ERROR_TYPE = {
@@ -203,3 +204,8 @@ export const SIZE_DESCRIPTION: Record<SizeKey, string> = {
 export const ERR_NETWORK = 'Network Error';
 
 export const NO_DATA = 'No available data';
+
+export const CHAT_REFERENCE: Record<ChatReference, string> = {
+  emjay: 'emjay',
+  customer: 'customer',
+};

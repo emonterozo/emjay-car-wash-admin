@@ -1,6 +1,6 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
-import { TransactionServicesResponse, TransactionStatusType } from '../services/types';
+import { GenderType, TransactionServicesResponse, TransactionStatusType } from '../services/types';
 
 export type CarwashList = {
   icon: string;
@@ -102,6 +102,12 @@ export type AuthStackParamList = {
           isActive: boolean;
         };
       };
+  Chat: {
+    customerId: string;
+    firstName: string;
+    lastName: string;
+    gender: GenderType;
+  };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -130,3 +136,5 @@ export type TransactionComputationRouteProp = RouteProp<
 >;
 
 export type PublishFormRouteProp = RouteProp<AuthStackParamList, 'PublishForm'>;
+
+export type ChatRouteProp = RouteProp<AuthStackParamList, 'Chat'>;

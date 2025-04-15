@@ -1,4 +1,5 @@
 import { ERROR_TYPE } from '@app/constant';
+import { ChatReference } from '../constant/types';
 
 export type TransactionStatusType = 'ONGOING' | 'COMPLETED' | 'CANCELLED';
 export type TransactionServiceStatusType = 'PENDING' | 'ONGOING' | 'DONE' | 'CANCELLED';
@@ -464,5 +465,52 @@ export type AddPromoResponse = {
   promo: {
     _id: string;
   };
+  errors: ErrorProps[];
+};
+
+export type Message = {
+  _id: string;
+  customer_id: string;
+  message: string;
+  timestamp: string;
+  from: ChatReference;
+  is_read: number;
+};
+
+export type MessagesResponse = {
+  messages: Message[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type LastMessage = {
+  message: string;
+  timestamp: string;
+  from: ChatReference;
+};
+
+export type Conversation = {
+  _id: string;
+  customer_id: string;
+  first_name: string;
+  last_name: string;
+  gender: GenderType;
+  emjay_unread_count: number;
+  customer_unread_count: number;
+  last_message: LastMessage;
+};
+
+export type ConversationsResponse = {
+  messages: Conversation[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type UpdateMessageStatePayload = {
+  view_by: ChatReference;
+};
+
+export type UpdateMessageStateResponse = {
+  _id: string;
   errors: ErrorProps[];
 };
