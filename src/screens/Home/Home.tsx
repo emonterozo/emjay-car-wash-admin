@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
+  Dimensions,
   Image,
   ScrollView,
   StatusBar,
@@ -26,6 +27,8 @@ import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { ScreenStatusProps, Service } from '../../types/services/types';
 import FilterOption from './FilterOption';
+
+const { width } = Dimensions.get('window');
 
 const FILTER_VALUE = {
   top: {
@@ -360,6 +363,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    gap: 20,
   },
   serviceContainer: {
     gap: 24,
@@ -367,8 +371,8 @@ const styles = StyleSheet.create({
   serviceImage: { width: '45%', height: 100, borderRadius: 8 },
   serviceContent: {
     justifyContent: 'center',
-    marginLeft: 20,
     gap: 8,
+    width: width * 0.55 - 20 - 25,
   },
   ratings: {
     flexDirection: 'row',

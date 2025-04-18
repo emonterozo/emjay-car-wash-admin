@@ -7,7 +7,7 @@ export type TransactionServiceStatusType = 'PENDING' | 'ONGOING' | 'DONE' | 'CAN
 export type EmployeeStatusType = 'ACTIVE' | 'TERMINATED';
 export type GenderType = 'MALE' | 'FEMALE';
 export type VehicleType = 'car' | 'motorcycle';
-export type ServiceChargeType = 'free' | 'not free';
+export type ServiceChargeType = 'free' | 'not free' | 'points & cash';
 
 export type StatisticsFilter = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
@@ -203,6 +203,7 @@ export type TransactionServices = {
   status: TransactionServiceStatusType;
   is_free: boolean;
   is_paid: boolean;
+  is_points_cash: boolean;
   discount: number;
 };
 
@@ -241,6 +242,7 @@ export type TransactionServiceDetailsResponse = {
     status: TransactionServiceStatusType;
     is_free: boolean;
     is_paid: boolean;
+    is_points_cash: boolean;
     start_date: string | null;
     end_date: string | null;
     assigned_employees: TransactionServiceEmployee[];
@@ -263,7 +265,7 @@ export type CustomerFreeWashServiceResponse = {
 export type AddTransactionServicePayload = {
   service_id: string;
   price: number;
-  service_charge: SERVICE_CHARGE;
+  service_charge: ServiceChargeType;
 };
 
 export type AddTransactionServiceResponse = {
@@ -282,7 +284,9 @@ export type CreateOngoingTransactionPayload = {
   contact_number?: string;
   service_id: string;
   price: number;
-  service_charge: SERVICE_CHARGE;
+  service_charge: ServiceChargeType;
+  discount: number;
+  deduction: number;
 };
 
 export type CreateOngoingTransactionResponse = {
@@ -297,6 +301,7 @@ export type UpdateAvailedServicePayload = {
   deduction: number;
   is_free: boolean;
   is_paid: boolean;
+  is_points_cash: boolean;
   status: string;
   assigned_employees?: string[];
 };

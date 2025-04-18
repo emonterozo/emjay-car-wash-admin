@@ -173,6 +173,7 @@ const AvailedServiceDetails = () => {
         startDateTime: transactionService.start_date || '',
         endDateTime: transactionService.end_date || '',
         assignedEmployees: employeesId,
+        isPointsCash: transactionService.is_points_cash,
       },
     });
   };
@@ -207,7 +208,13 @@ const AvailedServiceDetails = () => {
             resizeMode={FastImage.resizeMode.cover}
           />
           <View style={[styles.tagContainer, transactionService?.is_free && styles.tagFree]}>
-            <Text style={styles.tag}>{`${transactionService?.is_free ? 'Free' : 'Not Free'}`}</Text>
+            <Text style={styles.tag}>{`${
+              transactionService?.is_free
+                ? 'Free'
+                : transactionService?.is_points_cash
+                ? 'Points & Cash'
+                : 'Not Free'
+            }`}</Text>
           </View>
         </View>
         <Text style={styles.service}>{transactionService?.title}</Text>
@@ -329,7 +336,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 16,
-    width: 90,
+    width: 100,
     justifyContent: 'center',
     alignItems: 'center',
     height: 30,

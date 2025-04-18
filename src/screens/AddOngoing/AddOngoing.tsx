@@ -48,6 +48,8 @@ type FormValues = {
   vehicleModel: string | undefined;
   plateNumber: string | undefined;
   service: string[];
+  discount: number;
+  deduction: number;
   serviceCharge: Option | undefined;
   contactNumber: string | null;
 };
@@ -67,6 +69,11 @@ const SERVICE_CHARGE_OPTION = [
     id: '2',
     icon: <Image source={IMAGES.NOT_FREE} resizeMode="contain" />,
     label: 'Not Free',
+  },
+  {
+    id: '3',
+    icon: <Image source={IMAGES.PAID} resizeMode="contain" />,
+    label: 'Points & Cash',
   },
 ];
 
@@ -92,6 +99,14 @@ const validationSchema = Yup.object({
   vehicleModel: Yup.string().required('Vehicle model is required'),
   plateNumber: Yup.string().required('Plate number is required'),
   service: Yup.array().required('Service array is required').min(1, 'Service is required'),
+  deduction: Yup.number()
+    .typeError('Deduction must be a valid number')
+    .integer('Deduction must be a whole number')
+    .min(0, 'Deduction cannot be negative'),
+  discount: Yup.number()
+    .typeError('Discount must be a valid number')
+    .integer('Discount must be a whole number')
+    .min(0, 'Discount cannot be negative'),
   serviceCharge: Yup.object().required('Service charge is required'),
   contactNumber: Yup.string()
     .matches(
@@ -110,6 +125,8 @@ const AddOngoing = () => {
     vehicleModel: transaction?.model ?? 'Car Small',
     plateNumber: transaction?.plate_number,
     service: [],
+    discount: 0,
+    deduction: 0,
     serviceCharge: SERVICE_CHARGE_OPTION[1],
     contactNumber: contactNumber,
   };
@@ -277,7 +294,8 @@ const AddOngoing = () => {
       .then(async () => {
         setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
         setErrors({});
-        const { vehicleModel, plateNumber, serviceCharge, service } = formValues;
+        const { vehicleModel, plateNumber, serviceCharge, service, discount, deduction } =
+          formValues;
         const selectedSize = getSelectedVehicleSize();
         const selectedServiceId = service[0];
         const price = serviceSelection.find((item) => item.id === selectedServiceId)?.value;
@@ -320,7 +338,10 @@ const AddOngoing = () => {
             service_id: selectedServiceId,
             price: price as number,
             service_charge: serviceCharge?.label.toLowerCase() as ServiceChargeType,
+            discount: Number(discount),
+            deduction: Number(deduction),
           };
+
           if (customerId !== null) {
             payload.customer_id = customerId;
           }
@@ -376,6 +397,26 @@ const AddOngoing = () => {
       fetchServices();
     }
   };
+
+  useEffect(() => {
+    if (formValues.serviceCharge?.label === 'Free' && formValues.service.length > 0) {
+      const selectedServiceId = formValues.service[0];
+      const price = serviceSelection.find((item) => item.id === selectedServiceId)?.value;
+
+      setFormValues((prev) => {
+        return {
+          ...prev,
+          discount: Number(price),
+        };
+      });
+    } else {
+      setFormValues((prev) => ({
+        ...prev,
+        discount: 0,
+        deduction: 0,
+      }));
+    }
+  }, [formValues.serviceCharge, formValues.service, serviceSelection]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -502,6 +543,26 @@ const AddOngoing = () => {
           error={errors.service}
           onToggleOpen={() => removeError('service')}
           title="Select Service"
+        />
+        <TextInput
+          label="Discount"
+          placeholder="Discount"
+          error={errors.discount}
+          value={formValues.discount.toString()}
+          onChangeText={(value) => handleInputChange('discount', value)}
+          onFocus={() => removeError('discount')}
+          keyboardType="number-pad"
+          readOnly={formValues.serviceCharge?.label === 'Free'}
+        />
+
+        <TextInput
+          label="Deduction"
+          placeholder="Deduction"
+          error={errors.deduction}
+          value={formValues.deduction.toString()}
+          onChangeText={(value) => handleInputChange('deduction', value)}
+          onFocus={() => removeError('deduction')}
+          keyboardType="number-pad"
         />
         <Dropdown
           label="Service Charge"

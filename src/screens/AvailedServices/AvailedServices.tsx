@@ -313,7 +313,9 @@ const AvailedServices = () => {
                   : formattedNumber(item.price - (item.is_free ? 0 : item.discount))}
               </Text>
               <View style={[styles.tag, item.is_free && styles.tagFree]}>
-                <Text style={styles.tagLabel}>{item.is_free ? 'Free' : 'Not Free'}</Text>
+                <Text style={styles.tagLabel}>
+                  {item.is_free ? 'Free' : item.is_points_cash ? 'Points & Cash' : 'Not Free'}
+                </Text>
               </View>
               <TouchableOpacity
                 style={styles.viewDetailsContainer}
@@ -493,7 +495,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#7F7A7A',
     borderRadius: 8,
-    width: 85,
+    width: 100,
   },
   tagFree: {
     backgroundColor: '#4BB543',

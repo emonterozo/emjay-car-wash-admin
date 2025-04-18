@@ -100,6 +100,11 @@ const SERVICE_CHARGE_OPTIONS = [
     icon: <Image source={IMAGES.NOT_FREE} resizeMode="contain" />,
     label: 'Not Free',
   },
+  {
+    id: '3',
+    icon: <Image source={IMAGES.PAID} resizeMode="contain" />,
+    label: 'Points & Cash',
+  },
 ];
 
 const ICON_GENDER = [
@@ -153,7 +158,11 @@ const AvailedServiceForm = () => {
     employeeShare: service.employeeShare,
     serviceCharge:
       SERVICE_CHARGE_OPTIONS.find((option) =>
-        service.serviceCharge ? option.label === 'Free' : option.label === 'Not Free',
+        service.serviceCharge
+          ? option.label === 'Free'
+          : service.isPointsCash
+          ? option.label === 'Points & Cash'
+          : option.label === 'Not Free',
       ) || undefined,
     status:
       SERVICE_STATUS_OPTIONS.find((option) => {
@@ -449,6 +458,7 @@ const AvailedServiceForm = () => {
       deduction: Number(formValues.deduction),
       is_free: formattedServiceCharge,
       is_paid: formattedPaymentStatus,
+      is_points_cash: formValues.serviceCharge?.label === 'Points & Cash',
       status: formattedStatus!,
     };
 

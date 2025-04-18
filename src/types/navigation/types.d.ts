@@ -83,6 +83,7 @@ export type AuthStackParamList = {
       startDateTime: string | '';
       endDateTime: string | '';
       assignedEmployees: string[];
+      isPointsCash: boolean;
     };
   };
   TransactionDetails: { transactionId: string; transactionServiceId: string };
