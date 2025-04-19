@@ -309,6 +309,8 @@ const AddOngoing = () => {
               service_id: selectedServiceId,
               price: price as number,
               service_charge: serviceCharge?.label.toLowerCase() as ServiceChargeType,
+              discount: Number(discount),
+              deduction: Number(deduction),
             },
           );
 

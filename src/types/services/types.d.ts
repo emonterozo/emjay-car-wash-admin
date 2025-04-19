@@ -266,6 +266,8 @@ export type AddTransactionServicePayload = {
   service_id: string;
   price: number;
   service_charge: ServiceChargeType;
+  discount: number;
+  deduction: number;
 };
 
 export type AddTransactionServiceResponse = {
