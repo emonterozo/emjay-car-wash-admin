@@ -15,7 +15,7 @@ import {
   LoadingAnimation,
 } from '@app/components';
 import { color, font } from '@app/styles';
-import { CircleArrowRightIcon } from '@app/icons';
+import { CircleArrowRightIcon, WalletCheckedIcon, WalletErrorIcon, WalletIcon } from '@app/icons';
 import { formattedNumber } from '@app/helpers';
 import {
   getCustomerFreeWashServiceRequest,
@@ -23,7 +23,7 @@ import {
   updateTransactionRequest,
 } from '@app/services';
 import GlobalContext from '@app/context';
-import { CONFIRM_TYPE, ERR_NETWORK, IMAGES } from '@app/constant';
+import { CONFIRM_TYPE, ERR_NETWORK } from '@app/constant';
 
 const STATUSES = [
   {
@@ -349,7 +349,7 @@ const AvailedServices = () => {
                 case 'Pending':
                   actions = [
                     {
-                      icon: IMAGES.WALLET_ERROR,
+                      icon: <WalletErrorIcon width={25} height={25} />,
                       label: 'Cancel the Transaction',
                       onPress: () => {
                         setConfirmation({
@@ -359,7 +359,7 @@ const AvailedServices = () => {
                       },
                     },
                     {
-                      icon: 'plus',
+                      icon: <WalletIcon width={25} height={25} />,
                       label: 'Add service',
                       onPress: navigateToAddOngoing,
                     },
@@ -369,7 +369,7 @@ const AvailedServices = () => {
                 case 'Ongoing':
                   actions = [
                     {
-                      icon: 'plus',
+                      icon: <WalletIcon width={25} height={25} />,
                       label: 'Add service',
                       onPress: navigateToAddOngoing,
                     },
@@ -378,7 +378,7 @@ const AvailedServices = () => {
                 case 'Done':
                   actions = [
                     {
-                      icon: IMAGES.WALLET_CHECKED,
+                      icon: <WalletCheckedIcon width={25} height={25} />,
                       label: 'Complete the Transaction',
                       onPress: () => {
                         setConfirmation({
@@ -388,7 +388,7 @@ const AvailedServices = () => {
                       },
                     },
                     {
-                      icon: 'plus',
+                      icon: <WalletIcon width={25} height={25} />,
                       label: 'Add service',
                       onPress: navigateToAddOngoing,
                     },

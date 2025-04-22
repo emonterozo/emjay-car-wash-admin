@@ -233,11 +233,13 @@ const AvailedServiceDetails = () => {
           {transactionService && transactionService?.assigned_employees.length > 0 ? (
             transactionService?.assigned_employees.map((item) => (
               <View key={item._id} style={styles.row}>
-                <Image
-                  source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
+                <View style={styles.avatarContainer}>
+                  <Image
+                    source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+                    style={styles.avatar}
+                    resizeMode="contain"
+                  />
+                </View>
                 <Text style={styles.employee}>{`${item.first_name} ${item.last_name}`}</Text>
               </View>
             ))
@@ -321,10 +323,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  image: {
-    width: 56,
-    height: 56,
-  },
   list: {
     gap: 16,
   },
@@ -349,6 +347,21 @@ const styles = StyleSheet.create({
   },
   tagFree: {
     backgroundColor: '#4BB543',
+  },
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 56,
+    width: 56,
+    height: 56,
+    overflow: 'hidden',
+    alignSelf: 'center',
+  },
+  avatar: {
+    position: 'absolute',
+    top: 9,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 

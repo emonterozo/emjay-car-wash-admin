@@ -35,7 +35,7 @@ import {
   Toast,
 } from '@app/components';
 import { ERR_NETWORK, IMAGES, SIZE_DESCRIPTION, SIZES } from '@app/constant';
-import { CarIcon, MotorcycleIcon } from '@app/icons';
+import { CarIcon, CashIcon, CashInHandIcon, GiftIcon, MotorcycleIcon } from '@app/icons';
 import {
   addTransactionServiceRequest,
   createOngoingTransactionRequest,
@@ -62,17 +62,17 @@ type Errors = {
 const SERVICE_CHARGE_OPTION = [
   {
     id: '1',
-    icon: <Image source={IMAGES.FREE} resizeMode="contain" />,
+    icon: <GiftIcon width={24} height={24} />,
     label: 'Free',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.NOT_FREE} resizeMode="contain" />,
+    icon: <CashInHandIcon width={24} height={24} />,
     label: 'Not Free',
   },
   {
     id: '3',
-    icon: <Image source={IMAGES.PAID} resizeMode="contain" />,
+    icon: <CashIcon width={24} height={24} />,
     label: 'Points & Cash',
   },
 ];
@@ -546,26 +546,6 @@ const AddOngoing = () => {
           onToggleOpen={() => removeError('service')}
           title="Select Service"
         />
-        <TextInput
-          label="Discount"
-          placeholder="Discount"
-          error={errors.discount}
-          value={formValues.discount.toString()}
-          onChangeText={(value) => handleInputChange('discount', value)}
-          onFocus={() => removeError('discount')}
-          keyboardType="number-pad"
-          readOnly={formValues.serviceCharge?.label === 'Free'}
-        />
-
-        <TextInput
-          label="Deduction"
-          placeholder="Deduction"
-          error={errors.deduction}
-          value={formValues.deduction.toString()}
-          onChangeText={(value) => handleInputChange('deduction', value)}
-          onFocus={() => removeError('deduction')}
-          keyboardType="number-pad"
-        />
         <Dropdown
           label="Service Charge"
           placeholder="Select Services"
@@ -576,6 +556,26 @@ const AddOngoing = () => {
           error={errors.serviceCharge}
           onToggleOpen={() => removeError('serviceCharge')}
         />
+        <TextInput
+          label="Discount"
+          placeholder="Discount"
+          error={errors.discount}
+          value={formValues.discount.toString()}
+          onChangeText={(value) => handleInputChange('discount', value)}
+          onFocus={() => removeError('discount')}
+          keyboardType="number-pad"
+          readOnly={formValues.serviceCharge?.label === 'Free'}
+        />
+        <TextInput
+          label="Deduction"
+          placeholder="Deduction"
+          error={errors.deduction}
+          value={formValues.deduction.toString()}
+          onChangeText={(value) => handleInputChange('deduction', value)}
+          onFocus={() => removeError('deduction')}
+          keyboardType="number-pad"
+        />
+
         <TextInput
           label="Contact Number"
           placeholder="Enter Contact Number"

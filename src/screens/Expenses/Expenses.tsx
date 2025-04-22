@@ -36,7 +36,9 @@ import {
   ElectricityIcon,
   ManpowerIcon,
   OtherIcon,
+  PercentageIcon,
   RentIcon,
+  WaterIcon,
 } from '@app/icons';
 
 const renderSeparator = () => <View style={styles.separator} />;
@@ -47,13 +49,17 @@ const CATEGORY_ICONS: { [key: string]: JSX.Element } = {
   rent: <RentIcon fill="#ffffff" />,
   consumables: <ConsumablesListIcon fill="#ffffff" />,
   others: <OtherIcon fill="#ffffff" />,
+  water: <WaterIcon fill="#ffffff" />,
+  promotions: <PercentageIcon fill="#ffffff" />,
 };
 
 const CATEGORY_ICONS_COLORS: { [key: string]: string } = {
   manpower: '#4BB543',
-  electricity: '#1F93E1',
+  electricity: '#fd5815',
   rent: '#888888',
   consumables: '#FFB238',
+  water: '#0288D1',
+  promotions: '#d32f2f',
   others: '#FF7070',
 };
 

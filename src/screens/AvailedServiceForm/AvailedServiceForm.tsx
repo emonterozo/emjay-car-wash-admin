@@ -29,6 +29,17 @@ import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 import { useNativeBackHandler } from '@app/hooks';
 import { getEmployeesRequest, updateAvailedServiceRequest } from '@app/services';
 import GlobalContext from '@app/context';
+import {
+  BillIcon,
+  BillPaidIcon,
+  CancelIcon,
+  CashIcon,
+  CashInHandIcon,
+  DoneIcon,
+  GiftIcon,
+  InProgressIcon,
+  PendingIcon,
+} from '@app/icons';
 
 const validationSchema = Yup.object({
   deduction: Yup.number()
@@ -69,22 +80,22 @@ type Errors = {
 const SERVICE_STATUS_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.PENDING} resizeMode="contain" />,
+    icon: <PendingIcon width={24} height={24} />,
     label: 'PENDING',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.ONGOING} resizeMode="contain" />,
+    icon: <InProgressIcon width={24} height={24} />,
     label: 'ONGOING',
   },
   {
     id: '3',
-    icon: <Image source={IMAGES.ACTIVE_STATUS} resizeMode="contain" />,
+    icon: <DoneIcon width={24} height={24} />,
     label: 'DONE',
   },
   {
     id: '4',
-    icon: <Image source={IMAGES.CANCELLED} resizeMode="contain" />,
+    icon: <CancelIcon width={24} height={24} />,
     label: 'CANCEL',
   },
 ];
@@ -92,17 +103,17 @@ const SERVICE_STATUS_OPTIONS = [
 const SERVICE_CHARGE_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.FREE} resizeMode="contain" />,
+    icon: <GiftIcon width={24} height={24} />,
     label: 'Free',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.NOT_FREE} resizeMode="contain" />,
+    icon: <CashInHandIcon width={24} height={24} />,
     label: 'Not Free',
   },
   {
     id: '3',
-    icon: <Image source={IMAGES.PAID} resizeMode="contain" />,
+    icon: <CashIcon width={24} height={24} />,
     label: 'Points & Cash',
   },
 ];
@@ -123,12 +134,12 @@ const ICON_GENDER = [
 const PAYMENT_STATUS_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.PAID} resizeMode="contain" />,
+    icon: <BillPaidIcon width={24} height={24} />,
     label: 'Paid',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.NOT_YET_PAID} resizeMode="contain" />,
+    icon: <BillIcon width={24} height={24} />,
     label: 'Not Yet Paid',
   },
 ];

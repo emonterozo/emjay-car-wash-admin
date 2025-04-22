@@ -39,7 +39,9 @@ import {
   ElectricityIcon,
   ManpowerIcon,
   OtherIcon,
+  PercentageIcon,
   RentIcon,
+  WaterIcon,
 } from '@app/icons';
 
 const validationSchema = Yup.object({
@@ -77,9 +79,11 @@ type Errors = {
 
 const CATEGORY_ICONS_COLORS = {
   manpower: '#4BB543',
-  electricity: '#1F93E1',
+  electricity: '#fd5815',
   rent: '#888888',
   consumables: '#FFB238',
+  water: '#0288D1',
+  promotions: '#d32f2f',
   others: '#FF7070',
 };
 
@@ -113,6 +117,15 @@ const CATEGORY_OPTIONS = [
     label: 'ELECTRICITY',
   },
   {
+    id: '6',
+    icon: (
+      <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.water }]}>
+        <WaterIcon fill="#ffffff" width={20} height={20} />
+      </View>
+    ),
+    label: 'WATER',
+  },
+  {
     id: '3',
     icon: (
       <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.rent }]}>
@@ -120,6 +133,15 @@ const CATEGORY_OPTIONS = [
       </View>
     ),
     label: 'RENT',
+  },
+  {
+    id: '7',
+    icon: (
+      <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.promotions }]}>
+        <PercentageIcon fill="#ffffff" width={20} height={20} />
+      </View>
+    ),
+    label: 'PROMOTIONS',
   },
   {
     id: '4',
@@ -275,7 +297,7 @@ const ExpensesForm = () => {
 
     const formattedCategory =
       formValues.category &&
-      ['MANPOWER', 'ELECTRICITY', 'RENT', 'CONSUMABLES', 'OTHERS'].includes(
+      ['MANPOWER', 'ELECTRICITY', 'RENT', 'CONSUMABLES', 'OTHERS', 'WATER', 'PROMOTIONS'].includes(
         formValues.category.label,
       )
         ? formValues.category.label

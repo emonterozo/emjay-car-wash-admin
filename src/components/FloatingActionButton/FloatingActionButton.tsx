@@ -1,12 +1,12 @@
 import React, { ReactElement, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image, ImageSourcePropType } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import MaterialCommunityIcon from '../MaterialCommunityIcon/MaterialCommunityIcon';
 import { color, font } from '@app/styles';
 import { MenuIcon } from '@app/icons';
 
 interface AdditionalButton {
   onPress: () => void;
-  icon: ImageSourcePropType | string;
+  icon: string | ReactElement;
   label: string;
 }
 
@@ -48,9 +48,9 @@ const FloatingActionButton = ({
           >
             <View style={styles.additionalButtonContent}>
               {typeof button.icon === 'string' ? (
-                <MaterialCommunityIcon name={button.icon} size={30} color="#ffffff" />
+                <MaterialCommunityIcon name={button.icon} size={25} color="#ffffff" />
               ) : (
-                <Image source={button.icon} style={styles.image} resizeMode="contain" />
+                button.icon
               )}
               <Text style={styles.buttonText}>{button.label}</Text>
             </View>
@@ -85,10 +85,6 @@ const styles = StyleSheet.create({
   },
   additionalButton: {
     marginBottom: 12,
-  },
-  image: {
-    height: 24,
-    width: 24,
   },
   additionalButtonContent: {
     backgroundColor: color.primary,
