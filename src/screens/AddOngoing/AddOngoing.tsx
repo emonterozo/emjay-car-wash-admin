@@ -1,13 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  StatusBar,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
@@ -34,8 +26,8 @@ import {
   ModalDropdownTrigger,
   Toast,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES, SIZE_DESCRIPTION, SIZES } from '@app/constant';
-import { CarIcon, CashIcon, CashInHandIcon, GiftIcon, MotorcycleIcon } from '@app/icons';
+import { ERR_NETWORK, SIZE_DESCRIPTION, SIZES } from '@app/constant';
+import { CarIcon, CashIcon, CashInHandIcon, CoinsIcon, GiftIcon, MotorcycleIcon } from '@app/icons';
 import {
   addTransactionServiceRequest,
   createOngoingTransactionRequest,
@@ -448,7 +440,7 @@ const AddOngoing = () => {
               </Text>
             </View>
             <View style={styles.points}>
-              <Image source={IMAGES.COIN} resizeMode="contain" />
+              <CoinsIcon width={40} height={40} />
               <View>
                 <Text style={styles.pointsValue}>{`${points.toLocaleString()} pts`}</Text>
                 <Text style={styles.pointsLabel}>Current points earned</Text>

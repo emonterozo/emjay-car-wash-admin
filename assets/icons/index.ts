@@ -59,3 +59,5 @@ export { default as WalletErrorIcon } from './WalletErrorIcon';
 export { default as WalletIcon } from './WalletIcon';
 export { default as WaterIcon } from './WaterIcon';
 export { default as PercentageIcon } from './PercentageIcon';
+export { default as DiscountIcon } from './DiscountIcon';
+export { default as CoinsIcon } from './CoinsIcon';

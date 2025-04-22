@@ -24,6 +24,7 @@ import { ScreenStatusProps, PromoItem } from '../../types/services/types';
 import { getPromos } from '@app/services';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { NavigationProp } from '../../types/navigation/types';
+import { DiscountIcon } from '@app/icons';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
@@ -97,11 +98,11 @@ const Publish = () => {
         </Text>
         <Text style={styles.publishDescription}>{item.description}</Text>
       </View>
-      <Image
-        source={item.is_free ? IMAGES.PROMO_FREE : IMAGES.PROMO_PERCENT}
-        style={styles.publishImage}
-        resizeMode="cover"
-      />
+      {item.is_free ? (
+        <Image source={IMAGES.PROMO_FREE} style={styles.publishImage} resizeMode="cover" />
+      ) : (
+        <DiscountIcon />
+      )}
     </TouchableOpacity>
   );
 
