@@ -108,13 +108,13 @@ const ModalDropdown = ({
                     <Text style={styles.optionTitle}>{item.title}</Text>
                     {item.points !== undefined && (
                       <View style={styles.content}>
-                        <Text style={styles.label}>Points required</Text>
+                        <Text style={styles.label}>Required points</Text>
                         <Text style={styles.value}>{item.points}</Text>
                       </View>
                     )}
                     {item.earningPoints !== undefined && (
                       <View style={styles.content}>
-                        <Text style={styles.label}>Points earned</Text>
+                        <Text style={styles.label}>Earning points</Text>
                         <Text style={styles.value}>{item.earningPoints}</Text>
                       </View>
                     )}
@@ -253,12 +253,14 @@ const styles = StyleSheet.create({
   label: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#696969',
     flex: 2,
   },
   value: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#050303',
     flex: 1,
     textAlign: 'right',

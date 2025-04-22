@@ -24,7 +24,7 @@ import {
   SizeDisplay,
 } from '@app/components';
 import { color, font } from '@app/styles';
-import { CarIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
+import { CarIcon, CoinsIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
 import { getCustomerInformationRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import {
@@ -71,6 +71,7 @@ const CustomerDetails = () => {
     car: [0, 0, 0, 0, 0],
     motorcycle: [0, 0, 0],
   });
+  const [points, setPoints] = useState(0);
 
   const customerDetails = customerInformation
     ? [
@@ -137,6 +138,7 @@ const CustomerDetails = () => {
         car: customer.car_wash_service_count.map((item) => item.count),
         motorcycle: customer.moto_wash_service_count.map((item) => item.count),
       });
+      setPoints(customer.points);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -200,6 +202,14 @@ const CustomerDetails = () => {
               </Text>
             </Text>
           ))}
+        </View>
+        <View style={styles.horizontalSeparator} />
+        <View style={styles.points}>
+          <CoinsIcon width={40} height={40} />
+          <View>
+            <Text style={styles.pointsValue}>{`${points.toLocaleString()} pts`}</Text>
+            <Text style={styles.pointsLabel}>Current points earned</Text>
+          </View>
         </View>
         <View style={styles.horizontalSeparator} />
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom]}>
@@ -357,6 +367,33 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: '100%',
+  },
+  points: {
+    backgroundColor: '#F3F2EF',
+    borderRadius: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4.5 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 24,
+    gap: 24,
+    width: Dimensions.get('window').width - 48,
+    alignSelf: 'center',
+  },
+  pointsValue: {
+    ...font.bold,
+    fontSize: 20,
+    lineHeight: 20,
+    color: '#050303',
+  },
+  pointsLabel: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#696969',
   },
 });
 

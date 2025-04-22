@@ -117,6 +117,7 @@ export type CustomerInformation = {
   province: string | null;
   birth_date: string;
   registered_on: string;
+  points: number;
   transactions: RecentTransaction[];
   car_wash_service_count: ServiceCount[];
   moto_wash_service_count: ServiceCount[];
