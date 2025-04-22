@@ -1,24 +1,25 @@
 import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const ConsumablesListIcon = ({ width = 40, height = 41 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect y={0.5} width={40} height={40} fill="url(#pattern0_1334_13648)" />
-    <Defs>
-      <Pattern
-        id="pattern0_1334_13648"
-        patternContentUnits="objectBoundingBox"
-        width={1}
-        height={1}
-      >
-        <Use xlinkHref="#image0_1334_13648" transform="scale(0.01)" />
-      </Pattern>
-      <Image
-        id="image0_1334_13648"
-        width={100}
-        height={100}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADZUlEQVR4nO2dv2sUQRTHR0UQFK1E/HHzLsFeQVC0slTUBAR/NDb5Jyy1EAkI4s5sk8pCbCSFhWAVYyuKKHZCsvMuEhOw0ihamJVNFJK7ibnbvZ192ft+4JVv5837MDs7x7GrFAAAAAAAAGArcGLizU51K91edR0iIdu6TpbnyXJa6zDuUzZXJZY03UaWb5Nxy5U3ywaNSNzqpIfJLm34sYDmpBXFs6PRx71KAg3Lh8i41wKaklYZ2rj3zXiWKpVBcXJcG9fqKNC4L2STs0FqsOvHDjNmclpbXvCImW/Gc6dUFWjLV8i4751FuQ/auKFQdVAFQjIOR3NHtOW3HSvF8k8duxtBN29t+SZZ99uzbJ8PT8zsC1eMqkxIxv54cY827qnnDrFMhsdL3+yzzZssP9rgPhqpJ+mOUgsQJmTd06WvJ4YnD9z7vLuUcfV9d1Bb98qzRH9RlIypiqCqhfyrI0rGVnrR2Z93ww9mdF8Ha5rZY9oyV7l5SxeSoSN3Rhte9G32Q6Z1si+DkEku+zdvBPXUA/ejEfGl4tb9xhE2x1nF8kLxFYLmp/3sAYTYmgspfMEBgyBEFhAiDAgRBoQIA0KEASHCgBBh1E5IM+ZRbd1Lsm4p/4HMLWnD0w3LI6Hrr5UQMjze75OyNu5u0DnURUgz5tGyfr7Q1l0MNY/aCNErt6myhPCLUPOojRAy7tvacRsxX817rSy3TchXFQgI8dA0fA1CCqINT5d1yyLLUyoQtVkhDcsjpe0hxl0INY/aCMnIHlFLkHFHBaRWQjKyR9Tsqah9k+8pVnOnQq6M2grZ6kCIMCBEGBAiDAgRBoQIA0KEASHCgBBhQIgwIEQYECIMCBEGhAgDQoQBIcKAEGFAiDAgRBgQIgwIEQaECANCumD1ZZ08HiIPQjZh3butemhugTz8L2sjvC8a66K5efP+5kKIjw3f+rZJc/PmrcmHkJ6a+p/m5s1ruwaE9NxUT3Pz5rUDIZuQt0Gh88JdsGIIQmRBECILghBZEITIgiBEFgQhsiAIGWwI5xBZQEgbXf/8UTC6HV8N+kmdIEQWBCGyIAgBa8EeIgwIEQaECANChAEhgyYEwaWc6CHEblkhbg6rgvsiI/uydnEhJjnv/UQ3Iu1VBsWtc4WFAAAAAAAAAIDqL38AveszZLNcS7kAAAAASUVORK5CYII="
-      />
-    </Defs>
+import Svg, { G, Path } from 'react-native-svg';
+const ConsumablesListIcon = ({ width = 40, height = 40, fill = '#016fb9' }: IconProps) => (
+  <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
+    <G
+      fill={fill}
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(5.12,5.12)">
+        <Path d="M24.90625,3.96875c-0.03125,0.00781 -0.0625,0.01953 -0.09375,0.03125h-13.8125c-0.03125,0 -0.0625,0 -0.09375,0c-0.03125,0 -0.0625,0 -0.09375,0c-0.16016,0.03516 -0.3125,0.10938 -0.4375,0.21875l-5.90625,4.9375l-0.09375,0.0625c-0.04297,0.02734 -0.08594,0.05859 -0.125,0.09375c-0.01172,0.01172 -0.01953,0.01953 -0.03125,0.03125c0,0.01172 0,0.01953 0,0.03125c-0.01172,0 -0.01953,0 -0.03125,0c0,0.01953 0,0.04297 0,0.0625c-0.02344,0.03125 -0.04297,0.0625 -0.0625,0.09375c-0.03906,0.05859 -0.07031,0.12109 -0.09375,0.1875c-0.01562,0.0625 -0.02734,0.125 -0.03125,0.1875c-0.00781,0.0625 -0.00781,0.125 0,0.1875v34.90625c0,0.55078 0.44922,1 1,1h40c0.55078,0 1,-0.44922 1,-1v-34.84375c0.00391,-0.05078 0.00391,-0.10547 0,-0.15625c0,-0.01953 0,-0.04297 0,-0.0625c0,-0.01172 0,-0.01953 0,-0.03125c0,-0.01953 0,-0.04297 0,-0.0625c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c0,-0.01953 0,-0.04297 0,-0.0625c0,-0.01172 0,-0.01953 0,-0.03125c-0.00781,-0.01953 -0.01953,-0.04297 -0.03125,-0.0625c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c0,-0.01953 0,-0.04297 0,-0.0625c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c-0.00781,-0.01953 -0.01953,-0.04297 -0.03125,-0.0625c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c-0.00781,-0.01953 -0.01953,-0.04297 -0.03125,-0.0625c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125c-0.01172,-0.01172 -0.01953,-0.01953 -0.03125,-0.03125l-0.09375,-0.0625c-0.01953,-0.02344 -0.03906,-0.04297 -0.0625,-0.0625l-5.84375,-4.875c-0.17578,-0.14062 -0.39844,-0.21875 -0.625,-0.21875h-13.78125c-0.10156,-0.02734 -0.20703,-0.03906 -0.3125,-0.03125zM11.375,6h12.625v3h-16.21875zM26,6h12.625l3.59375,3h-16.21875zM6,11h38v33h-38zM21.5,15c-1.38281,0 -2.5,1.11719 -2.5,2.5c0,1.38281 1.11719,2.5 2.5,2.5h7c1.38281,0 2.5,-1.11719 2.5,-2.5c0,-1.38281 -1.11719,-2.5 -2.5,-2.5zM21.5,17h7c0.21484,0 0.5,0.28516 0.5,0.5c0,0.21484 -0.28516,0.5 -0.5,0.5h-7c-0.21484,0 -0.5,-0.28516 -0.5,-0.5c0,-0.21484 0.28516,-0.5 0.5,-0.5zM31,31l-3,3h2v4h2v-4h2zM38,31l-3,3h2v4h2v-4h2zM28,39v2h13v-2z" />
+      </G>
+    </G>
   </Svg>
 );
 export default ConsumablesListIcon;

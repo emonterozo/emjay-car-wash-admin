@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 25,
     paddingBottom: 25,
+    paddingVertical: 1,
   },
   card: {
     backgroundColor: '#F3F2EF',

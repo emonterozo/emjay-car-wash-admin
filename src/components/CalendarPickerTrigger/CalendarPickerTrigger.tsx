@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { font, color } from '@app/styles';
-import { IMAGES } from '@app/constant';
 import CalendarPicker from '../CalendarPicker/CalendarPicker';
 import {
   getCurrentDateAtMidnightUTC,
   getMinimumDateAtMidnightUTC,
   isStringEmpty,
 } from '@app/helpers';
+import { CalendarIcon, HighImportanceIcon } from '@app/icons';
 
 export type CalendarPickerTriggerProps = {
   date: Date;
@@ -90,10 +90,7 @@ const CalendarPickerTrigger = ({
       <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
       <TouchableWithoutFeedback onPress={handlePressOpen} disabled={isDisabled}>
         <Animated.View style={[styles.container, { backgroundColor: getColor() }, animatedStyle]}>
-          <Image
-            source={value ? IMAGES.CALENDAR_ACTIVE : IMAGES.CALENDAR_INACTIVE}
-            resizeMode="contain"
-          />
+          <CalendarIcon width={25} height={25} fill={value ? color.primary : '#696969'} />
           {value ? (
             <Text style={[styles.label, { color: textColor }]}>{value}</Text>
           ) : (
@@ -112,7 +109,7 @@ const CalendarPickerTrigger = ({
       </TouchableWithoutFeedback>
       {error && (
         <View style={styles.errorContainer}>
-          <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" style={styles.image} />
+          <HighImportanceIcon width={16} height={16} fill="#FF7070" />
           <Text style={styles.error}>{error}</Text>
         </View>
       )}
@@ -165,10 +162,6 @@ const styles = StyleSheet.create({
     lineHeight: 12,
     color: '#FF7070',
     flex: 1,
-  },
-  image: {
-    width: 16,
-    height: 16,
   },
 });
 

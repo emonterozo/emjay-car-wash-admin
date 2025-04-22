@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Dimensions,
-  Image,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -14,8 +13,13 @@ import { useNavigation } from '@react-navigation/native';
 import FastImage from '@d11/react-native-fast-image';
 import { format } from 'date-fns';
 
-import { DASHBOARD_ITEMS, ERR_NETWORK, IMAGES } from '@app/constant';
-import { CircleArrowRightIcon, DashboardUpdateIcon, HorizontalKebabIcon } from '@app/icons';
+import { DASHBOARD_ITEMS, ERR_NETWORK } from '@app/constant';
+import {
+  AdminIcon,
+  CircleArrowRightIcon,
+  DashboardUpdateIcon,
+  HorizontalKebabIcon,
+} from '@app/icons';
 import { color, font } from '@app/styles';
 import {
   EmptyState,
@@ -111,11 +115,11 @@ const Home = () => {
       <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
       <View style={styles.heading}>
         <View style={styles.greetingContainer}>
-          <Text style={styles.greeting}>Hello Admin</Text>
+          <Text style={styles.greeting}>Good Day, Emjay!</Text>
           <Text style={styles.subHeader}>Keep an eye on your sales with care.</Text>
         </View>
         <View style={styles.avatarContainer}>
-          <Image source={IMAGES.AVATAR} style={styles.avatar} resizeMode="contain" />
+          <AdminIcon width={40} height={40} />
         </View>
       </View>
       <ScrollView style={styles.scrollView} bounces={false} showsVerticalScrollIndicator={false}>
@@ -223,10 +227,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
   },
-  avatar: {
-    width: 49,
-    height: 49,
-  },
   heading: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -242,6 +242,7 @@ const styles = StyleSheet.create({
   greeting: {
     ...font.regular,
     fontSize: 24,
+    lineHeight: 24,
     color: '#050303',
   },
   subHeader: {
@@ -251,9 +252,12 @@ const styles = StyleSheet.create({
     color: '#696969',
   },
   avatarContainer: {
-    gap: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
+    backgroundColor: '#ffffff',
+    borderRadius: 49,
+    width: 49,
+    height: 49,
   },
   dashboardContainer: {
     paddingHorizontal: 23,

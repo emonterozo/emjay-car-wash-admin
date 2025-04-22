@@ -180,11 +180,13 @@ const CustomerDetails = () => {
       />
       <Text style={[styles.heading, styles.textCustomerDetails]}>Customer Details</Text>
       <ScrollView bounces={false}>
-        <Image
-          source={customerInformation?.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <View style={styles.avatarContainer}>
+          <Image
+            source={customerInformation?.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+            style={styles.avatar}
+            resizeMode="contain"
+          />
+        </View>
         <Text style={[styles.textTitle, styles.horizontalSeparatorMarginBottom21]}>
           Personal Information
         </Text>
@@ -339,14 +341,22 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingHorizontal: 20,
   },
-  image: {
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 187,
     width: 187,
     height: 187,
+    overflow: 'hidden',
     alignSelf: 'center',
     marginTop: 41,
     marginBottom: 41,
-    backgroundColor: '#46A6FF',
-    borderRadius: 187,
+  },
+  avatar: {
+    position: 'absolute',
+    top: 9,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 

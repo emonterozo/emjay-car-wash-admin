@@ -6,7 +6,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Image,
   Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -28,10 +27,11 @@ import {
   ConfirmationModal,
   Dropdown,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK } from '@app/constant';
 import { useNativeBackHandler } from '@app/hooks';
 import GlobalContext from '@app/context';
 import { addPromoRequest, updatePromoRequest } from '@app/services';
+import { CircleCheckIcon, HighImportanceIcon } from '@app/icons';
 
 const validationSchema = Yup.object({
   status: Yup.object().required('Status is required'),
@@ -65,13 +65,13 @@ type Errors = {
 const STATUS_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.ACTIVE_STATUS} resizeMode="contain" />,
+    icon: <CircleCheckIcon width={25} height={25} />,
     label: 'ACTIVE',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" />,
-    label: 'INACTIVE',
+    icon: <HighImportanceIcon width={25} height={25} fill="#FF7070" />,
+    label: 'TERMINATED',
   },
 ];
 

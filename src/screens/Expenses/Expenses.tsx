@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   StatusBar,
   FlatList,
-  Image,
   TouchableOpacity,
 } from 'react-native';
 
@@ -23,7 +22,7 @@ import {
   LoadingAnimation,
   MaterialCommunityIcon,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK } from '@app/constant';
 import GlobalContext from '@app/context';
 import {
   formattedNumber,
@@ -32,15 +31,30 @@ import {
 } from '@app/helpers';
 import { getExpenseItemsRequest } from '@app/services';
 import { color, font } from '@app/styles';
+import {
+  ConsumablesListIcon,
+  ElectricityIcon,
+  ManpowerIcon,
+  OtherIcon,
+  RentIcon,
+} from '@app/icons';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
 const CATEGORY_ICONS: { [key: string]: JSX.Element } = {
-  manpower: <Image source={IMAGES.MAN_POWER} resizeMode="contain" />,
-  electricity: <Image source={IMAGES.ELECTRICITY} resizeMode="contain" />,
-  rent: <Image source={IMAGES.RENT} resizeMode="contain" />,
-  consumables: <Image source={IMAGES.CONSUMABLES_OTHER} resizeMode="contain" />,
-  others: <Image source={IMAGES.OTHER} resizeMode="contain" />,
+  manpower: <ManpowerIcon fill="#ffffff" />,
+  electricity: <ElectricityIcon fill="#ffffff" />,
+  rent: <RentIcon fill="#ffffff" />,
+  consumables: <ConsumablesListIcon fill="#ffffff" />,
+  others: <OtherIcon fill="#ffffff" />,
+};
+
+const CATEGORY_ICONS_COLORS: { [key: string]: string } = {
+  manpower: '#4BB543',
+  electricity: '#1F93E1',
+  rent: '#888888',
+  consumables: '#FFB238',
+  others: '#FF7070',
 };
 
 const Expenses = () => {
@@ -63,12 +77,11 @@ const Expenses = () => {
   };
 
   const renderCardItem = ({ item }: { item: ExpenseItem }) => {
-    const IconComponent = CATEGORY_ICONS[item.category.toLowerCase()] || (
-      <Image source={IMAGES.OTHER} resizeMode="contain" />
-    );
+    const IconComponent = CATEGORY_ICONS[item.category.toLowerCase()];
+    const backgroundColor = CATEGORY_ICONS_COLORS[item.category.toLowerCase()];
     return (
       <View style={styles.card}>
-        {IconComponent}
+        <View style={[styles.circle, { backgroundColor: backgroundColor }]}>{IconComponent}</View>
         <View style={[styles.middleSection, styles.textContainer]}>
           <Text style={styles.category}>
             {item.category.charAt(0) + item.category.slice(1).toLowerCase()}
@@ -264,6 +277,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CECECE',
     gap: 10,
+  },
+  circle: {
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 60,
   },
 });
 

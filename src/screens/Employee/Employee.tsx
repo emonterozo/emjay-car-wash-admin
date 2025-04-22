@@ -111,11 +111,13 @@ const Employee = () => {
     _id,
   }: Employees) => (
     <TouchableOpacity style={styles.card} onPress={() => handleCardPress(_id)}>
-      <Image
-        source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-        style={styles.image}
-        resizeMode="contain"
-      />
+      <View style={styles.avatarContainer}>
+        <Image
+          source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+          style={styles.avatar}
+          resizeMode="contain"
+        />
+      </View>
       <View style={styles.textContainer}>
         <Text style={styles.textName}>
           {first_name} {last_name}
@@ -202,12 +204,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     maxWidth: '100%',
   },
-  image: {
-    height: 90,
-    width: 90,
-    backgroundColor: '#46A6FF',
-    borderRadius: 90,
-  },
   textContainer: {
     flex: 1,
   },
@@ -241,6 +237,20 @@ const styles = StyleSheet.create({
   },
   textInfoContainer: {
     gap: 4,
+  },
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 90,
+    width: 90,
+    height: 90,
+    overflow: 'hidden',
+  },
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 

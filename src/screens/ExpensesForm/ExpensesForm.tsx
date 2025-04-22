@@ -6,7 +6,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Image,
   Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,11 +29,18 @@ import {
   CalendarPickerTrigger,
   Dropdown,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK } from '@app/constant';
 import { useNativeBackHandler } from '@app/hooks';
 import GlobalContext from '@app/context';
 import { getCurrentDateAtMidnightUTC } from '@app/helpers';
 import { addExpenseRequest } from '@app/services';
+import {
+  ConsumablesListIcon,
+  ElectricityIcon,
+  ManpowerIcon,
+  OtherIcon,
+  RentIcon,
+} from '@app/icons';
 
 const validationSchema = Yup.object({
   category: Yup.object().required('Category is required'),
@@ -69,38 +75,68 @@ type Errors = {
   [key in keyof FormValues]?: string;
 };
 
+const CATEGORY_ICONS_COLORS = {
+  manpower: '#4BB543',
+  electricity: '#1F93E1',
+  rent: '#888888',
+  consumables: '#FFB238',
+  others: '#FF7070',
+};
+
 const STYLES = StyleSheet.create({
-  icon: {
+  circle: {
     width: 30,
     height: 30,
-    resizeMode: 'contain',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
   },
 });
 
 const CATEGORY_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.MAN_POWER} style={STYLES.icon} />,
+    icon: (
+      <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.manpower }]}>
+        <ManpowerIcon fill="#ffffff" width={20} height={20} />
+      </View>
+    ),
     label: 'MANPOWER',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.ELECTRICITY} style={STYLES.icon} />,
+    icon: (
+      <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.electricity }]}>
+        <ElectricityIcon fill="#ffffff" width={20} height={20} />
+      </View>
+    ),
     label: 'ELECTRICITY',
   },
   {
     id: '3',
-    icon: <Image source={IMAGES.RENT} style={STYLES.icon} />,
+    icon: (
+      <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.rent }]}>
+        <RentIcon fill="#ffffff" width={20} height={20} />
+      </View>
+    ),
     label: 'RENT',
   },
   {
     id: '4',
-    icon: <Image source={IMAGES.CONSUMABLES_OTHER} style={STYLES.icon} />,
+    icon: (
+      <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.consumables }]}>
+        <ConsumablesListIcon fill="#ffffff" width={20} height={20} />
+      </View>
+    ),
     label: 'CONSUMABLES',
   },
   {
     id: '5',
-    icon: <Image source={IMAGES.OTHER} style={STYLES.icon} />,
+    icon: (
+      <View style={[STYLES.circle, { backgroundColor: CATEGORY_ICONS_COLORS.others }]}>
+        <OtherIcon fill="#ffffff" width={20} height={20} />
+      </View>
+    ),
     label: 'OTHERS',
   },
 ];

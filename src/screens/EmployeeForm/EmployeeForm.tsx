@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
@@ -19,13 +19,14 @@ import {
   LoadingAnimation,
   ErrorModal,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK } from '@app/constant';
 import { getCurrentDateAtMidnightUTC } from '@app/helpers';
 import { useNativeBackHandler } from '@app/hooks';
 import { EmployeeFormRouteProp, NavigationProp } from '../../types/navigation/types';
 import { ScreenStatusProps } from 'src/types/services/types';
 import { addEmployeeRequest, updateEmployeeRequest } from '@app/services';
 import GlobalContext from '@app/context';
+import { CircleCheckIcon, FemaleIcon, HighImportanceIcon, MaleIcon } from '@app/icons';
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required('First name is required'),
@@ -69,12 +70,12 @@ type ToastMessage = {
 const GENDER_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.MALE} resizeMode="contain" />,
+    icon: <MaleIcon width={25} height={25} fill="#2196f3" />,
     label: 'MALE',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
+    icon: <FemaleIcon width={25} height={25} fill="#f78f8f" />,
     label: 'FEMALE',
   },
 ];
@@ -82,12 +83,12 @@ const GENDER_OPTIONS = [
 const STATUS_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.ACTIVE_STATUS} resizeMode="contain" />,
+    icon: <CircleCheckIcon width={25} height={25} />,
     label: 'ACTIVE',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" />,
+    icon: <HighImportanceIcon width={25} height={25} fill="#FF7070" />,
     label: 'TERMINATED',
   },
 ];
@@ -560,6 +561,7 @@ const styles = StyleSheet.create({
   textStyle: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
   },
 });
 export default EmployeeForm;

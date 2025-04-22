@@ -116,11 +116,13 @@ const Customers = () => {
         data={customers}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item._id)}>
-            <Image
-              source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-              style={styles.image}
-              resizeMode="contain"
-            />
+            <View style={styles.avatarContainer}>
+              <Image
+                source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+                style={styles.avatar}
+                resizeMode="contain"
+              />
+            </View>
             <View style={styles.details}>
               <Text style={styles.textName}>{`${item.first_name} ${item.last_name}`}</Text>
               <View style={styles.textInfoContainer}>
@@ -181,12 +183,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
   },
-  image: {
-    height: 90,
-    width: 90,
-    backgroundColor: '#46A6FF',
-    borderRadius: 90,
-  },
   textCustomerList: {
     ...font.regular,
     fontSize: 16,
@@ -213,6 +209,20 @@ const styles = StyleSheet.create({
   },
   textInfoContainer: {
     gap: 4,
+  },
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 90,
+    width: 90,
+    height: 90,
+    overflow: 'hidden',
+  },
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 

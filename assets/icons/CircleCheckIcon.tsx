@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Svg, { G, Path } from 'react-native-svg';
-const CircleCheckIcon = ({ width = 16, height = 16 }: IconProps) => (
+const CircleCheckIcon = ({ width = 16, height = 16, fill = '#4bb543' }: IconProps) => (
   <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
     <G
-      fill="#4bb543"
+      fill={fill}
       fillRule="nonzero"
       stroke="none"
       strokeWidth={1}
