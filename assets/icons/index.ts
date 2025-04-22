@@ -61,3 +61,6 @@ export { default as WaterIcon } from './WaterIcon';
 export { default as PercentageIcon } from './PercentageIcon';
 export { default as DiscountIcon } from './DiscountIcon';
 export { default as CoinsIcon } from './CoinsIcon';
+export { default as AccessDeniedIcon } from './AccessDeniedIcon';
+export { default as UserNotFoundIcon } from './UserNotFoundIcon';
+export { default as NoCameraIcon } from './NoCameraIcon';

@@ -1,20 +1,12 @@
 import { AppHeader, ErrorModal, LoadingAnimation } from '@app/components';
-import { ERR_NETWORK, IMAGES, MESSAGE } from '@app/constant';
+import { ERR_NETWORK, MESSAGE } from '@app/constant';
 import GlobalContext from '@app/context';
+import { AccessDeniedIcon, NoCameraIcon, UserNotFoundIcon } from '@app/icons';
 import { getCustomerFreeWashServiceRequest } from '@app/services';
 import { color, font } from '@app/styles';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  StatusBar,
-  Text,
-  Pressable,
-  Dimensions,
-  Image,
-  Linking,
-} from 'react-native';
+import { View, StyleSheet, StatusBar, Text, Pressable, Dimensions, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Camera,
@@ -29,6 +21,12 @@ const { width, height } = Dimensions.get('window');
 
 type MessageType = keyof typeof MESSAGE;
 type OnButtonPress = () => void;
+
+const ERROR_IMAGE: any = {
+  CUSTOMER_NOT_EXIST: <UserNotFoundIcon width={85} height={85} />,
+  NO_CAMERA: <NoCameraIcon width={85} height={85} />,
+  PERMISSION_DENIED: <AccessDeniedIcon width={85} height={85} />,
+};
 
 const Scan = () => {
   const { user } = useContext(GlobalContext);
@@ -125,8 +123,12 @@ const Scan = () => {
         <StatusBar backgroundColor={color.background} barStyle="dark-content" />
         <AppHeader title="QR Scan" />
         <View style={styles.displayContainer}>
-          <View style={styles.iconContainer}>
-            <Image source={IMAGES[image]} style={styles.image} resizeMode="contain" />
+          <View style={styles.errorFrame}>
+            <View style={[styles.cornerTopLeft, styles.error]} />
+            <View style={[styles.cornerTopRight, styles.error]} />
+            <View style={[styles.cornerBottomLeft, styles.error]} />
+            <View style={[styles.cornerBottomRight, styles.error]} />
+            <View style={styles.iconContainer}>{ERROR_IMAGE[image]}</View>
           </View>
           <Text style={[styles.text, styles.textTitle, styles.textColor]}>{title}</Text>
           <Text style={[styles.text, styles.textDescription, styles.textColor]}>{description}</Text>
@@ -240,12 +242,9 @@ const styles = StyleSheet.create({
     color: color.background,
   },
   iconContainer: {
-    marginBottom: 24,
-  },
-  image: {
-    width: 90,
-    height: 97,
-    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 135,
   },
   overlay: {
     position: 'absolute',
@@ -309,6 +308,15 @@ const styles = StyleSheet.create({
     top: 50,
     left: 0,
     right: 0,
+  },
+  errorFrame: {
+    width: 135,
+    height: 135,
+    position: 'relative',
+    marginBottom: 24,
+  },
+  error: {
+    borderColor: 'black',
   },
 });
 

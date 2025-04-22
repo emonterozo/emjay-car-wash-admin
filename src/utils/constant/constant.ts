@@ -68,9 +68,6 @@ export const IMAGES = {
   AVATAR_GIRL: require('../../../assets/images/avatar-girl.png'),
   ERROR: require('../../../assets/images/error.png'),
   NO_CONNECTION: require('../../../assets/images/no-connection.png'),
-  CUSTOMER_NOT_EXIST: require('../../../assets/images/customer-not-exist.png'),
-  NO_CAMERA: require('../../../assets/images/no-camera.png'),
-  PERMISSION_DENIED: require('../../../assets/images/permission-denied.png'),
   CANCEL: require('../../../assets/images/cancel.png'),
   PROMO_FREE: require('../../../assets/images/free.png'),
 };
@@ -128,10 +125,9 @@ export const CONFIRM_TYPE = {
 
 export const LIMIT = 50;
 
-type ImageKeys = keyof typeof IMAGES;
 export const MESSAGE: Record<
   string,
-  { title: string; description: string; button: string; image: ImageKeys }
+  { title: string; description: string; button: string; image: string }
 > = {
   no_camera: {
     title: 'No Camera Detected',
