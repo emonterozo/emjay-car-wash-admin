@@ -33,3 +33,4 @@ export { default as EditIcon } from './EditIcon';
 export { default as CloseIcon } from './CloseIcon';
 export { default as ConsumablesListIcon } from './ConsumablesListIcon';
 export { default as FreeIcon } from './FreeIcon';
+export { default as ScanIcon } from './ScanIcon';

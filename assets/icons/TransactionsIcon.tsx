@@ -1,19 +1,25 @@
 import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const TransactionsIcon = ({ width = 31, height = 30 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect x={0.666626} width={30} height={30} fill="url(#pattern0_178_949)" />
-    <Defs>
-      <Pattern id="pattern0_178_949" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_178_949" transform="scale(0.015625)" />
-      </Pattern>
-      <Image
-        id="image0_178_949"
-        width={64}
-        height={64}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAECklEQVR4nO2bX4hUdRTHz8nKP5QhkqSiltBThIGREPtWPqiV+bARZG1ELLm795w7a7H+AWdDQV8U6Wk11EJQ2KeSbe8591r7YvYiEQiC2tZTBFpLYkRoOPH73XH2+mfXnTszO3f2/r5wXma4M/d8fn/uOed3LoCTk5OTk5OTk5OTU1PUeWoebBlaAL2yDPxoJbC+AKSrgcJXgGQtcNgOpG8DaSd4wVtQkJegfXAWZE5dI48BB08D6xqgcD2wvAesvci6F0mPIMnXyPo9klxE0j+R5B9kLaUz+QNJdoM3PH96nfSDxXZUSAvI+hmSnEKW88hyPb0zNRjJKBSi5xvkbQntdCPZhizfWOrNcPLBEK5Cjz5TP787RuaAJx8j689Nd27KEPSsHbCa1Rc9gaw/Nd2hFAYcvlE7AF+7m+1IepOTtQNg7W++IymN9Nd8A2D9t74ASG5mwKmqrM4A9FPwwxeBZReSCJL8lXkAFLVB57lH6gIAWPvv/LKEQNHyOEQNPkKWA0g6hCyXkOVGs50fN/kN/PDDdI9FngzAJDLUC6eX2hjeDzYA6/tA4Q5kOYgkJ+wMYvkBSS6YG0SSvxsOgmSgegicEkAaFUcehu5ooU2A/OC5OAGK2sAPXgVfX7dJkBe8a5OgislWYOm71+x9H7o7eAOWLdkF0Ah5w7Nt4jUO4QoUzs7ND4AKBBlN+LEOcgUAAMrL4bYfvbkDAKn94BkCgKSYcwC6ueKHeZLkDgCUMI5FtAOKxYdyCCCt2AHodzOA3RIotcQeYHIJlg+Q5FtTGa4iSRoFCp9t7T2AouXI8mPqugHr9tYF0B0tRNLLtaTKE/vG2QeALF8kih83TNQH3eGSB144Jd844wC6hp5C1v/G7zFsn/K1MwKAL+8kpvJ3VV07IwCQOaesANibRwA9CQCHcgggaks8z6+CN/xkvgC0D85KlruQ5TRs1UX5AWBEuglZbiVnApIeBpad968Yx4ak0cwAYBSfOdzKZSBUkRdsvHM5VAGAdDO0PAAjU+3x5GX7dCDdg6T7YpMziSVyZvxz3Wedn7BKxC0GYCLlvirMeS+LswPQ72YAuyVQqmkPQJJjUBx8FHK1B5B23RU0/I6sR+3xkm1HrUc3ZpZPh/tMp+ikxcZr5Y7vAfvDLG9Cj6ya/q7tSdQxMgdZfqkAMC07Vckbnp2uV9g0U8v5OOmQ40iy3/xO3OYir9n2F9PZbd4L+OSrxxvnvB5N3NdYdR0i9x4wriknHtqANjlT2xuz8Xxc5T0XN1JpVO4+G0TSL8vTOTaSgWRYWwlvzZonPZwc+Xj6iw91VdfQing0ZRuSfG4PJcyfZrKpUo5P357Vmak2ubF45LO+YRfr2yZn3mKxs7PKNf8/FlcDKKIRiNQAAAAASUVORK5CYII="
-      />
-    </Defs>
+import Svg, { Path, G } from 'react-native-svg';
+const TransactionIcon = ({ width = 48, height = 48, fill = '#696969' }: IconProps) => (
+  <Svg viewBox="0 0 256 256" width={width} height={height}>
+    <G
+      fill={fill}
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(2,2)">
+        <Path d="M120,72h-19.5c-7.4,0 -13.5,6.1 -13.5,13.5c0,7.4 6.1,13.5 13.5,13.5h6.5v15c0,3.9 -3.1,7 -7,7h-1c-53.8,0 -81.9,-4.9 -86,-7.7v-71.5c4.1,1.5 11.1,3 22.7,4.3c16.9,1.9 39.4,2.9 63.3,2.9h1c3.9,0 7,3.1 7,7v3.9c0,1.5 1,2.8 2.4,3.1c1.9,0.4 3.6,-1.1 3.6,-2.9v-4c0,-6.5 -4.8,-11.9 -11,-12.8v-3.9c0,-9 -7.4,-16.3 -16.4,-16.2h-0.1c-18.7,0.3 -36,1.3 -49.7,2.8c-26.6,2.9 -28.8,6.7 -28.8,10v78c0,3.3 2.2,7.1 28.7,10.1c16.9,1.9 39.4,2.9 63.3,2.9h1c7.2,0 13,-5.8 13,-13v-15h7c1.7,0 3,-1.3 3,-3v-21c0,-1.7 -1.3,-3 -3,-3zM117,93h-16.5c-4.1,0 -7.5,-3.4 -7.5,-7.5c0,-4.1 3.4,-7.5 7.5,-7.5h16.5z" />
+      </G>
+    </G>
   </Svg>
 );
-export default TransactionsIcon;
+export default TransactionIcon;

@@ -15,14 +15,15 @@ import FastImage from '@d11/react-native-fast-image';
 import { format } from 'date-fns';
 
 import { DASHBOARD_ITEMS, ERR_NETWORK, IMAGES } from '@app/constant';
-import {
-  ChevronRightIcon,
-  CircleArrowRightIcon,
-  DashboardUpdateIcon,
-  HorizontalKebabIcon,
-} from '@app/icons';
+import { CircleArrowRightIcon, DashboardUpdateIcon, HorizontalKebabIcon } from '@app/icons';
 import { color, font } from '@app/styles';
-import { EmptyState, ErrorState, LoadingAnimation, RatingStars } from '@app/components';
+import {
+  EmptyState,
+  ErrorState,
+  LoadingAnimation,
+  MaterialCommunityIcon,
+  RatingStars,
+} from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { ScreenStatusProps, Service } from '../../types/services/types';
@@ -137,7 +138,7 @@ const Home = () => {
               onPress={() => navigation.navigate('Statistics')}
             >
               <Text style={styles.footerText}>View Statistics</Text>
-              <ChevronRightIcon />
+              <MaterialCommunityIcon name="chevron-right" size={20} color="#DBDADA" />
             </TouchableOpacity>
           </View>
         </View>
@@ -301,6 +302,7 @@ const styles = StyleSheet.create({
   footerText: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#DBDADA',
   },
   body: {

@@ -1,38 +1,38 @@
 import React, { useState } from 'react';
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Home, Message, Scan, Transaction, Settings } from '@app/screens';
-import { IMAGES } from '@app/constant';
 import { color, font } from '@app/styles';
+import { HomeIcon, MessageIcon, ScanIcon, SettingIcon, TransactionsIcon } from '@app/icons';
 
 const Tab = createBottomTabNavigator();
 
 const TAB_ITEMS = [
   {
     title: 'HOME',
-    icon_active: <Image source={IMAGES.HOME_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.HOME_INACTIVE} resizeMode="contain" />,
+    icon_active: <HomeIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <HomeIcon width={30} height={30} />,
   },
   {
     title: 'MESSAGES',
-    icon_active: <Image source={IMAGES.MESSAGES_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.MESSAGES_INACTIVE} resizeMode="contain" />,
+    icon_active: <MessageIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <MessageIcon width={30} height={30} />,
   },
   {
     title: 'SCAN',
-    icon_active: <Image source={IMAGES.SCAN} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.SCAN} resizeMode="contain" />,
+    icon_active: null,
+    icon_inactive: null,
   },
   {
     title: 'RECORDS',
-    icon_active: <Image source={IMAGES.TRANSACTIONS_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.TRANSACTIONS_INACTIVE} resizeMode="contain" />,
+    icon_active: <TransactionsIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <TransactionsIcon width={30} height={30} />,
   },
   {
     title: 'SETTINGS',
-    icon_active: <Image source={IMAGES.SETTINGS_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.SETTINGS_INACTIVE} resizeMode="contain" />,
+    icon_active: <SettingIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <SettingIcon width={30} height={30} />,
   },
 ];
 
@@ -62,7 +62,7 @@ const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
             style={[styles.tabButton, route.name === 'Scan' && styles.hide]}
             onLayout={(e) => {
               if (route.name === 'Scan') {
-                setScanPosition(e.nativeEvent.layout.x);
+                setScanPosition(e.nativeEvent.layout.x - 12);
               }
             }}
             disabled={route.name === 'Scan'}
@@ -78,7 +78,9 @@ const CustomTabBar = ({ state, navigation }: BottomTabBarProps) => {
         onPress={() => navigation.navigate('Scan')}
         style={[styles.scanButton, { left: scanPosition }]}
       >
-        <Image source={IMAGES.SCAN} resizeMode="contain" />
+        <View style={styles.scan}>
+          <ScanIcon width={30} height={30} />
+        </View>
         <Text style={[styles.scanLabel]}>Scan</Text>
       </TouchableOpacity>
     </View>
@@ -120,6 +122,7 @@ const styles = StyleSheet.create({
   tabButton: {
     alignItems: 'center',
     gap: 6,
+    paddingVertical: 5,
   },
   scanButton: {
     position: 'absolute',
@@ -144,5 +147,12 @@ const styles = StyleSheet.create({
   },
   hide: {
     opacity: 0,
+  },
+  scan: {
+    backgroundColor: '#F3F2EF',
+    borderColor: color.primary,
+    padding: 10,
+    borderWidth: 2,
+    borderRadius: 30,
   },
 });

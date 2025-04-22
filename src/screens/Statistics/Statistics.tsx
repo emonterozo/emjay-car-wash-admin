@@ -7,6 +7,7 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
@@ -235,6 +236,7 @@ const Statistics = () => {
                 : [...selectedFilters, item];
 
               setSelectedFilters(holder);
+              showPopover();
             }}
           />
         )}
@@ -255,40 +257,42 @@ const Statistics = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.content}>
-        {graphData.length > 0 && <BarGraph data={filterGraphData()} display={getDisplay()} />}
-      </View>
-      <Text style={styles.heading}>Previous 14 Days Transactions</Text>
-      <View style={styles.transactionsContainer}>
-        <FlatList
-          bounces={false}
-          data={transactions}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('TransactionDetails', {
-                  transactionId: item.transaction_id,
-                  transactionServiceId: item.transaction_availed_service_id,
-                })
-              }
-            >
-              <ServiceTransactionItem
-                icon={<WaterDropIcon />}
-                serviceName={item.service_name}
-                price={formattedNumber(item.price)}
-                date={format(new Date(item.date), 'dd MMM, hh:mm a')}
-              />
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) =>
-            item.transaction_availed_service_id.toString() + item.transaction_id.toString()
-          }
-          showsVerticalScrollIndicator={true}
-          contentContainerStyle={styles.list}
-          ItemSeparatorComponent={renderSeparator}
-          ListEmptyComponent={<EmptyState />}
-        />
-      </View>
+      <ScrollView contentContainerStyle={styles.contentView}>
+        <View style={styles.content}>
+          {graphData.length > 0 && <BarGraph data={filterGraphData()} display={getDisplay()} />}
+        </View>
+        <Text style={styles.heading}>Previous 14 Days Transactions</Text>
+        <View style={styles.transactionsContainer}>
+          <FlatList
+            bounces={false}
+            data={transactions}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('TransactionDetails', {
+                    transactionId: item.transaction_id,
+                    transactionServiceId: item.transaction_availed_service_id,
+                  })
+                }
+              >
+                <ServiceTransactionItem
+                  icon={<WaterDropIcon />}
+                  serviceName={item.service_name}
+                  price={formattedNumber(item.price)}
+                  date={format(new Date(item.date), 'dd MMM, hh:mm a')}
+                />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) =>
+              item.transaction_availed_service_id.toString() + item.transaction_id.toString()
+            }
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={styles.list}
+            ItemSeparatorComponent={renderSeparator}
+            ListEmptyComponent={<EmptyState />}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -362,6 +366,7 @@ const styles = StyleSheet.create({
   optionText: {
     ...font.light,
     fontSize: 16,
+    lineHeight: 16,
     color: '#888888',
   },
   optionActive: {
@@ -390,6 +395,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CECECE',
     gap: 3,
+  },
+  contentView: {
+    flexGrow: 1,
   },
 });
 

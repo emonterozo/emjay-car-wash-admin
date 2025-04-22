@@ -1,19 +1,25 @@
 import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const SalesIcon = ({ width = 40, height = 40 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect width={40} height={40} fill="url(#pattern0_177_22)" />
-    <Defs>
-      <Pattern id="pattern0_177_22" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_177_22" transform="scale(0.015625)" />
-      </Pattern>
-      <Image
-        id="image0_177_22"
-        width={64}
-        height={64}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEBUlEQVR4nO2aS2xMYRTHz/FaCEE9w8JCiKWFpUhKworEQkK8EhLS1j1nWpomHp16LCw8QpAWibC0Ehmcc1vqGRZCsWVjUZF6RAnV0CvfnSltZ0Zn2nvH1ztzki/3Mfd+33d+93v8vzMfQCTNQ4jJBmB3vX9eXOYhspxBVi+Z5ALE46OgOJ3XYoLgZXG+KCB4gzgfaQgeIkljP0dJOjKeJ68bIzQweulfnuQ8kh7ovQbWBiQ5HcGW4GV03nfMON0HQKqVRAsCkhzL2rTTAGTpKizHYaQasnzJ2q8zAsgI4TOMVEOWg0jaaVpC2qCWFUBv19GjBiCk/RYV+yeAYjAuAWgotQAudQGvNAZwaRD0SrMAl6bBBig64/81DVa2ToCYLgNWQtYmZLmOrG3I+hZZPyJrV6piXalrc78NSRPmeXDEAUfK/XxGDABqmQkku5DlPrJ0Dx6VySVJN5LeM/n6+VsJoCIxJbnGDsrpf8BgPQXcOtkeABWJKcjyMkOFu5DlUbLCSsDuamBdBJWJueYd2H5tvP++OZprc9/8bp5zxEGSk8j6EEm+peVN8sJ/xwoALBV9vtB7fz1u+v72J2MDyT/eOgaoeQmSnkDS9j/OkFZbAkCTBZC2D6mP5mPVUoakb/JypmAAWO5AAQxJ7loKQH8CSx3UNU8KvhAAqGmdBix7kfSXrQC8VEv4jqyXofbqxGHlWy1lwO5KYN2HJLcM4L7lWAxAU4OUy2nPrr0yGlh3IOmRfsmEtEnPIck1JHmGpB8GmxLtAUC6P+cKkm4JShMAS70dAFiXIktPTgCytJYhCKIeIHe5HQB6tcAAwQLk7oEwAJB8BZatYN1awLkxD0nPpuLz72CnLEx7hiQ+DMc7jBiC6pY5dq8G4/FRWVUg6bq8HGa9jaSHfWUZvzIuGmFx0jW+XuiXlIB0G8R0FcTcxbBLZwRWXugAqtzZSPIASR4DSwyqmqcGXwiAD4W1FlmfI+uTnLtC6AAc2T2g+XYFIoTMas8ERPxxQ1qQ9MeAWaY2OkKIpBFJLiLrVWR5iiSf/p8QqmleAKw1/jGnAqQ+UkIISV6nXniVUwGOlEdKCGFfJ3K1mFalFkH2CSHn5qa/ddKN4QCwWQgZXWIcNymXfUA4VAC2CqF8DYcLwDYhFDqAKsuFUOgAHMuFUOgA2HIhFD4AsVsIFaALlFsthMys5Nzc5KfQpsGYxUKIZfOfOhkIoQCwWQgVRArbLIQKDmCkR4TQViFUmZhlYIUeEUJbhJBzYzo4ugJJDpkdIgM3X4QWEcJ84wGB/DWmTUh6KSmE/H1CnYEJoXyXw0DufH/zgTlGQQjluxzO22wXQgWxmMVCqGDmWCqECm5xy4SQdUb2RoR+A95JGh4i1BdYAAAAAElFTkSuQmCC"
-      />
-    </Defs>
+import Svg, { G, Path } from 'react-native-svg';
+const SalesIcon = ({ width = 40, height = 40, fill = '#016fb9' }: IconProps) => (
+  <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
+    <G
+      fill={fill}
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(2,2)">
+        <Path d="M113,114v-10c0,-1.7 -1.3,-3 -3,-3c-1.7,0 -3,1.3 -3,3v10c0,1.7 1.3,3 3,3c1.7,0 3,-1.3 3,-3zM112.1,1.9c-1.2,-1.2 -3.1,-1.2 -4.2,0l-15,15c-1.2,1.2 -1.2,3.1 0,4.2c1.2,1.2 3.1,1.2 4.2,0l9.9,-9.9v72.8c0,1.7 1.3,3 3,3c1.7,0 3,-1.3 3,-3v-72.8l9.9,9.9c0.6,0.6 1.4,0.9 2.1,0.9c0.7,0 1.5,-0.3 2.1,-0.9c1.2,-1.2 1.2,-3.1 0,-4.2zM5,117c1.7,0 3,-1.3 3,-3v-30c0,-1.7 -1.3,-3 -3,-3c-1.7,0 -3,1.3 -3,3v30c0,1.7 1.3,3 3,3zM35,70c1.9,0.7 4,-0.8 4,-2.8v-5.7c0,-1.3 -0.9,-2.5 -2.2,-2.9c-1.3,-0.4 -2.5,-0.8 -3.6,-1.3c-2.5,-1 -2.5,-4.5 0,-5.5c5.5,-2.3 14.1,-3.8 23.8,-3.8c9.7,0 18.3,1.5 23.8,3.7c2.5,1 2.5,4.5 0,5.6c-5.5,2.2 -14.1,3.7 -23.8,3.7c-1.6,0 -3.3,0 -4.8,-0.1c-1.7,-0.1 -3.2,1.3 -3.2,3v6c0,1.6 1.2,2.9 2.8,3c1.7,0.1 3.4,0.1 5.2,0.1c16.6,0 30,-4.3 30,-9.5v-12c0,-5.2 -13.4,-9.5 -30,-9.5c-16.6,0 -30,4.3 -30,9.5v12c0,2.5 3,4.8 8,6.5zM87,77.1c0,-2.2 -2.4,-3.7 -4.3,-2.7c-5.3,2.8 -14.8,4.6 -25.7,4.6c-1.6,0 -3.3,0 -4.8,-0.1c-1.7,-0.1 -3.2,1.3 -3.2,3v6c0,1.6 1.2,2.9 2.8,3c1.7,0.1 3.4,0.1 5.2,0.1c16.6,0 30,-4.3 30,-9.5zM35,88c1.9,0.7 4,-0.8 4,-2.8v-5.7c0,-1.3 -0.9,-2.5 -2.2,-2.9c-2.1,-0.6 -3.9,-1.3 -5.4,-2.1c-2,-1 -4.4,0.4 -4.4,2.7v4.4c0,2.4 3,4.7 8,6.4zM87,95.1c0,-2.2 -2.4,-3.7 -4.3,-2.7c-5.3,2.8 -14.8,4.6 -25.7,4.6c-1.6,0 -3.3,0 -4.8,-0.1c-1.7,-0.1 -3.2,1.3 -3.2,3v6c0,1.6 1.2,2.9 2.8,3c1.7,0.1 3.4,0.1 5.2,0.1c16.6,0 30,-4.3 30,-9.5zM35,106c1.9,0.7 4,-0.8 4,-2.8v-5.7c0,-1.3 -0.9,-2.5 -2.2,-2.9c-2.1,-0.6 -3.9,-1.3 -5.4,-2.1c-2,-1 -4.4,0.4 -4.4,2.7v4.4c0,2.4 3,4.7 8,6.4zM82.7,110.4c-5.3,2.7 -14.8,4.6 -25.7,4.6c-1.6,0 -3.3,0 -4.8,-0.1c-1.7,-0.1 -3.2,1.3 -3.2,3v6c0,1.6 1.2,2.9 2.8,3c1.7,0.1 3.4,0.1 5.2,0.1c16.6,0 30,-4.3 30,-9.5v-4.4c0,-2.2 -2.4,-3.7 -4.3,-2.7zM35,124c1.9,0.7 4,-0.8 4,-2.8v-5.7c0,-1.3 -0.9,-2.5 -2.2,-2.9c-2.1,-0.6 -3.9,-1.3 -5.4,-2.1c-2,-1 -4.4,0.4 -4.4,2.7v4.4c0,2.4 3,4.7 8,6.4z" />
+      </G>
+    </G>
   </Svg>
 );
 export default SalesIcon;

@@ -1,19 +1,25 @@
 import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const PublishIcon = ({ width = 40, height = 40 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect width={40} height={40} fill="url(#pattern0_177_19)" />
-    <Defs>
-      <Pattern id="pattern0_177_19" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_177_19" transform="scale(0.0125)" />
-      </Pattern>
-      <Image
-        id="image0_177_19"
-        width={80}
-        height={80}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAAAsTAAALEwEAmpwYAAACKklEQVR4nO2asUoDQRCGZwQ7oy+hjZXYWVjps1gI2dUiWKlPINhY6DsIqcxsAioaO7uA+AI2io1WohDJeUYbNXHvLjOX/4MtAsfdx8fe3SYbIgAAAAAAAAAAZYZ9uGIfuiaHk7aGgF3Lg0aNGhGr3mpErHqrEbHqrUbEqrcaEaveakSsev8mwskaUS61fB7UW1FAuWQXLrR8HtS7UNSIWPVWI2LVW42IVW81IuV9CweVv7hYCdjVMIb1LhTNkqzYzYQkK3YzIcmK3UxIsmI3E5Ks2M2EJCt2MyHJit1MSPIQbn8u+vPaAi1NQCft/yzIC5UsmqzcENB6QDb+XXh0Ad3fz5X8R/yeyMgCagYBI0HASBBwHAJyhhvhWZ/PSEDJbCM86/OZCKgZBIwEASNBwEgQcBwCMpYxsQEFy5iYgJoxcQtrBgEjQcBIEHAcAjKWMbEBBcuYmICaUXQLy3Ny8lq9QoZgNQFduE1O7sMCGYIHjVKrV5JjXXjKR8SFo0TEhW0qY0DfWEr3lzv5mGw0VlOZe6qeTJMRPjb9f95/6R/n5eBjBspefjJeztNpfky7uxNUFjYai+zCC/vwRtWT+fwu5Jpz7MJjP+JWa4bKEM/LXXr77hdxweWviPJAXnZ6ErR+NkVW6Lkmzzw5SGdeb0K0aO16shiBTZllH05H/4eiDIaT12TmFRbvO665wj4cspObz3WijdFzlU7ywsj1mQcAAAAAAAAAlDHvzvzMlkkhMecAAAAASUVORK5CYII="
-      />
-    </Defs>
+import Svg, { G, Path } from 'react-native-svg';
+const PublishIcon = ({ width = 40, height = 40, fill = '#016fb9' }: IconProps) => (
+  <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
+    <G
+      fill={fill}
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(3.2,3.2)">
+        <Path d="M12,11c-0.553,0 -1,0.447 -1,1v49c0,4.963 4.037,9 9,9h42c4.411,0 8,-3.589 8,-8v-27c0,-0.553 -0.447,-1 -1,-1h-7c-0.553,0 -1,0.447 -1,1c0,0.553 0.447,1 1,1h6v26c0,3.309 -2.691,6 -6,6h-42c-3.859,0 -7,-3.141 -7,-7v-48h44v51c0,0.553 0.447,1 1,1c0.553,0 1,-0.447 1,-1v-52c0,-0.553 -0.447,-1 -1,-1zM19,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM23,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM27,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM31,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM35,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM39,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM43,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM47,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM51,19c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM19,25c-0.553,0 -1,0.447 -1,1v13c0,0.553 0.447,1 1,1h32c0.553,0 1,-0.447 1,-1v-13c0,-0.553 -0.447,-1 -1,-1zM20,27h30v11h-30zM19,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM23,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM27,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM31,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM39,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM43,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM47,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM51,44c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM19,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM23,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM27,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM31,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM39,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM43,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM47,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM51,51c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM19,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM23,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM27,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM31,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM39,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM43,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM47,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1zM51,58c-0.55,0 -1,0.45 -1,1c0,0.55 0.45,1 1,1c0.55,0 1,-0.45 1,-1c0,-0.55 -0.45,-1 -1,-1z" />
+      </G>
+    </G>
   </Svg>
 );
 export default PublishIcon;

@@ -171,44 +171,50 @@ const Services = () => {
         data={filteredServices}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <View style={styles.top}>
-              <FastImage
-                style={styles.image}
-                source={{
-                  uri: item.image,
-                  priority: FastImage.priority.normal,
-                }}
-                resizeMode={FastImage.resizeMode.cover}
-              />
+            <FastImage
+              style={styles.image}
+              source={{
+                uri: item.image,
+                priority: FastImage.priority.normal,
+              }}
+              resizeMode={FastImage.resizeMode.stretch}
+            />
+            <View style={styles.content}>
               <View style={styles.details}>
-                <Text style={styles.name}>{item.title}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                <View style={styles.content}>
-                  <View style={styles.ratingsContainer}>
-                    <StarIcon width={16} height={16} />
-                    <Text style={styles.ratings}>{item.ratings}</Text>
-                  </View>
+                <View style={styles.row}>
+                  <Text style={styles.name}>{item.title}</Text>
+                  <Text style={[styles.name, styles.priceValue]}>
+                    {getServicePrice(item.price_list)}
+                  </Text>
+                </View>
+                <View style={styles.row}>
                   <View style={styles.pointsContainer}>
-                    <FreeIcon />
                     <Text style={styles.points}>
                       {getServicePricePoints(item.price_list, 'points') > 0
-                        ? `${getServicePricePoints(item.price_list, 'points')} pts`
-                        : '10 wash'}
+                        ? `${getServicePricePoints(item.price_list, 'points')}`
+                        : '10'}
                     </Text>
+                    <FreeIcon />
+                    <Text style={styles.points}>
+                      {getServicePricePoints(item.price_list, 'points') > 0 ? '| Points' : '| Wash'}
+                    </Text>
+                  </View>
+                  <View style={styles.ratingsContainer}>
+                    <Text style={styles.ratings}>{item.ratings}</Text>
+                    <StarIcon width={16} height={16} />
+                    <Text style={styles.ratings}>| 0 review</Text>
                   </View>
                 </View>
               </View>
-            </View>
-            <View style={styles.bottom}>
-              <View style={styles.bottomContent}>
-                <Text style={styles.priceLabel}>Price</Text>
-                <Text style={styles.priceValue}>{getServicePrice(item.price_list)}</Text>
-              </View>
+              <Text style={styles.description}>{item.description}</Text>
               <View style={styles.earningContainer}>
                 <Text style={styles.earningPoints}>
                   {getServicePricePoints(item.price_list, 'earning_points') > 0
-                    ? `Earn ${getServicePricePoints(item.price_list, 'earning_points')} Pts!`
-                    : 'Earn 1 Wash!'}
+                    ? `Customer Earn ${getServicePricePoints(
+                        item.price_list,
+                        'earning_points',
+                      )} Points!`
+                    : 'Customer Earn 1 Wash Count!'}
                 </Text>
               </View>
             </View>
@@ -264,28 +270,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    gap: 24,
-  },
-  bottom: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 3,
-  },
-  priceLabel: {
-    ...font.regular,
-    fontSize: 16,
-    lineHeight: 16,
-    color: '#696969',
   },
   priceValue: {
-    ...font.regular,
-    fontSize: 16,
-    color: '#050303',
-    lineHeight: 16,
-    marginTop: 8,
+    textAlign: 'right',
   },
   earningContainer: {
     backgroundColor: '#1F93E1',
@@ -293,6 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flex: 1,
     alignItems: 'center',
+    marginVertical: 16,
   },
   earningPoints: {
     ...font.regular,
@@ -300,15 +288,12 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#F3F2EF',
   },
-  top: {
-    flexDirection: 'row',
-    gap: 12,
-  },
   name: {
     ...font.regular,
-    fontSize: 20,
-    lineHeight: 20,
+    fontSize: 24,
+    lineHeight: 24,
     color: '#000000',
+    flex: 1,
   },
   description: {
     ...font.regular,
@@ -323,6 +308,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    justifyContent: 'center',
   },
   ratings: {
     ...font.regular,
@@ -337,31 +323,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    flex: 1,
+    justifyContent: 'center',
   },
   points: {
     ...font.regular,
     fontSize: 16,
     lineHeight: 16,
     color: '#050303',
-    flex: 1,
-  },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    flex: 1,
-  },
-  details: {
-    gap: 8,
-    flex: 1,
   },
   image: {
-    width: 108,
-    borderRadius: 8,
+    height: 212,
+    borderTopRightRadius: 24,
+    borderTopLeftRadius: 24,
   },
-  bottomContent: {
-    flex: 1,
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  content: {
+    paddingHorizontal: 16,
+    gap: 24,
+    marginTop: 16,
+  },
+  details: {
+    gap: 16,
   },
 });
 
