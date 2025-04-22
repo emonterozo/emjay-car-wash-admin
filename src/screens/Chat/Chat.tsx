@@ -11,6 +11,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { io } from 'socket.io-client';
 import Config from 'react-native-config';
@@ -19,7 +20,7 @@ import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import { color, font } from '@app/styles';
 import { EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import GlobalContext from '@app/context';
-import { ChevronLeftIcon } from '@app/icons';
+import { ChevronLeftIcon, SendIcon } from '@app/icons';
 import { CHAT_REFERENCE, ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 import { Message as TMessage, ScreenStatusProps } from '../../types/services/types';
 import { getMessagesRequest, updateMessageStateRequest } from '@app/services';
@@ -196,11 +197,13 @@ const Chat = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ChevronLeftIcon />
         </TouchableOpacity>
-        <Image
-          source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-          style={styles.avatar}
-          resizeMode="contain"
-        />
+        <View style={styles.avatarContainer}>
+          <Image
+            source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+            style={styles.avatar}
+            resizeMode="contain"
+          />
+        </View>
         <View style={styles.content}>
           <Text style={styles.name} numberOfLines={1}>
             {`${firstName} ${lastName}`}
@@ -236,9 +239,12 @@ const Chat = () => {
             maxLength={1000}
           />
         </View>
-        <TouchableOpacity onPress={sendMessage}>
-          <Image source={IMAGES.SEND} style={styles.send} resizeMode="contain" />
-        </TouchableOpacity>
+        <Pressable
+          onPress={sendMessage}
+          style={({ pressed }) => [styles.send, pressed && { backgroundColor: '#46A6FF' }]}
+        >
+          <SendIcon width={40} height={40} fill="#FFFFFF" />
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -255,13 +261,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 24,
     backgroundColor: '#F4F9FD',
-  },
-  avatar: {
-    height: 60,
-    width: 60,
-    backgroundColor: '#46A6FF',
-    borderRadius: 68,
-    marginLeft: 15,
   },
   content: {
     marginLeft: 12,
@@ -316,8 +315,10 @@ const styles = StyleSheet.create({
   send: {
     height: 70,
     width: 70,
-    backgroundColor: '#46A6FF',
+    backgroundColor: '#1F93E1',
     borderRadius: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
     ...font.light,
@@ -363,6 +364,21 @@ const styles = StyleSheet.create({
   empty: {
     flexGrow: 1,
     paddingHorizontal: 25,
+  },
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 60,
+    width: 60,
+    height: 60,
+    overflow: 'hidden',
+    marginLeft: 15,
+  },
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 

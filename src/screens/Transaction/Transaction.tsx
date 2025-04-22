@@ -7,7 +7,6 @@ import {
   StatusBar,
   FlatList,
   TouchableOpacity,
-  Image,
 } from 'react-native';
 import { format } from 'date-fns';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -29,10 +28,10 @@ import {
   getCurrentDateAtMidnightUTC,
   getMinimumDateAtMidnightUTC,
 } from '@app/helpers';
-import { WaterDropIcon } from '@app/icons';
+import { CalculatorIcon, CalendarIcon, WaterDropIcon } from '@app/icons';
 import { getTransactionsRequest } from '@app/services';
 import GlobalContext from '@app/context';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ERR_NETWORK } from '@app/constant';
 import { useNativeBackHandler } from '@app/hooks';
 
 const renderSeparator = () => <View style={styles.separator} />;
@@ -152,7 +151,7 @@ const Transaction = () => {
       </View>
       <View style={styles.content}>
         <TouchableOpacity style={styles.headerContainer} onPress={toggleCalendar}>
-          <Image source={IMAGES.CALENDAR_ACTIVE} resizeMode="contain" />
+          <CalendarIcon width={25} height={25} fill={color.primary} />
           <Text style={[styles.heading, styles.topContent]}>{`${format(
             selectedDate,
             'MMMM dd, yyyy',
@@ -207,7 +206,7 @@ const Transaction = () => {
         />
       </View>
       <FloatingActionButton
-        fabIcon={IMAGES.CALCULATOR}
+        fabIcon={<CalculatorIcon width={32} height={32} fill="#ffffff" />}
         onPress={() =>
           navigation.navigate('TransactionComputation', {
             startDate: format(selectedDate, 'yyyy-MM-dd'),

@@ -34,3 +34,6 @@ export { default as CloseIcon } from './CloseIcon';
 export { default as ConsumablesListIcon } from './ConsumablesListIcon';
 export { default as FreeIcon } from './FreeIcon';
 export { default as ScanIcon } from './ScanIcon';
+export { default as SendIcon } from './SendIcon';
+export { default as CalendarIcon } from './CalendarIcon';
+export { default as CalculatorIcon } from './CalculatorIcon';

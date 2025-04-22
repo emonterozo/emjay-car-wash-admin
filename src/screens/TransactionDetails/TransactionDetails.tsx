@@ -257,11 +257,13 @@ const TransactionDetails = () => {
           {employees.length > 0 ? (
             employees.map((employee) => (
               <View key={employee._id} style={styles.row}>
-                <Image
-                  source={employee.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
+                <View style={styles.avatarContainer}>
+                  <Image
+                    source={employee.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+                    style={styles.avatar}
+                    resizeMode="contain"
+                  />
+                </View>
                 <Text
                   style={styles.employee}
                 >{`${employee.first_name} ${employee.last_name}`}</Text>
@@ -341,9 +343,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  image: {
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 56,
     width: 56,
     height: 56,
+    overflow: 'hidden',
+  },
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Image, ImageSourcePropType } from 'react-native';
 import MaterialCommunityIcon from '../MaterialCommunityIcon/MaterialCommunityIcon';
 import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
+import { MenuIcon } from '@app/icons';
 
 interface AdditionalButton {
   onPress: () => void;
@@ -13,7 +13,7 @@ interface AdditionalButton {
 interface Props {
   onPress?: () => void;
   additionalButtons?: AdditionalButton[];
-  fabIcon?: ImageSourcePropType | string;
+  fabIcon?: string | ReactElement;
   circleColor?: string;
 }
 
@@ -62,12 +62,12 @@ const FloatingActionButton = ({
             isExpanded ? (
               <MaterialCommunityIcon name="close" size={25} color="#ffffff" />
             ) : (
-              <Image source={IMAGES.MENU} style={styles.image} resizeMode="contain" />
+              <MenuIcon width={48} height={40} fill="#ffffff" />
             )
           ) : typeof fabIcon === 'string' ? (
             <MaterialCommunityIcon name={fabIcon} size={25} color="#ffffff" />
           ) : (
-            <Image source={fabIcon} style={styles.image} resizeMode="contain" />
+            fabIcon
           )}
         </View>
       </TouchableOpacity>

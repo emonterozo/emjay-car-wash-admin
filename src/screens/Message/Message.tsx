@@ -107,11 +107,13 @@ const Message = () => {
             }
           >
             <View style={styles.message}>
-              <Image
-                source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-                style={styles.avatar}
-                resizeMode="contain"
-              />
+              <View style={styles.avatarContainer}>
+                <Image
+                  source={item.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+                  style={styles.avatar}
+                  resizeMode="contain"
+                />
+              </View>
               <View style={styles.middle}>
                 <Text style={styles.name} numberOfLines={1}>
                   {`${item.first_name} ${item.last_name}`}
@@ -151,12 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.background,
   },
-  avatar: {
-    height: 83,
-    width: 83,
-    backgroundColor: '#46A6FF',
-    borderRadius: 68,
-  },
+
   message: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -213,6 +210,20 @@ const styles = StyleSheet.create({
   },
   separator: {
     marginTop: 44,
+  },
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 83,
+    width: 83,
+    height: 83,
+    overflow: 'hidden',
+  },
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 
