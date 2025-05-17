@@ -232,7 +232,7 @@ const Chat = () => {
             value={message}
             placeholder="Type your message..."
             multiline
-            numberOfLines={8}
+            numberOfLines={10}
             style={styles.input}
             placeholderTextColor="#888888"
             onChangeText={setMessage}
@@ -265,6 +265,7 @@ const styles = StyleSheet.create({
   content: {
     marginLeft: 12,
     gap: 5,
+    flex: 1,
   },
   name: {
     ...font.regular,
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
     paddingVertical: 23,
     borderRadius: 24,
     minHeight: 71,
-    maxHeight: 110,
+    maxHeight: 150,
     flexDirection: 'row',
     alignItems: 'center',
   },

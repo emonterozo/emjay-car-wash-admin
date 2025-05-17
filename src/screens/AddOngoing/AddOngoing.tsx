@@ -146,7 +146,7 @@ const AddOngoing = () => {
 
   const fetchServices = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getServicesRequest(user.accessToken, user.refreshToken);
+    const response = await getServicesRequest(user.accessToken, user.refreshToken, '_id', 'asc');
 
     if (response.success && response.data) {
       setServices(response.data.services);
