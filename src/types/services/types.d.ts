@@ -25,6 +25,7 @@ export type ErrorProps = {
 export type LoginPayload = {
   username: string;
   password: string;
+  fcm_token: string;
 };
 
 export type LoginResponse = {

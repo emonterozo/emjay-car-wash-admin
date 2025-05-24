@@ -77,3 +77,4 @@ yarn-error.log
 .env.staging
 .env.production
 .env.development
+android/app/google-services.json

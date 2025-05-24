@@ -26,7 +26,7 @@ import { ScreenStatusProps } from '../../types/services/types';
 import { getCredentials, removeCredentials, storeCredentials } from '@app/helpers';
 
 const Login = () => {
-  const { setUser } = useContext(GlobalContext);
+  const { user, setUser } = useContext(GlobalContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
@@ -42,20 +42,25 @@ const Login = () => {
 
   const login = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await loginRequest({ username: input.username, password: input.password });
+    const response = await loginRequest({
+      username: input.username,
+      password: input.password,
+      fcm_token: user.fcmToken,
+    });
 
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     if (response.success && response.data) {
-      const { user, accessToken, refreshToken } = response.data;
+      const { user: userData, accessToken, refreshToken } = response.data;
       if (isRemembered) {
         storeCredentials(user.username, input.password);
       } else {
         removeCredentials();
       }
       setUser({
-        id: user._id,
-        username: user.username,
-        type: user.type,
+        ...user,
+        id: userData._id,
+        username: userData.username,
+        type: userData.type,
         accessToken: accessToken,
         refreshToken: refreshToken,
       });

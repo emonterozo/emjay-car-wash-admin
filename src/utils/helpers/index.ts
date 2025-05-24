@@ -1,4 +1,6 @@
+import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import * as Keychain from 'react-native-keychain';
+import notifee from '@notifee/react-native';
 
 export const formattedNumber = (amount: number, fractionDigits?: number) => {
   return `₱${new Intl.NumberFormat('en-US', {
@@ -45,7 +47,7 @@ export const shortenNumber = (num: number) => {
 export const storeCredentials = async (username: string, password: string) => {
   try {
     await Keychain.setGenericPassword(username, password);
-  } catch (error) {}
+  } catch {}
 };
 
 export const getCredentials = async () => {
@@ -56,7 +58,7 @@ export const getCredentials = async () => {
     } else {
       return null;
     }
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -64,5 +66,23 @@ export const getCredentials = async () => {
 export const removeCredentials = async () => {
   try {
     await Keychain.resetGenericPassword();
-  } catch (error) {}
+  } catch {}
+};
+
+export const showLocalNotification = async (
+  remoteMessage: FirebaseMessagingTypes.RemoteMessage,
+) => {
+  await notifee.displayNotification({
+    title: remoteMessage.notification?.title,
+    body: remoteMessage.notification?.body,
+    android: {
+      channelId: 'default',
+      smallIcon: 'ic_notification',
+      largeIcon: 'ic_notification',
+      pressAction: {
+        id: 'default',
+      },
+    },
+    data: remoteMessage.data,
+  });
 };
