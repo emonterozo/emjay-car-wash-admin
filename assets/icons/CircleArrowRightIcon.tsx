@@ -1,19 +1,25 @@
 import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const CircleArrowRightIcon = ({ width = 16, height = 16 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect width={16} height={16} fill="url(#pattern0_177_150)" />
-    <Defs>
-      <Pattern id="pattern0_177_150" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_177_150" transform="scale(0.0208333)" />
-      </Pattern>
-      <Image
-        id="image0_177_150"
-        width={48}
-        height={48}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAACrElEQVR4nO1ZS2sUQRCuSrx4S+LJ6M34D3zkL3iVJPgXQpiunZOPy4JoFERRYvA/rEYkCbtVo7A3D4IRJTe9RD34iLm6elnp3rA4Ptie6ZqZDewHxcDCTH9fd3W9FmCEEUYIR70+BlEyCya5gkbW0Mg2kuwh8c+eyd7+b4+A5DKQnHXvVI6oeRxJbqDhj0jSzWgf0PAyxM+OlU986ekRJHmARn7kIP6ndZB4FWKeKoe8kQtIvKtAPG2Gv0LUWiiOeL19yO26NnH6S8h9u5Yu+fj5YSTZKJw89UWs2zV1yM83xpH4cWnkqW8bKidRitvQf21F4cJWRr5rDWoyl498zFM2MlQtAIl3bdg+aK7TDXMlm2F1kpSWdTJlbFce6C3+Dg3fds8wV7ruHzbz1Tb/NIh5pn+niLcCBOz4FYBRMqt5/H0BCiIg5jODBdiSWNV/eStVqAWIAOKLA/kXknUNv0qFQmpPIMmLHN95OFhAr/HQFaB1Eobf+Aj45v9BeYskt9DITR+zmT21WJxRhC25PQR4x3+ImicgFDHPZDiFjq6A3yNMXpjkpLaAjC7EV1108DI5V4YLbZd2iY28LOISrw1tGCVuDBRg5zZDt/OUIZHZoZOmgFSkCiCPrrlJTg0WUK+PuaGTtoBA8uhdzLl7wMt6/u8i1Z3gctrINcg4MuxoulKgdWApmfYX0CvqVoeAeLe3+3wPMsMlGfkyBOQ/w+LmJORC1FqoWgBQ6zyEwM4qqxPAdyEYrkcuIDuXNVrsD3cNr5dI/onecDc9Xl8pJeLMN8ahMNRkzkaGAvz9U/CF9cbi5uT+aSgkO/7udp3aE1A6lpJpOzFDI+9zEN9x5UGtdRQqhy2y7NDJ8CU7+rCNh+vsbHvaM9vlvXZjEVsSm+bp4fibdYQR4MDjF+MbPjW3TPQ8AAAAAElFTkSuQmCC"
-      />
-    </Defs>
+import Svg, { G, Path } from 'react-native-svg';
+const CircleArrowRightIcon = ({ width = 16, height = 16, fill = '#016fb9' }: IconProps) => (
+  <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
+    <G
+      fill={fill}
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(8.53333,8.53333)">
+        <Path d="M15,3c-6.627,0 -12,5.373 -12,12c0,6.627 5.373,12 12,12c6.627,0 12,-5.373 12,-12c0,-6.627 -5.373,-12 -12,-12zM20.707,15.707l-4,4c-0.195,0.195 -0.451,0.293 -0.707,0.293c-0.256,0 -0.512,-0.098 -0.707,-0.293c-0.391,-0.391 -0.391,-1.023 0,-1.414l2.293,-2.293h-7.586c-0.552,0 -1,-0.447 -1,-1c0,-0.553 0.448,-1 1,-1h7.586l-2.293,-2.293c-0.391,-0.391 -0.391,-1.023 0,-1.414c0.391,-0.391 1.023,-0.391 1.414,0l4,4c0.391,0.391 0.391,1.023 0,1.414z" />
+      </G>
+    </G>
   </Svg>
 );
 export default CircleArrowRightIcon;

@@ -1,19 +1,25 @@
 import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const MessageIcon = ({ width = 31, height = 30 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect x={0.333374} width={30} height={30} fill="url(#pattern0_178_946)" />
-    <Defs>
-      <Pattern id="pattern0_178_946" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_178_946" transform="scale(0.015625)" />
-      </Pattern>
-      <Image
-        id="image0_178_946"
-        width={64}
-        height={64}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAACPklEQVR4nO2aMUscURDHZ5RYCBZ2gcQyhfgBhGA+QLAOQtKkEhJw5hQCdlvGkE+R1sqI5GbUQJLDYBFIIX4B9QQLtbCxe7K3m2RP9+72ds+4b50fPLibB499f2b+7z0YAMMwDMMwjF4EqyPI8gFJj5HV+TWkiaQr4R4gL0i6cvcbKThCEXILwNIMF4EFeQq+QVszfzIh9xoYqwieUvj70QTQe5IBgc9u39n1MwuAVXD7FNfPLgB77PZdXL8PAdTrWu+0DxOALQOclQCbB7i+zcNXzATZTgFnxyDbPcB18oTM5uErt+4ByLozwNdbo/u6/+ZLJIA0Bvhq+9F13cR8aQQoOyYAWwY4KwH25hTQwq7v9ynAxV3/vwtQdkwAtgxwVgJsHuA6eUJm8/AV8wA2D3B/M7lWf5a5QQJTSiC69bXfzjyIpV2y3ucVwPka67tJCku4iUHFMoGpi0nj+v28/LEBCuAjBQSQqEGCtmbAV/px/UItMiS7EARDkMaL1WFk+XZrT+Zso7frpzZJtUSIMqHXgCWZuLkIALC+9ro1NnOp8ObkjcklmUCS89Z8TV5B5QiCIWS9bG3wzcZ429y7tbGwNOIS+QrgECpHrT4Vp9tZW/ztxkMk/RltXg/C/1BJWCkWYC0Re44kR3H8EGjzCVQVJPkdHZXyElinkeRzwoR2YOHLY6gstfpswm33Er8vgGQZ5n89gCqDrPvtdwE9RdaPsLj9CO4DSPIdSU6Q9BOwzMH8+uhdf5NhGAbk5AptBiqGIu+anwAAAABJRU5ErkJggg=="
-      />
-    </Defs>
+import Svg, { Path, G } from 'react-native-svg';
+const MessageIcon = ({ width = 48, height = 48, fill = '#696969' }: IconProps) => (
+  <Svg viewBox="0 0 256 256" width={width} height={height}>
+    <G
+      fill={fill}
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(4,4)">
+        <Path d="M5,6c-1.65234,0 -3,1.34766 -3,3v32c0,1.65234 1.34766,3 3,3h7.14453c0.0625,1.07031 -0.11328,3.33594 -2.00391,6.48438c-0.20312,0.34375 -0.18359,0.77734 0.04688,1.09766c0.19141,0.26563 0.49609,0.41797 0.8125,0.41797c0.07031,0 0.14453,-0.00781 0.21875,-0.02344c7.72266,-1.71484 10.59766,-6.23828 11.4375,-7.97656h7.34375v5c0,1.65234 1.34766,3 3,3h12.23438c0.60156,1.83984 2.62891,6.13281 8.625,6.98828c0.04688,0.00781 0.09375,0.01172 0.14063,0.01172c0.30469,0 0.59375,-0.14062 0.78516,-0.38281c0.22266,-0.28125 0.27734,-0.65625 0.14453,-0.98828c-1.20312,-3.00391 -1.23828,-4.80078 -1.14844,-5.62891h5.21875c1.65234,0 3,-1.34766 3,-3v-22c0,-1.65234 -1.34766,-3 -3,-3h-5v-15c0,-1.65234 -1.34766,-3 -3,-3zM5,8h46c0.55078,0 1,0.44922 1,1v32c0,0.55078 -0.44922,1 -1,1h-29c-0.42969,0 -0.8125,0.27344 -0.94922,0.68359c-0.01562,0.05078 -1.57812,4.51953 -8.09766,6.73828c1.82813,-4.10547 1.03516,-6.61719 0.99609,-6.73828c-0.13672,-0.41016 -0.51953,-0.68359 -0.94922,-0.68359h-8c-0.55078,0 -1,-0.44922 -1,-1v-32c0,-0.55078 0.44922,-1 1,-1zM13,20c-0.55469,0 -1,0.44922 -1,1c0,0.55078 0.44531,1 1,1h18c0.55469,0 1,-0.44922 1,-1c0,-0.55078 -0.44531,-1 -1,-1zM35,20c-0.55469,0 -1,0.44922 -1,1c0,0.55078 0.44531,1 1,1h4c0.55469,0 1,-0.44922 1,-1c0,-0.55078 -0.44531,-1 -1,-1zM13,26c-0.55469,0 -1,0.44922 -1,1c0,0.55078 0.44531,1 1,1h22c0.55469,0 1,-0.44922 1,-1c0,-0.55078 -0.44531,-1 -1,-1zM54,26h5c0.55078,0 1,0.44922 1,1v22c0,0.55078 -0.44922,1 -1,1h-6c-0.37891,0 -0.72266,0.21484 -0.89453,0.55078c-0.10937,0.21875 -0.91406,2.03906 0.34375,6.07813c-4.64844,-1.46484 -5.42969,-5.60156 -5.46484,-5.79297c-0.07812,-0.48047 -0.49609,-0.83594 -0.98437,-0.83594h-13c-0.55078,0 -1,-0.44922 -1,-1v-5h19c1.65234,0 3,-1.34766 3,-3zM8,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM13,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM18,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM23,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM28,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM33,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM38,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM43,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1zM48,36c-0.55469,0 -1,0.44922 -1,1v2c0,0.55078 0.44531,1 1,1c0.55469,0 1,-0.44922 1,-1v-2c0,-0.55078 -0.44531,-1 -1,-1z" />
+      </G>
+    </G>
   </Svg>
 );
 export default MessageIcon;

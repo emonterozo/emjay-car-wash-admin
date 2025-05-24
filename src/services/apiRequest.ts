@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios, { AxiosRequestConfig } from 'axios';
+import Config from 'react-native-config';
 
 // Types for API responses and errors
 export type ApiResponse<T> = Promise<{
@@ -20,6 +21,8 @@ interface ApiRequestOptions<Req, Res> extends AxiosRequestConfig {
 export const apiRequest = async <Req, Res>(
   url: string,
   options: ApiRequestOptions<Req, Res>,
+  token?: string,
+  retry = true,
 ): Promise<{ success: boolean; status: number; data?: Res; error?: string }> => {
   try {
     const { method, data, ...config } = options;
@@ -34,12 +37,37 @@ export const apiRequest = async <Req, Res>(
     return {
       success: true,
       status: response.status,
-      data: response.data as Res,
+      ...(response.data as Res),
     };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const status = error.response?.status ?? 0;
       const message = error.response?.data?.message || error.message || 'An error occurred';
+
+      if (status === 403 && retry && token) {
+        try {
+          const newToken = await refreshToken(token);
+
+          return apiRequest(
+            url,
+            {
+              ...options,
+              headers: {
+                ...options.headers,
+                Authorization: `Bearer ${newToken}`,
+              },
+            },
+            token,
+            false,
+          );
+        } catch (refreshError) {
+          return {
+            success: false,
+            status: 401,
+            error: 'Session expired. Please log in again.',
+          };
+        }
+      }
 
       // Return the error as part of the response
       return {
@@ -56,4 +84,11 @@ export const apiRequest = async <Req, Res>(
       error: 'An unexpected error occurred',
     };
   }
+};
+
+const refreshToken = async (token: string): Promise<void> => {
+  const response = await axios.post(`${Config.API_BASE_URL}/customers/refresh/token`, {
+    refresh_token: token,
+  });
+  return response.data.data.accessToken;
 };

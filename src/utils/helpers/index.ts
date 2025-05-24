@@ -1,0 +1,88 @@
+import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import * as Keychain from 'react-native-keychain';
+import notifee from '@notifee/react-native';
+
+export const formattedNumber = (amount: number, fractionDigits?: number) => {
+  return `₱${new Intl.NumberFormat('en-US', {
+    style: 'decimal',
+    minimumFractionDigits: fractionDigits ?? 2,
+    maximumFractionDigits: fractionDigits ?? 2,
+  }).format(amount)}`;
+};
+
+export const isStringEmpty = (value: string) => {
+  return value.length === 0;
+};
+
+export const getCurrentDateAtMidnightUTC = () => {
+  const now = new Date();
+  now.setUTCDate(now.getUTCDate());
+  now.setUTCHours(0, 0, 0, 0);
+
+  return now;
+};
+
+export const getMinimumDateAtMidnightUTC = () => {
+  const now = new Date('1900-01-31');
+  now.setUTCDate(now.getUTCDate());
+  now.setUTCHours(0, 0, 0, 0);
+  return now;
+};
+
+export const isValidDateString = (dateStr: string) => /^(\d{2})\/(\d{2})\/(\d{4})$/.test(dateStr);
+
+export const shortenNumber = (num: number) => {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(num % 1_000_000_000 === 0 ? 0 : 1) + 'B';
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 1) + 'M';
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(num % 1_000 === 0 ? 0 : 1) + 'K';
+  }
+  return num.toString();
+};
+
+export const storeCredentials = async (username: string, password: string) => {
+  try {
+    await Keychain.setGenericPassword(username, password);
+  } catch {}
+};
+
+export const getCredentials = async () => {
+  try {
+    const credentials = await Keychain.getGenericPassword();
+    if (credentials) {
+      return credentials;
+    } else {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+};
+
+export const removeCredentials = async () => {
+  try {
+    await Keychain.resetGenericPassword();
+  } catch {}
+};
+
+export const showLocalNotification = async (
+  remoteMessage: FirebaseMessagingTypes.RemoteMessage,
+) => {
+  await notifee.displayNotification({
+    title: remoteMessage.notification?.title,
+    body: remoteMessage.notification?.body,
+    android: {
+      channelId: 'default',
+      smallIcon: 'ic_notification',
+      largeIcon: 'ic_notification',
+      pressAction: {
+        id: 'default',
+      },
+    },
+    data: remoteMessage.data,
+  });
+};

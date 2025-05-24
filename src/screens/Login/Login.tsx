@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Dimensions,
@@ -11,48 +11,72 @@ import {
   TextInput,
   View,
   Pressable,
+  StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 
 import GlobalContext from '@app/context';
-import { IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { EyeOpenIcon, EyeCloseIcon, LockIcon, UserIcon } from '@app/icons';
-import { ErrorModal, LoadingAnimation, Toast } from '@app/components';
+import { ErrorModal, LoadingAnimation, MaterialCommunityIcon, Toast } from '@app/components';
 import { color, font } from '@app/styles';
 import { loginRequest } from '@app/services';
+import { verticalScale } from '@app/metrics';
+import { ScreenStatusProps } from '../../types/services/types';
+import { getCredentials, removeCredentials, storeCredentials } from '@app/helpers';
 
 const Login = () => {
-  const { setUser } = useContext(GlobalContext);
+  const { user, setUser } = useContext(GlobalContext);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-  const [screenStatus, setScreenStatus] = useState({
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
+    type: 'error',
   });
   const [input, setInput] = useState({
     username: '',
     password: '',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [isRemembered, setIsRemembered] = useState(false);
 
   const login = async () => {
-    setScreenStatus({ hasError: false, isLoading: true });
-    const response = await loginRequest({ username: input.username, password: input.password });
-    if (response.success && response.data) {
-      const { data, errors } = response.data;
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await loginRequest({
+      username: input.username,
+      password: input.password,
+      fcm_token: user.fcmToken,
+    });
 
-      if (errors.length > 0) {
-        setScreenStatus({ hasError: false, isLoading: false });
-        setIsToastVisible(true);
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    if (response.success && response.data) {
+      const { user: userData, accessToken, refreshToken } = response.data;
+      if (isRemembered) {
+        storeCredentials(user.username, input.password);
       } else {
-        const { token, user } = data;
-        setUser({
-          id: user.id,
-          username: user.username,
-          type: user.type,
-          token: token,
-        });
+        removeCredentials();
       }
+      setUser({
+        ...user,
+        id: userData._id,
+        username: userData.username,
+        type: userData.type,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      });
     } else {
-      setScreenStatus({ isLoading: false, hasError: true });
+      switch (response.status) {
+        case 401:
+          setIsToastVisible(true);
+          break;
+        default:
+          setScreenStatus({
+            isLoading: false,
+            type: response.error === ERR_NETWORK ? 'connection' : 'error',
+            hasError: true,
+          });
+          break;
+      }
     }
   };
 
@@ -78,10 +102,31 @@ const Login = () => {
     return { backgroundColor: pressed ? color.primary_pressed_state : color.primary };
   };
 
+  useEffect(() => {
+    const fetchCredential = async () => {
+      const credential = await getCredentials();
+      if (credential) {
+        setInput({
+          username: credential.username,
+          password: credential.password,
+        });
+        setIsRemembered(true);
+      }
+    };
+
+    fetchCredential();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#FAFAFA" barStyle="dark-content" />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
-      <ErrorModal isVisible={screenStatus.hasError} onCancel={toggleModal} onRetry={login} />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={toggleModal}
+        onRetry={login}
+      />
       <Toast
         isVisible={isToastVisible}
         message="Oops! Seems like you input wrong details. Please try again."
@@ -106,6 +151,9 @@ const Login = () => {
                 style={styles.input}
                 onChangeText={(text) => onChange('username', text)}
                 maxLength={20}
+                multiline={false}
+                numberOfLines={1}
+                value={input.username}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -117,12 +165,23 @@ const Login = () => {
                 secureTextEntry={isPasswordSecure}
                 onChangeText={(text) => onChange('password', text)}
                 maxLength={64}
+                multiline={false}
+                numberOfLines={1}
+                value={input.password}
               />
               <Pressable onPress={toggleSecureEntry}>
                 {isPasswordSecure ? <EyeCloseIcon /> : <EyeOpenIcon />}
               </Pressable>
             </View>
           </View>
+          <TouchableOpacity style={styles.action} onPress={() => setIsRemembered(!isRemembered)}>
+            <MaterialCommunityIcon
+              name={isRemembered ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
+              size={20}
+              color={isRemembered ? color.primary : '#D9D9D9'}
+            />
+            <Text style={styles.label}>Remember Me</Text>
+          </TouchableOpacity>
           <Pressable
             disabled={hasNoInput()}
             style={({ pressed }) => [styles.button, getButtonStyle(pressed)]}
@@ -155,7 +214,7 @@ const styles = StyleSheet.create({
     width: 245,
     height: 147,
     alignSelf: 'center',
-    marginTop: 127,
+    marginTop: verticalScale(30),
   },
   header: {
     ...font.bold,
@@ -190,21 +249,37 @@ const styles = StyleSheet.create({
     ...font.regular,
     marginHorizontal: 33,
     color: '#5C5C5C',
+    textAlignVertical: 'center',
+    minHeight: 40,
   },
   button: {
-    marginTop: 128,
+    marginTop: verticalScale(130),
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderRadius: 49,
     justifyContent: 'center',
     alignItems: 'center',
     width: Dimensions.get('window').width - 48,
+    marginBottom: 10,
   },
   buttonText: {
     ...font.regular,
     fontSize: 24,
     lineHeight: 24,
     color: '#FFFFFF',
+  },
+  label: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#888888',
+  },
+  action: {
+    marginTop: 16,
+    flexDirection: 'row',
+    width: Dimensions.get('window').width - 48,
+    alignItems: 'center',
+    gap: 3,
   },
 });
 

@@ -8,6 +8,7 @@ import {
   SalesIcon,
   ServicesIcon,
 } from '@app/icons';
+import { ChatReference, SizeKey } from '../../types/constant/types';
 
 export const DASHBOARD_ITEMS = [
   {
@@ -36,7 +37,7 @@ export const DASHBOARD_ITEMS = [
   },
   {
     id: 5,
-    title: 'Publish',
+    title: 'Promos',
     icon: PublishIcon,
     screen: 'Publish',
   },
@@ -62,136 +63,110 @@ export const DASHBOARD_ITEMS = [
 
 export const IMAGES = {
   EM_JAY: require('../../../assets/images/emjay.png'),
-  ADMIN: require('../../../assets/images/human.png'),
-  SUPER_VISOR: require('../../../assets/images/user.png'),
-  NO_INTERNET: require('../../../assets/images/no-wifi.png'),
-  SERVER_DOWN: require('../../../assets/images/network.png'),
   EMPTY_STATE: require('../../../assets/images/no-data.png'),
-  SCAN: require('../../../assets/images/scan.png'),
+  AVATAR_BOY: require('../../../assets/images/avatar-boy.png'),
+  AVATAR_GIRL: require('../../../assets/images/avatar-girl.png'),
+  ERROR: require('../../../assets/images/error.png'),
+  NO_CONNECTION: require('../../../assets/images/no-connection.png'),
+  CANCEL: require('../../../assets/images/cancel.png'),
+  PROMO_FREE: require('../../../assets/images/free.png'),
 };
 
-export const MESSAGE = {
+export const ERROR_TYPE = {
+  error: {
+    title: 'Something went wrong',
+    description: "We're actively resolving the issue. Please refresh the page and try again.",
+  },
+  connection: {
+    title: 'No Internet Connection',
+    description: 'No internet connections found. Check your connections and try again.',
+  },
+};
+
+export const CONFIRM_TYPE = {
+  Add: {
+    title: 'Are you sure you want to cancel adding employee?',
+    description: 'By doing this, you will cancel adding the employee and lose any unsaved changes.',
+  },
+  Update: {
+    title: 'Are you sure you want to cancel updating employee?',
+    description:
+      'By doing this, you will cancel updating the employee and lose any unsaved changes.',
+  },
+  UpdateAvailedService: {
+    title: 'Are you sure you want to cancel updating availed service?',
+    description:
+      'By doing this, you will cancel updating the availed service and lose any unsaved changes.',
+  },
+  CancelTransaction: {
+    title: 'Are you sure you want to Cancel the Transaction?',
+    description:
+      "Once canceled, the transaction cannot be undone. Please confirm if you'd like to proceed.",
+  },
+  CompleteTransaction: {
+    title: 'Are you sure you want to Complete the Transaction?',
+    description:
+      "Once completed, the transaction cannot be undone. Please confirm if you'd like to proceed.",
+  },
+  AddConsumables: {
+    title: 'Are you sure you want to cancel adding consumables?',
+    description: 'By doing this, you will lose any unsaved changes.',
+  },
+  DeleteConsumables: {
+    title: 'Are you sure you want to delete this consumables?',
+    description:
+      "By doing this, deleting cannot be undone Please confirm if you'd like to proceed.",
+  },
+  AddExpense: {
+    title: 'Are you sure you want to cancel adding expense item?',
+    description: 'By doing this, you will lose any unsaved changes.',
+  },
+};
+
+export const LIMIT = 50;
+
+export const MESSAGE: Record<
+  string,
+  { title: string; description: string; button: string; image: string }
+> = {
   no_camera: {
     title: 'No Camera Detected',
     description: 'Unable to find a camera. Please check your device.',
     button: 'Go Back',
+    image: 'NO_CAMERA',
   },
-  no_permission: {
+  permission_denied: {
     title: 'Permission Denied',
     description:
       'Camera access is required to proceed. Please grant permission in your device settings.',
     button: 'Open Settings',
+    image: 'PERMISSION_DENIED',
+  },
+  customer_not_exist: {
+    title: 'Customer Does Not Exist',
+    description: "We couldn't find your account. Please try again later.",
+    button: 'Go Back',
+    image: 'CUSTOMER_NOT_EXIST',
   },
 };
 
 export const VEHICLE_TYPES = ['Car', 'Motorcycle'];
-export const CAR_SIZES = ['Small', 'Medium', 'Large', 'Extra Large', 'Extra Extra Large'];
+export const CAR_SIZES = ['Small', 'Medium', 'Large', 'Extra Large'];
 export const MOTORCYCLE_SIZES = ['Small', 'Medium', 'Large'];
-export const SIZE_ORDER = ['sm', 'md', 'lg', 'xl', 'xxl'];
-export const SIZE_DESCRIPTION = {
+export const STATISTICS_FILTER = ['Income', 'Expenses'];
+export const SIZES = ['sm', 'md', 'lg', 'xl'];
+export const SIZE_DESCRIPTION: Record<SizeKey, string> = {
   sm: 'Small',
   md: 'Medium',
   lg: 'Large',
   xl: 'Extra Large',
-  xxl: 'Extra Extra Large',
 };
 
-export const MOCK_SERVICES = [
-  {
-    id: '1',
-    title: 'Complete Wash',
-    description: 'A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.',
-    type: 'car',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '11',
-    title: 'Complete Wash',
-    description: 'A complete wash, tire black, hydro something. Lorem ipsum dolor sit amet.',
-    type: 'motorcycle',
-    price_list: [
-      { category: 'sm', price: 80 },
-      { category: 'md', price: 100 },
-      { category: 'lg', price: 120 },
-    ],
-  },
-  {
-    id: '2',
-    title: 'Seat Cover Removal',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    type: 'car',
-    price_list: [{ category: 'All Size', price: 250 }],
-  },
-  {
-    id: '3',
-    title: 'Interior Cleaning',
-    description: 'Deep cleaning for the interior. Refresh your car’s interior with our service.',
-    type: 'car',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '4',
-    title: 'Wax & Polish',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    type: 'car',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-      { category: 'xl', price: 550 },
-      { category: 'xxl', price: 650 },
-    ],
-  },
-  {
-    id: '5',
-    title: 'Motor Buffing',
-    description: 'Give your car a showroom shine with our waxing and polishing service.',
-    type: 'motorcycle',
-    price_list: [
-      { category: 'sm', price: 250 },
-      { category: 'md', price: 350 },
-      { category: 'lg', price: 450 },
-    ],
-  },
-];
+export const ERR_NETWORK = 'Network Error';
 
-export const MOCK_EMPLOYEES = [
-  {
-    id: 1,
-    full_name: 'John First',
-  },
-  {
-    id: 2,
-    full_name: 'Jane First',
-  },
-  {
-    id: 2,
-    full_name: 'John Second',
-  },
-  {
-    id: 3,
-    full_name: 'Jane Second',
-  },
-  {
-    id: 4,
-    full_name: 'John Third',
-  },
-  {
-    id: 5,
-    full_name: 'Jane Third',
-  },
-];
+export const NO_DATA = 'No available data';
 
-export const ERR_NETWORK = 'ERR_NETWORK';
+export const CHAT_REFERENCE: Record<ChatReference, string> = {
+  emjay: 'emjay',
+  customer: 'customer',
+};

@@ -1,5 +1,6 @@
 import type { StackScreenProps } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
+import { GenderType, TransactionServicesResponse, TransactionStatusType } from '../services/types';
 
 export type CarwashList = {
   icon: string;
@@ -14,14 +15,7 @@ export type AuthStackParamList = {
   CustomerDetails: { id: string };
   BottomTab: undefined;
   Employee: undefined;
-  EmployeeDetails: {
-    id: string;
-    fullName: string;
-    title: string;
-    status: string;
-    dateStarted: string;
-    contact: string;
-  };
+  EmployeeDetails: { id: string };
   Expenses: undefined;
   Ongoing: undefined;
   Publish: undefined;
@@ -31,12 +25,90 @@ export type AuthStackParamList = {
   Settings: undefined;
   Transaction: undefined;
   AddOngoing: {
-    customerId?: string;
-    firstName?: string;
-    lastName?: string;
-    freeCarwashList?: CarwashList[];
+    customerId: string | null;
+    contactNumber: string | null;
+    freeWash: { type: string; size: string }[];
+    points?: number;
+    transaction:
+      | (Omit<
+          TransactionServicesResponse['transaction'],
+          'availed_services' | 'contact_number' | 'status'
+        > & {
+          availedServices: string[];
+        })
+      | undefined;
   };
   PreTransaction: { id: string };
+  EmployeeForm:
+    | { type: 'Add'; employee?: never }
+    | {
+        type: 'Update';
+        employee: {
+          id: string;
+          firstName: string;
+          lastName: string;
+          birthDate: string;
+          gender: string;
+          contactNumber: string;
+          employeeTitle: string;
+          employeeStatus: string;
+          dateStarted: string;
+        };
+      };
+  AvailedServices: {
+    customerId: string | null;
+    transactionId: string;
+    transactionStatus: TransactionStatusType;
+    model: string;
+    plateNumber: string;
+  };
+  AvailedServiceDetails: {
+    transactionId: string;
+    transactionStatus: TransactionStatusType;
+    transactionServiceId: string;
+  };
+  AvailedServiceForm: {
+    service: {
+      transactionId: string;
+      transactionServiceId: string;
+      title: string;
+      price: number;
+      discount: number;
+      deduction: number;
+      companyEarnings: number;
+      employeeShare: number;
+      serviceCharge: boolean;
+      status: string;
+      paymentStatus: boolean;
+      startDateTime: string | '';
+      endDateTime: string | '';
+      assignedEmployees: string[];
+      isPointsCash: boolean;
+    };
+  };
+  TransactionDetails: { transactionId: string; transactionServiceId: string };
+  TransactionComputation: { startDate: string; endDate: string };
+  ConsumablesForm: undefined;
+  ExpensesForm: undefined;
+  Statistics: undefined;
+  PublishForm:
+    | { type: 'Add'; promo?: never }
+    | {
+        type: 'Update';
+        promo: {
+          id: string;
+          percent: number;
+          title: string;
+          description: string;
+          isActive: boolean;
+        };
+      };
+  Chat: {
+    customerId: string;
+    firstName: string;
+    lastName: string;
+    gender: GenderType;
+  };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];
@@ -48,3 +120,22 @@ export type PreTransactionsRouteProp = RouteProp<AuthStackParamList, 'PreTransac
 export type AddOngoingRouteProp = RouteProp<AuthStackParamList, 'AddOngoing'>;
 
 export type EmployeeDetailsRouteProp = RouteProp<AuthStackParamList, 'EmployeeDetails'>;
+
+export type EmployeeFormRouteProp = RouteProp<AuthStackParamList, 'EmployeeForm'>;
+
+export type AvailedServicesRouteProp = RouteProp<AuthStackParamList, 'AvailedServices'>;
+
+export type AvailedServiceDetailRouteProp = RouteProp<AuthStackParamList, 'AvailedServiceDetails'>;
+
+export type AvailedServiceFormRouteProp = RouteProp<AuthStackParamList, 'AvailedServiceForm'>;
+
+export type TransactionDetailsRouteProp = RouteProp<AuthStackParamList, 'TransactionDetails'>;
+
+export type TransactionComputationRouteProp = RouteProp<
+  AuthStackParamList,
+  'TransactionComputation'
+>;
+
+export type PublishFormRouteProp = RouteProp<AuthStackParamList, 'PublishForm'>;
+
+export type ChatRouteProp = RouteProp<AuthStackParamList, 'Chat'>;

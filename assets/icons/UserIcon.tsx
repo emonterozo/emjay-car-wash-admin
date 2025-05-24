@@ -1,29 +1,27 @@
-import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const UserIcon = ({width = 30, height = 30}: IconProps) => (
-  <Svg
-    width={width}
-    height={height}
-    viewBox={`0 0 ${width} ${height}`}
-    fill="none"
-  >
-    <Rect width={30} height={30} fill="url(#pattern0_59_18)" />
-    <Defs>
-      <Pattern
-        id="pattern0_59_18"
-        patternContentUnits="objectBoundingBox"
-        width={1}
-        height={1}
-      >
-        <Use xlinkHref="#image0_59_18" transform="scale(0.015625)" />
-      </Pattern>
-      <Image
-        id="image0_59_18"
-        width={64}
-        height={64}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAADz0lEQVR4nO2aTYhTSRCAq/zDw6oX0ZnFuwgq+HdTPIi7ouzuSfEXxYPiyKvO/Oh4EHLZBWF1ZmRP3te/AUFwSKreKDmKOg6iHlT0IDr+ILsHRxf820h3wqSTvGhMSOZ17A8ePF76Vb3urqqurg6Ax+PxeDwej8fj8XiaQRaBZAUkeAeQdJpL3yfSy81vLUvHUBsqHkDFY6gkG33xGJL0A12eDy0244eR+E3ljpcNxDgE3OO+RezOzETFZyM6+dw8Jz6BivvybZ6XtSM+o2WAm2QxovMjEMhPkExOKWuun6nwZ1Q8WjYITloCyeESs+6DzYNTv/peMjMtFysK7wJxNzhFt8xDktfWLJ74VhFIfLIoJnQMtYErYPEMjlQ189GWYLkD94FDvj82Yb7a52sl4A2WFT11IxYkwpWFj5ZnkQGvWpLJKaj4xcRgmmQp7hBvt8z2bL3iUMn5QjCUrRB7Au6x/P/PesWhkuNurQbE3dYAHK9XXC5Zyg+Aki6IPSrc9n27AMkKO+WtOwgSvyysKMPLwL1lkDfULIrCjdZgPnFjGQTtt9JvucGoTmpqS4TkVj3ZZHxSYcUD3yoClfxVlAo7VyMIipZDPYMnq7KE3MxbnTfBrxPcI4t6K1uyIxw1MaHSdjjn8wWzz2WTfzvj+5EFkbJBMAPxAknO5YshfWaps6K9dZ12uCBil8R0csTjVZfESF7nzN7VmY+CLs83s0389Audf2KifbfMg9YliyahUeG2ibK4vjdJTivNuMfjKSM5OAMotQqC9BYg2QeKe82l782z1CrTpqXoHF6Civ9A4htI8q6KJVC3uY4kvwPJYnCSfSPTQfFeJLlb/XFYxWOyO6BkT00bqkmBZCcSP6rQmf+R5B6SXEAlp5DkmLly9xeQ+L5pEz0YD3W9EWLLwfBHJBmK6PS4yecT8gv0Ds/5qhzdRoW/6jS4QvZ4CRLpdogVxOtRyb8lu79XJsB1ZH6oWa5+l/iIllUSJ/4BCtdBLCDZjYrfWx/3yZzx19PxUg5dnGWOyrRsK1hCkN4Fk4riA8U+y48hkV7TMH1BuNbsF6yYAkr2w6SQSG9C4g+Wyd+GILWgCXrbS47QP0KQ/g2aCqWWFv/jg69qM22a/iA1G0muWYP/RucbzVGeNCWrEUv5o0nZvnZl5qLiB5Yl3DL5R8NRctRS+hZUemHjlVb6lnAREv9nnRwdbazCpD6tlbexKlYq6SpyhXoOYqoBSW7mlV1puLJq2Dw4FUky+aXxZuMVdujkZHh1rIqVegcZhGubGog9Ho/H4/F4wHE+A4/rbu0VKR02AAAAAElFTkSuQmCC"
-      />
-    </Defs>
+import React from 'react';
+import Svg, { G, Path } from 'react-native-svg';
+
+const UserIcon = ({ width = 30, height = 30 }: IconProps) => (
+  <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
+    <G
+      fill="#016fb9"
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(5.12,5.12)">
+        <Path d="M25,3c-5.53516,0 -10,4.46484 -10,10v6c0,3.23828 1.58594,6.14453 4,7.96875v4.53125c0,0.10547 -0.01953,0.19531 -0.28125,0.4375c-0.26172,0.24219 -0.72656,0.56641 -1.34375,0.875c-1.23047,0.61719 -3.00781,1.25 -4.8125,2.125c-1.80469,0.875 -3.67578,1.98828 -5.125,3.59375c-1.44922,1.60547 -2.4375,3.75781 -2.4375,6.46875v1h40v-1c0,-2.73437 -0.98828,-4.89453 -2.4375,-6.5c-1.44922,-1.60547 -3.32031,-2.69922 -5.125,-3.5625c-1.80469,-0.86328 -3.58594,-1.51562 -4.8125,-2.125c-0.61328,-0.30469 -1.08594,-0.60156 -1.34375,-0.84375c-0.25781,-0.24219 -0.28125,-0.34375 -0.28125,-0.46875v-4.53125c2.41406,-1.82422 4,-4.73047 4,-7.96875v-6c0,-5.53516 -4.46484,-10 -10,-10zM25,5c4.46484,0 8,3.53516 8,8v6c0,2.75781 -1.44141,5.24219 -3.5625,6.65625l-0.4375,0.3125v5.53125c0,0.77344 0.39844,1.45703 0.90625,1.9375c0.50781,0.48047 1.14453,0.83984 1.84375,1.1875c1.39844,0.69531 3.11719,1.3125 4.8125,2.125c1.69531,0.8125 3.32422,1.79297 4.5,3.09375c0.97656,1.07813 1.54297,2.46094 1.75,4.15625h-35.625c0.20703,-1.67578 0.77734,-3.04297 1.75,-4.125c1.17578,-1.30469 2.80469,-2.30078 4.5,-3.125c1.69531,-0.82422 3.41797,-1.46094 4.8125,-2.15625c0.69531,-0.34766 1.33984,-0.71484 1.84375,-1.1875c0.50391,-0.47266 0.90625,-1.13672 0.90625,-1.90625v-5.53125l-0.4375,-0.3125c-2.12109,-1.41406 -3.5625,-3.89844 -3.5625,-6.65625v-6c0,-4.46484 3.53516,-8 8,-8z" />
+      </G>
+    </G>
   </Svg>
 );
+
 export default UserIcon;

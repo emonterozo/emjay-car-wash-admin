@@ -1,26 +1,25 @@
-import React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-
+import * as React from 'react';
+import Svg, { G, Path } from 'react-native-svg';
 const EyeCloseIcon = ({ width = 25, height = 25 }: IconProps) => (
-  <Svg
-    width={width}
-    height={height}
-    viewBox={`0 0 ${width} ${height}`}
-    fill="none"
-  >
-    <Rect width={25} height={25} fill="url(#pattern0_59_27)" />
-    <Defs>
-      <Pattern id="pattern0_59_27" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_59_27" transform="scale(0.02)" />
-      </Pattern>
-      <Image
-        id="image0_59_27"
-        width={50}
-        height={50}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAADuklEQVR4nO2Yy4tUVxCHqzBBjeJjE19RY0RjQDRx4cZsE7MyLxTBhSAq2s6t6pkWDIIRFMXkDwgGNZsQNWYhyOTeqttKL6KiYML4wKCGYIijCYyPRMVR1JFzxmja7nMf01emJ7k/6E1zT1V951F16gDkypXr/ytk+QlJTkGhfSwMZCHrSWTtQdafBzZMSV9G0jMWhuQcrAnHw4BVKYdpUpXylWlSFdrHmiwWmc1aZDawtiHL1yZ9I+llZLmDrN1I8qfNhiS7wZO1wPomQA82D0yx/BqSbkPWi4//T/GTTiT5HFpkRj/DSBeSPqgKjuQ6kn4BLB8AB6/CygMvgecPNsDA4UIk2YEsN6vH6AMk+Q5IZ/YjzJNfN5BuAM8fETve80cgyVZkuVcDxPrt812hjZUXgOVTKMqSejDA4fzUNovBHLu9arddN1C43vrMVG3l6Uhy7LGT+w6Yvl1nWnQKsvzmOEcngPxZ2UBQsApJbj3jIFuYVpmLpHcdMN1QDJf3HWDliReRZWdE1rkPRZ2XFQySbI7Jcl/apJFKq9tHI8mhGMPXqg52ozC9Pm/EpOsfzHfJDHr+K0hyNrYGkGyvGfsMDJLuRdKrSPo3ku4HDl6Pco3RO+AfmNPxt3EqT0LWX5IUM+BwQYrU/HQV22Si0z8HHyUspL+aCa9vpPXgBPNB0qpsoJ0BRcLIPvdEhtOS+rd9Eh0cU2MDSY8mNmJAllaGOAOKhvnLPaYyPE0MyHqkFoT1SCqQQmW4MyBP33XDSJdzXEmHNQxinZKcSwzi+VNd8SDrV8CyrD6M7HFPgD81+dbSC1AMxtU31CYTk54TIP3QGdCacDyyXnHAuFMzyccJz8fZ+MzVe+hPJzC2I9JOMRiHpLuA5J2kMEiyPQFIh+laIUVxOhwDch24MgrSKApmXXlkbEEk8VP7NNcBcy2Inh3ZlM5oBAzJxgg/D03zBgv3DYI+i2WFbVXrH7i75sLXMIwn70VcGm8D6WLIROTPQtIfHY4u2k6wMRhXZjqefZNlmhwK19dfHekEr/xWZjAkt4Dkk+wbq3+rRWYgyYE6MPeQZUuiVnddeaSjBehBlu8j72OZi8pvG6f2IFYD3TS3WPCCRfbBwfQQrUeHQqF9MnjB+/bxoTc7ZducNSwO30CWz5DkUuKq/BT6vAVsGhirHrSPbp6sRdZvTOFClj/sA11vRvodSSu2kLIU6x7iQtPAZKBS/tbcpCrlK9OkKv2XVqZQlc06YECrYGE6zNNtf4eSK1cu6D89AuyuO42uYpktAAAAAElFTkSuQmCC"
-      />
-    </Defs>
+  <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
+    <G
+      fill="#016fb9"
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(5.12,5.12)">
+        <Path d="M5.90625,4.96875c-0.04297,0.00781 -0.08594,0.01953 -0.125,0.03125c-0.375,0.06641 -0.67578,0.33984 -0.78125,0.70313c-0.10547,0.36719 0.00391,0.75781 0.28125,1.01563l38,38c0.39844,0.39844 1.03906,0.39844 1.4375,0c0.39844,-0.39844 0.39844,-1.03906 0,-1.4375l-8.46875,-8.46875c6.57422,-3.54687 11.21484,-8.82422 11.5,-9.15625c0.32031,-0.375 0.32031,-0.9375 0,-1.3125c-0.43359,-0.50391 -10.74219,-12.34375 -22.75,-12.34375c-3.30859,0 -6.46484,0.90625 -9.34375,2.21875l-8.9375,-8.9375c-0.20703,-0.22266 -0.50781,-0.33594 -0.8125,-0.3125zM25,14c0.39063,0 0.76953,0.03516 1.15625,0.0625c5.51953,0.58594 9.84375,5.26563 9.84375,10.9375c0,2.66797 -0.94531,5.125 -2.53125,7.03125l-5.03125,-5.03125c0.34766,-0.58984 0.5625,-1.26562 0.5625,-2c0,-2.21094 -1.78906,-4 -4,-4c-0.73437,0 -1.41016,0.21484 -2,0.5625l-5.03125,-5.03125c1.90625,-1.58594 4.36328,-2.53125 7.03125,-2.53125zM12,16.15625c-5.65234,3.46875 -9.48828,7.88281 -9.75,8.1875c-0.32031,0.375 -0.32031,0.9375 0,1.3125c0.43359,0.50391 10.74219,12.34375 22.75,12.34375c0.40234,0 0.79297,-0.02734 1.1875,-0.0625c2.16016,-0.14062 4.26953,-0.61328 6.25,-1.34375l-2.03125,-2.03125c-1.60156,0.91016 -3.43359,1.4375 -5.40625,1.4375c-0.39062,0 -0.76953,-0.03516 -1.15625,-0.0625c-5.51953,-0.58594 -9.84375,-5.26562 -9.84375,-10.9375c0,-1.97266 0.52734,-3.80469 1.4375,-5.40625zM21.03125,25.15625c0.08203,2.07813 1.73047,3.73047 3.8125,3.8125z" />
+      </G>
+    </G>
   </Svg>
 );
-
 export default EyeCloseIcon;

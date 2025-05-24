@@ -1,11 +1,8 @@
 import * as React from 'react';
-import Svg, { Rect } from 'react-native-svg';
-const MenuIcon = ({ width = 20, height = 18 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect x={1} width={8} height={8} rx={3} fill="#016FB9" />
-    <Rect x={11} width={8} height={8} rx={3} fill="#016FB9" />
-    <Rect x={1} y={10} width={8} height={8} rx={3} fill="#016FB9" />
-    <Rect x={11} y={10} width={8} height={8} rx={3} fill="#016FB9" />
+import Svg, { Path } from 'react-native-svg';
+const MenuIcon = ({ width = 48, height = 48, fill = '#696969' }: IconProps) => (
+  <Svg viewBox="0 -5 24 35" width={width} height={height} fill={fill}>
+    <Path d="M8 10.75H4A2.752 2.752 0 011.25 8V4A2.752 2.752 0 014 1.25H8A2.752 2.752 0 0110.75 4V8A2.752 2.752 0 018 10.75zm-4-8A1.252 1.252 0 002.75 4V8A1.252 1.252 0 004 9.25H8A1.252 1.252 0 009.25 8V4A1.252 1.252 0 008 2.75zM20 22.75H16A2.752 2.752 0 0113.25 20V16A2.752 2.752 0 0116 13.25h4A2.752 2.752 0 0122.75 16v4A2.752 2.752 0 0120 22.75zm-4-8A1.252 1.252 0 0014.75 16v4A1.252 1.252 0 0016 21.25h4A1.252 1.252 0 0021.25 20V16A1.252 1.252 0 0020 14.75zM8 22.75H4A2.752 2.752 0 011.25 20V16A2.752 2.752 0 014 13.25H8A2.752 2.752 0 0110.75 16v4A2.752 2.752 0 018 22.75zm-4-8A1.252 1.252 0 002.75 16v4A1.252 1.252 0 004 21.25H8A1.252 1.252 0 009.25 20V16A1.252 1.252 0 008 14.75zM18 10.75A4.75 4.75 0 1122.75 6 4.756 4.756 0 0118 10.75zm0-8A3.25 3.25 0 1021.25 6 3.254 3.254 0 0018 2.75z" />
   </Svg>
 );
 export default MenuIcon;

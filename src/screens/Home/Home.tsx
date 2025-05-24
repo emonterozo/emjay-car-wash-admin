@@ -1,37 +1,125 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import { DASHBOARD_ITEMS } from '@app/constant';
 import {
-  AvatarIcon,
-  ChevronRightIcon,
+  Dimensions,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import FastImage from '@d11/react-native-fast-image';
+import { format } from 'date-fns';
+
+import { DASHBOARD_ITEMS, ERR_NETWORK } from '@app/constant';
+import {
+  AdminIcon,
   CircleArrowRightIcon,
   DashboardUpdateIcon,
   HorizontalKebabIcon,
-  MenuIcon,
-  StarHalfFillIcon,
-  StarIcon,
 } from '@app/icons';
-import { useNavigation } from '@react-navigation/native';
+import { color, font } from '@app/styles';
+import {
+  EmptyState,
+  ErrorState,
+  LoadingAnimation,
+  MaterialCommunityIcon,
+  RatingStars,
+} from '@app/components';
+import { getServicesRequest } from '@app/services';
+import GlobalContext from '@app/context';
+import { ScreenStatusProps, Service } from '../../types/services/types';
+import FilterOption from './FilterOption';
 
-const IMAGE =
-  'https://firebasestorage.googleapis.com/v0/b/portfolio-d0d15.appspot.com/o/pexels-tima-miroshnichenko-6872601.jpg?alt=media&token=9688293b-ad76-4706-87a9-9446d42b576b';
+const { width } = Dimensions.get('window');
+
+const FILTER_VALUE = {
+  top: {
+    field: 'ratings',
+    direction: 'desc',
+  },
+  low: {
+    field: 'ratings',
+    direction: 'asc',
+  },
+  most_recent: {
+    field: 'last_review',
+    direction: 'desc',
+  },
+};
 
 const Home = () => {
+  const { user } = useContext(GlobalContext);
   const navigation = useNavigation<any>();
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
+  const [services, setServices] = useState<Service[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<keyof typeof FILTER_VALUE>('top');
+  const [isFilterOptionVisible, setIsFilterOptionVisible] = useState(false);
+
+  const fetchService = async (filter: keyof typeof FILTER_VALUE) => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getServicesRequest(
+      user.accessToken,
+      user.refreshToken,
+      FILTER_VALUE[filter].field,
+      FILTER_VALUE[filter].direction as 'asc' | 'desc',
+      5,
+      0,
+    );
+
+    if (response.success && response.data) {
+      setServices(response.data.services);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchService(selectedFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const formatDate = (date: string | null) => {
+    if (date) {
+      return format(new Date(date), 'MMMM dd, yyyy');
+    }
+
+    return 'No available data';
+  };
+
   const handlePressDashboardItem = (screen: string) => navigation.navigate(screen);
+
+  const toggleFilter = () => setIsFilterOptionVisible(!isFilterOptionVisible);
+
+  const onSelectedFilter = (filter: string) => {
+    const selectedFilterValue = filter as keyof typeof FILTER_VALUE;
+    toggleFilter();
+    setSelectedFilter(selectedFilterValue);
+    fetchService(selectedFilterValue);
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar backgroundColor={color.background} barStyle="dark-content" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
       <View style={styles.heading}>
         <View style={styles.greetingContainer}>
-          <Text style={styles.greeting}>Hello Admin</Text>
+          <Text style={styles.greeting}>Good Day, Emjay!</Text>
           <Text style={styles.subHeader}>Keep an eye on your sales with care.</Text>
         </View>
         <View style={styles.avatarContainer}>
-          <AvatarIcon />
-          <MenuIcon />
+          <AdminIcon width={40} height={40} />
         </View>
       </View>
       <ScrollView style={styles.scrollView} bounces={false} showsVerticalScrollIndicator={false}>
@@ -49,10 +137,13 @@ const Home = () => {
                 {' in 1 week'}
               </Text>
             </View>
-            <View style={styles.footer}>
+            <TouchableOpacity
+              style={styles.footer}
+              onPress={() => navigation.navigate('Statistics')}
+            >
               <Text style={styles.footerText}>View Statistics</Text>
-              <ChevronRightIcon />
-            </View>
+              <MaterialCommunityIcon name="chevron-right" size={20} color="#DBDADA" />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.dashboardContainer}>
@@ -71,33 +162,59 @@ const Home = () => {
         </View>
         <View style={styles.topServicesHeader}>
           <Text style={styles.label}>Top Services</Text>
-          <TouchableOpacity>
-            <HorizontalKebabIcon />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity onPress={toggleFilter}>
+              <HorizontalKebabIcon />
+            </TouchableOpacity>
+            {isFilterOptionVisible && (
+              <FilterOption
+                top={19}
+                selectedFilter={selectedFilter}
+                onSelectedFilter={onSelectedFilter}
+              />
+            )}
+          </>
         </View>
-        <View style={styles.serviceContainer}>
-          {[1, 2, 3, 4, 5].map((item) => (
-            <View style={styles.row} key={item}>
-              <Image src={IMAGE} style={styles.serviceImage} resizeMode="cover" />
-              <View style={styles.serviceContent}>
-                <Text style={styles.service}>Auto Detailing</Text>
-                <View style={styles.ratings}>
-                  <StarIcon />
-                  <StarIcon />
-                  <StarIcon />
-                  <StarHalfFillIcon />
-                  <StarIcon fill="#888888" />
-                  <Text style={styles.count}>(100)</Text>
+
+        {services.length > 0 ? (
+          <>
+            <View style={styles.serviceContainer}>
+              {services.map((item) => (
+                <View style={styles.row} key={item._id}>
+                  <FastImage
+                    style={styles.serviceImage}
+                    source={{
+                      uri: item.image,
+                      priority: FastImage.priority.normal,
+                    }}
+                    resizeMode={FastImage.resizeMode.cover}
+                  />
+                  <View style={styles.serviceContent}>
+                    <Text style={styles.service}>{item.title}</Text>
+                    <View style={styles.ratings}>
+                      <RatingStars rating={item.ratings} />
+                      <Text style={styles.count}>{`(${item.reviews_count})`}</Text>
+                    </View>
+                    <Text style={styles.serviceDate}>{formatDate(item.last_review)}</Text>
+                  </View>
                 </View>
-                <Text style={styles.serviceDate}>July 5, 2024</Text>
-              </View>
+              ))}
             </View>
-          ))}
-        </View>
-        <TouchableOpacity style={styles.viewAllButton}>
-          <Text style={styles.viewAll}>View All</Text>
-          <CircleArrowRightIcon />
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.viewAllButton}>
+              <Text style={styles.viewAll}>View All</Text>
+              <CircleArrowRightIcon />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            {screenStatus.hasError ? (
+              <ErrorState type={screenStatus.type} onRetry={() => fetchService(selectedFilter)} />
+            ) : (
+              <EmptyState />
+            )}
+            <View style={styles.emptyStateSeparator} />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -107,8 +224,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F2EF',
-    paddingTop: 64,
-    paddingBottom: 5,
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   heading: {
     flexDirection: 'row',
@@ -123,22 +240,24 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   greeting: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 24,
+    lineHeight: 24,
     color: '#050303',
   },
   subHeader: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     lineHeight: 20,
     color: '#696969',
   },
   avatarContainer: {
-    gap: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
+    backgroundColor: '#ffffff',
+    borderRadius: 49,
+    width: 49,
+    height: 49,
   },
   dashboardContainer: {
     paddingHorizontal: 23,
@@ -164,15 +283,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   title: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
     lineHeight: 16,
     color: '#1F93E1',
   },
   salesContainer: {
     height: 207,
-    backgroundColor: '#016FB9',
+    backgroundColor: color.primary,
     borderRadius: 24,
     padding: 19,
     marginTop: 24,
@@ -186,23 +304,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#DBDADA',
   },
   body: {
     gap: 3,
   },
   date: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
     color: '#C3C3C3',
   },
   description: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     lineHeight: 28,
     fontSize: 24,
     color: '#FAFAFA',
@@ -216,16 +332,15 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   headerText: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
     lineHeight: 20,
     color: '#FAFAFA',
   },
   label: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#000000',
   },
   topServicesHeader: {
@@ -235,25 +350,26 @@ const styles = StyleSheet.create({
     marginVertical: 24,
   },
   service: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#000000',
   },
   serviceDate: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#777676',
   },
   count: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#000000',
   },
   row: {
     flexDirection: 'row',
+    gap: 20,
   },
   serviceContainer: {
     gap: 24,
@@ -261,8 +377,8 @@ const styles = StyleSheet.create({
   serviceImage: { width: '45%', height: 100, borderRadius: 8 },
   serviceContent: {
     justifyContent: 'center',
-    marginLeft: 20,
     gap: 8,
+    width: width * 0.55 - 20 - 25,
   },
   ratings: {
     flexDirection: 'row',
@@ -270,16 +386,18 @@ const styles = StyleSheet.create({
     gap: 7,
   },
   viewAll: {
-    fontFamily: 'AeonikTRIAL-Regular',
-    fontWeight: 'regular',
+    ...font.regular,
     fontSize: 16,
-    color: '#016FB9',
+    color: color.primary,
   },
   viewAllButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     marginVertical: 24,
+  },
+  emptyStateSeparator: {
+    marginBottom: 30,
   },
 });
 

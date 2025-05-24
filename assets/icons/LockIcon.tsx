@@ -1,20 +1,26 @@
 import React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
+import Svg, { G, Path } from 'react-native-svg';
 
 const LockIcon = ({ width = 30, height = 30 }: IconProps) => (
-  <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} fill="none">
-    <Rect width={30} height={30} fill="url(#pattern0_59_24)" />
-    <Defs>
-      <Pattern id="pattern0_59_24" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_59_24" transform="scale(0.02)" />
-      </Pattern>
-      <Image
-        id="image0_59_24"
-        width={50}
-        height={50}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACM0lEQVR4nO2YyUokQRCGIxBEGJ9AxuUw+BCjDzCeBoRRb3NvrYi2fQBBmcWD41kEby70ebAirEO/huBtXM8qKKijZFaVh3Zpy66layY/SCiKyqz8M/6MXAAcjpJAwQB44iGJIOkeklyExT4LkMxATfqhY/F23iPrKrLeIOvdi4X0FlnqwP4QdBTsj9tRtx2VS2TdAM+fgFowDHP6zhbzzDKJJJvIehV9ew6e/xk6AtJZZPkbjfaGtVYrKr8HkWUrjg7QLkPxkdBbJLmGqk4nrh/OpWsrprDI1KQ/ttObRMSwUhSZM5je7YO8Qdb1Bzu12xbpdihG1iBXKBgIs5NcvmpOtIL9oSgB3JjsB7lhvJ1SNGLiyQ/t2DT5T9W3PzUpNi1IpyJ77UBeIOm+FTIrH1JrtBYMR5N+D/LCLGRWSKXRm1qjlUbvwyKZF/FWoyztPosT0gJ0EfkvrDVf70aWJSQ9bnm+yLzIEbL+MH1KPjqkP4sXoE0HMvmeXEg4CnfgyUcomqqOxJHp/AySVX/QCckGdBFhN0cyAZ21uE1rfW30IOkKsp6EuwP5Zd6VLiIYimhemZfLJ4T15Ik902kZhRw8joj+KaG1ZPGJiCyUL2t9qXc1CzHvSpl+sVlICm1BbhX/USEHaUz04ld21jEjwIrw5FM7TaHborDb/WYCOmuxs1YmoLMWRxd0VR2BoqFgNDrPHCaua+5aC78i5Ue752/JR8FeYhsxYWQKLSSHVsQLl9j3hUhzSwXT2DcAAAAASUVORK5CYII="
-      />
-    </Defs>
+  <Svg viewBox="0,0,256,256" width={width} height={height} fillRule="nonzero">
+    <G
+      fill="#016fb9"
+      fillRule="nonzero"
+      stroke="none"
+      strokeWidth={1}
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
+      strokeMiterlimit={10}
+      strokeDasharray=""
+      strokeDashoffset={0}
+      style={{
+        mixBlendMode: 'normal',
+      }}
+    >
+      <G transform="scale(5.12,5.12)">
+        <Path d="M25,3c-6.63672,0 -12,5.36328 -12,12v5h-4c-1.64453,0 -3,1.35547 -3,3v24c0,1.64453 1.35547,3 3,3h32c1.64453,0 3,-1.35547 3,-3v-24c0,-1.64453 -1.35547,-3 -3,-3h-4v-5c0,-6.63672 -5.36328,-12 -12,-12zM25,5c5.56641,0 10,4.43359 10,10v5h-20v-5c0,-5.56641 4.43359,-10 10,-10zM9,22h32c0.55469,0 1,0.44531 1,1v24c0,0.55469 -0.44531,1 -1,1h-32c-0.55469,0 -1,-0.44531 -1,-1v-24c0,-0.55469 0.44531,-1 1,-1zM25,30c-1.69922,0 -3,1.30078 -3,3c0,0.89844 0.39844,1.6875 1,2.1875v2.8125c0,1.10156 0.89844,2 2,2c1.10156,0 2,-0.89844 2,-2v-2.8125c0.60156,-0.5 1,-1.28906 1,-2.1875c0,-1.69922 -1.30078,-3 -3,-3z" />
+      </G>
+    </G>
   </Svg>
 );
 
