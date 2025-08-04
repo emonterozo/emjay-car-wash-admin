@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios, { AxiosRequestConfig } from 'axios';
 import Config from 'react-native-config';
+import { ErrorProps } from '../types/services/types';
 
 // Types for API responses and errors
 export type ApiResponse<T> = Promise<{
@@ -8,6 +9,7 @@ export type ApiResponse<T> = Promise<{
   status: number;
   data?: T;
   error?: string;
+  errors?: ErrorProps[];
 }>;
 
 type ApiRequestMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
@@ -23,7 +25,13 @@ export const apiRequest = async <Req, Res>(
   options: ApiRequestOptions<Req, Res>,
   token?: string,
   retry = true,
-): Promise<{ success: boolean; status: number; data?: Res; error?: string }> => {
+): Promise<{
+  success: boolean;
+  status: number;
+  data?: Res;
+  error?: string;
+  errors?: ErrorProps[];
+}> => {
   try {
     const { method, data, ...config } = options;
 
@@ -74,6 +82,7 @@ export const apiRequest = async <Req, Res>(
         success: false,
         status,
         error: message,
+        errors: error.response?.data?.errors || [],
       };
     }
 

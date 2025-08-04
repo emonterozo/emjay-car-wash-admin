@@ -260,7 +260,6 @@ const styles = StyleSheet.create({
     height: 49,
   },
   dashboardContainer: {
-    paddingHorizontal: 23,
     paddingVertical: 20,
     marginTop: 24,
     justifyContent: 'space-between',
@@ -277,8 +276,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   dashboardItem: {
-    gap: 5,
-    width: '25%',
+    width: (width - 48) / 3,
     alignItems: 'center',
     marginVertical: 10,
   },

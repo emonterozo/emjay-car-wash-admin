@@ -19,16 +19,18 @@ import {
   AppHeader,
   EmptyState,
   ErrorModal,
+  FloatingActionButton,
   LoadingAnimation,
   ServiceTransactionItem,
   SizeDisplay,
 } from '@app/components';
 import { color, font } from '@app/styles';
-import { CarIcon, CoinsIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
+import { CarIcon, ChatIcon, CoinsIcon, MotorcycleIcon, WaterDropIcon } from '@app/icons';
 import { getCustomerInformationRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import {
   CustomerInformation,
+  GenderType,
   RecentTransaction,
   ScreenStatusProps,
 } from '../../types/services/types';
@@ -169,6 +171,16 @@ const CustomerDetails = () => {
     );
   };
 
+  const handlePressMessage = () => {
+    if (customerInformation)
+      {navigation.navigate('Chat', {
+        customerId: customerInformation._id,
+        firstName: customerInformation.first_name,
+        lastName: customerInformation.last_name,
+        gender: customerInformation.gender as GenderType,
+      });}
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -257,6 +269,10 @@ const CustomerDetails = () => {
           )}
         </View>
       </ScrollView>
+      <FloatingActionButton
+        fabIcon={<ChatIcon width={25} height={25} fill="#ffffff" />}
+        onPress={handlePressMessage}
+      />
     </SafeAreaView>
   );
 };

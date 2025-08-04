@@ -52,7 +52,7 @@ const Login = () => {
     if (response.success && response.data) {
       const { user: userData, accessToken, refreshToken } = response.data;
       if (isRemembered) {
-        storeCredentials(user.username, input.password);
+        storeCredentials(userData.username, input.password);
       } else {
         removeCredentials();
       }

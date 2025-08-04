@@ -55,6 +55,12 @@ export const DASHBOARD_ITEMS = [
   },
   {
     id: 8,
+    title: 'Scheduled Services',
+    icon: OngoingServicesIcon,
+    screen: 'ScheduledServices',
+  },
+  {
+    id: 9,
     title: 'Consumables',
     icon: ConsumablesIcon,
     screen: 'Consumables',
@@ -120,6 +126,16 @@ export const CONFIRM_TYPE = {
   AddExpense: {
     title: 'Are you sure you want to cancel adding expense item?',
     description: 'By doing this, you will lose any unsaved changes.',
+  },
+  CancelBooking: {
+    title: 'Are you sure you want to cancel this booking?',
+    description:
+      'Cancelling will free up this time slot, and the customer will be notified. This action cannot be undone.',
+  },
+  CompleteBooking: {
+    title: 'Mark this booking as completed?',
+    description:
+      'Completing this booking will finalize the record and notify the customer. Please ensure the service has been fulfilled.',
   },
 };
 

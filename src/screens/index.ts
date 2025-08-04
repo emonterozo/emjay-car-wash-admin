@@ -27,3 +27,4 @@ export { default as ExpensesForm } from './ExpensesForm/ExpensesForm';
 export { default as Statistics } from './Statistics/Statistics';
 export { default as PublishForm } from './PublishForm/PublishForm';
 export { default as Chat } from './Chat/Chat';
+export { default as ScheduledServices } from './ScheduledServices/ScheduledServices';

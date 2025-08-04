@@ -64,3 +64,4 @@ export { default as CoinsIcon } from './CoinsIcon';
 export { default as AccessDeniedIcon } from './AccessDeniedIcon';
 export { default as UserNotFoundIcon } from './UserNotFoundIcon';
 export { default as NoCameraIcon } from './NoCameraIcon';
+export { default as ChatIcon } from './ChatIcon';

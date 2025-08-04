@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     lineHeight: 19.12,
     color: '#050303',
     textAlign: 'center',
-    lineHeight: 19.12,
   },
   descriptionText: {
     ...font.regular,
@@ -90,7 +89,6 @@ const styles = StyleSheet.create({
     lineHeight: 12.75,
     color: '#5C5C5C',
     textAlign: 'center',
-    lineHeight: 12.75,
   },
   buttonContainer: {
     flexDirection: 'row',

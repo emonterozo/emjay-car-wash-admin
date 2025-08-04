@@ -109,6 +109,7 @@ export type AuthStackParamList = {
     lastName: string;
     gender: GenderType;
   };
+  ScheduledServices: undefined;
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];

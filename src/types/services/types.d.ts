@@ -11,6 +11,8 @@ export type ServiceChargeType = 'free' | 'not free' | 'points & cash';
 
 export type StatisticsFilter = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
+export type BookingScheduledAction = 'CANCEL' | 'COMPLETE';
+
 export type ScreenStatusProps = {
   isLoading: boolean;
   hasError: boolean;
@@ -521,5 +523,34 @@ export type UpdateMessageStatePayload = {
 
 export type UpdateMessageStateResponse = {
   _id: string;
+  errors: ErrorProps[];
+};
+
+export type Booking = {
+  _id: string;
+  date: string;
+  customer: Pick<Customer, '_id' | 'first_name' | 'last_name' | 'gender'>;
+  slot_id: string;
+  start_time: string;
+  end_time: string;
+  is_completed: string;
+};
+
+export type BookingResponse = {
+  bookings: Booking[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type UpdateBookingScheduledPayload = {
+  date: string;
+  slot_id: string;
+  action: BookingScheduledAction;
+};
+
+export type UpdateBookingResponse = {
+  date: string;
+  time: string;
+  slot_id: string;
   errors: ErrorProps[];
 };

@@ -1,7 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import messaging from '@react-native-firebase/messaging';
+import {
+  getMessaging,
+  getToken,
+  getInitialNotification,
+  onNotificationOpenedApp,
+} from '@react-native-firebase/messaging';
 import notifee, { EventType } from '@notifee/react-native';
 import { PermissionsAndroid, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,6 +36,7 @@ import {
   Statistics,
   PublishForm,
   Chat,
+  ScheduledServices,
 } from '@app/screens';
 import GlobalContext from '@app/context';
 import { AuthStackParamList } from '../types/navigation/types';
@@ -41,6 +47,7 @@ const UnAuthStack = createStackNavigator();
 const AuthStack = createStackNavigator<AuthStackParamList>();
 
 const Navigation = () => {
+  const messaging = getMessaging();
   const [user, setUser] = useState<TUser>({
     id: '',
     type: '',
@@ -71,7 +78,7 @@ const Navigation = () => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
     }
 
-    const token = await messaging().getToken();
+    const token = await getToken(messaging);
 
     setUser({
       ...user,
@@ -113,18 +120,7 @@ const Navigation = () => {
 
   useEffect(() => {
     //Killed state: Notification tapped
-    messaging()
-      .getInitialNotification()
-      .then(async (remoteMessage) => {
-        if (!remoteMessage) {
-          return;
-        }
-
-        const data = remoteMessage.data as TNotification;
-        setSelectedNotification({ type: data.type, id: data.id });
-      });
-
-    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+    getInitialNotification(messaging).then(async (remoteMessage) => {
       if (!remoteMessage) {
         return;
       }
@@ -132,6 +128,16 @@ const Navigation = () => {
       const data = remoteMessage.data as TNotification;
       setSelectedNotification({ type: data.type, id: data.id });
     });
+
+    onNotificationOpenedApp(messaging, (remoteMessage) => {
+      if (!remoteMessage) {
+        return;
+      }
+
+      const data = remoteMessage.data as TNotification;
+      setSelectedNotification({ type: data.type, id: data.id });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -166,6 +172,7 @@ const Navigation = () => {
             <AuthStack.Screen name="Statistics" component={Statistics} />
             <AuthStack.Screen name="PublishForm" component={PublishForm} />
             <AuthStack.Screen name="Chat" component={Chat} />
+            <AuthStack.Screen name="ScheduledServices" component={ScheduledServices} />
           </AuthStack.Navigator>
         ) : (
           <UnAuthStack.Navigator screenOptions={{ headerShown: false }}>

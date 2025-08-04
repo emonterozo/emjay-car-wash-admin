@@ -3,11 +3,17 @@
  */
 
 import { AppRegistry } from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+import {
+  getMessaging,
+  setBackgroundMessageHandler,
+  onMessage,
+} from '@react-native-firebase/messaging';
 
 import App from './App';
 import { name as appName } from './app.json';
 import { showLocalNotification } from './src/utils/helpers';
+
+const messaging = getMessaging();
 
 // Function to check and show the local notification only if it's not a duplicate
 async function onMessageReceived(message) {
@@ -15,8 +21,8 @@ async function onMessageReceived(message) {
 }
 
 // Set up message listener for foreground
-messaging().onMessage(onMessageReceived);
+onMessage(messaging, onMessageReceived);
 
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {});
+setBackgroundMessageHandler(messaging, async (remoteMessage) => {});
 
 AppRegistry.registerComponent(appName, () => App);
