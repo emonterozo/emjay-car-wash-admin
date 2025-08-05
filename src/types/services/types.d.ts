@@ -529,8 +529,8 @@ export type UpdateMessageStateResponse = {
 export type Booking = {
   _id: string;
   date: string;
-  customer: Pick<Customer, '_id' | 'first_name' | 'last_name' | 'gender'>;
-  service: Pick<Service, '_id' | 'title'>;
+  customer: Pick<Customer, '_id' | 'first_name' | 'last_name' | 'gender'> & { distance: string };
+  service: Pick<Service, '_id' | 'title', 'type'>;
   slot_id: string;
   start_time: string;
   end_time: string;

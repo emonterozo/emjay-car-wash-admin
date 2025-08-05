@@ -7,7 +7,6 @@ import {
   StatusBar,
   TouchableOpacity,
   FlatList,
-  Image,
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,7 +23,7 @@ import {
   LoadingAnimation,
   Toast,
 } from '@app/components';
-import { ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
+import { ERR_NETWORK, LIMIT } from '@app/constant';
 import GlobalContext from '@app/context';
 import { getScheduledBookingRequest, updateBookingScheduledRequest } from '@app/services';
 import { color, font } from '@app/styles';
@@ -196,37 +195,59 @@ const ScheduledServices = () => {
         contentContainerStyle={styles.list}
         data={bookings}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item.customer._id)}>
-            <View style={styles.avatarContainer}>
-              <Image
-                source={item.customer.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-                style={styles.avatar}
-                resizeMode="contain"
-              />
-            </View>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => handleCardPress(item.customer._id)}
+            activeOpacity={0.9}
+          >
             <View style={styles.details}>
-              <Text
-                style={styles.textName}
-              >{`${item.customer.first_name} ${item.customer.last_name}`}</Text>
-              <View style={styles.textInfoContainer}>
-                <Text style={styles.textInfo}>
-                  {format(new Date(item.date), 'EEE, MMM dd, yyyy')}
-                </Text>
-                <Text style={styles.textInfo}>{`${item.start_time} - ${item.end_time}`}</Text>
-                <Text style={styles.textInfo}>{item.service.title}</Text>
+              <Text style={styles.textName}>
+                {`${item.customer.first_name} ${item.customer.last_name}`}
+              </Text>
+              <View style={styles.labeledInfoContainer}>
+                <View style={styles.row}>
+                  <Text style={styles.description}>Scheduled Date:</Text>
+                  <Text style={styles.value}>
+                    {format(new Date(item.date), 'EEE, MMM dd, yyyy')}
+                  </Text>
+                </View>
+                <View style={styles.row}>
+                  <Text style={styles.description}>Time Slot:</Text>
+                  <Text style={styles.value}>{`${item.start_time} - ${item.end_time}`}</Text>
+                </View>
+                <View style={styles.row}>
+                  <Text style={styles.description}>Selected Service:</Text>
+                  <Text style={styles.value}>{item.service.title}</Text>
+                </View>
+                <View style={styles.row}>
+                  <Text style={styles.description}>Vehicle Type:</Text>
+                  <Text style={styles.value}>
+                    {item.service.type.charAt(0).toUpperCase() + item.service.type.slice(1)}
+                  </Text>
+                </View>
+                <View style={styles.row}>
+                  <Text style={styles.description}>Distance:</Text>
+                  <Text style={styles.value}>{item.customer.distance}</Text>
+                </View>
               </View>
               <View style={styles.buttonContainer}>
                 {actions.map((act) => (
                   <Pressable
                     key={act}
-                    style={styles.button}
+                    style={({ pressed }) => [
+                      styles.button,
+                      {
+                        backgroundColor: act === 'CANCEL' ? '#FF4C4C' : '#4CAF50',
+                        opacity: pressed ? 0.8 : 1,
+                      },
+                    ]}
                     onPress={() => {
                       setSelectedBooking(item);
                       setAction(act);
                       toggleConfirmModal();
                     }}
                   >
-                    <Text style={styles.text}>
+                    <Text style={styles.buttonText}>
                       {act.charAt(0).toUpperCase() + act.slice(1).toLowerCase()}
                     </Text>
                   </Pressable>
@@ -275,75 +296,65 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   card: {
-    backgroundColor: '#F3F2EF',
-    borderRadius: 24,
-    shadowColor: '#000000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    padding: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  details: {
+    flexDirection: 'column',
     gap: 8,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+  },
+  textName: {
+    ...font.bold,
+    fontSize: 18,
+    lineHeight: 18,
+    color: color.primary,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 4,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    ...font.bold,
+    color: '#fff',
+    fontSize: 16,
   },
   separator: {
     marginTop: 24,
   },
-  details: {
-    gap: 8,
-    flex: 1,
-  },
-  textName: {
-    ...font.regular,
-    fontSize: 24,
-    color: '#000000',
-    lineHeight: 24,
-    marginBottom: 8,
-  },
-  avatarContainer: {
-    backgroundColor: '#1F93E1',
-    borderRadius: 90,
-    width: 90,
-    height: 90,
-    overflow: 'hidden',
-  },
-  avatar: {
-    position: 'absolute',
-    top: 4,
-    left: 0,
-    width: '100%',
-    height: '100%',
-  },
-  textInfoContainer: {
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 5,
   },
-  textInfo: {
-    ...font.regular,
-    fontSize: 16,
-    color: '#7F7A7A',
-    lineHeight: 16,
-  },
-  text: {
-    ...font.regular,
+  description: {
+    ...font.bold,
+    color: color.black,
     fontSize: 16,
     lineHeight: 16,
-    color: '#ffffff',
   },
-  button: {
-    backgroundColor: color.primary_pressed_state,
-    padding: 8,
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    justifyContent: 'center',
+  value: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#555',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  labeledInfoContainer: {
     gap: 10,
+    marginTop: 10,
   },
 });
 

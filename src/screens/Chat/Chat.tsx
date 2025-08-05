@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   FlatList,
   Text,
@@ -18,6 +17,7 @@ import { io } from 'socket.io-client';
 import Config from 'react-native-config';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { color, font } from '@app/styles';
 import { EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
@@ -236,67 +236,69 @@ const Chat = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={['top']} style={styles.container}>
       <StatusBar backgroundColor="#F4F9FD" barStyle="dark-content" />
-      <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
-      <ErrorModal
-        type={screenStatus.type}
-        isVisible={screenStatus.hasError}
-        onCancel={onCancel}
-        onRetry={fetchMessage}
-      />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ChevronLeftIcon />
-        </TouchableOpacity>
-        <View style={styles.avatarContainer}>
-          <Image
-            source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-            style={styles.avatar}
-            resizeMode="contain"
-          />
+      <View style={styles.containerContent}>
+        <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
+        <ErrorModal
+          type={screenStatus.type}
+          isVisible={screenStatus.hasError}
+          onCancel={onCancel}
+          onRetry={fetchMessage}
+        />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ChevronLeftIcon />
+          </TouchableOpacity>
+          <View style={styles.avatarContainer}>
+            <Image
+              source={gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+              style={styles.avatar}
+              resizeMode="contain"
+            />
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.name} numberOfLines={1}>
+              {`${firstName} ${lastName}`}
+            </Text>
+            <Text style={styles.description} numberOfLines={1}>
+              Carwash customer
+            </Text>
+          </View>
         </View>
-        <View style={styles.content}>
-          <Text style={styles.name} numberOfLines={1}>
-            {`${firstName} ${lastName}`}
-          </Text>
-          <Text style={styles.description} numberOfLines={1}>
-            Carwash customer
-          </Text>
+        <View style={styles.separator} />
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item._id.toString()}
+          renderItem={renderBubble}
+          inverted={messages.length > 0}
+          onEndReached={loadMoreMessages}
+          ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
+          ListEmptyComponent={screenStatus.isLoading ? undefined : <EmptyState />}
+          contentContainerStyle={messages.length > 0 ? undefined : styles.empty}
+        />
+        <View style={styles.separator} />
+        <View style={styles.bottom}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={message}
+              placeholder="Type your message..."
+              multiline
+              numberOfLines={10}
+              style={styles.input}
+              placeholderTextColor="#888888"
+              onChangeText={setMessage}
+              maxLength={1000}
+            />
+          </View>
+          <Pressable
+            onPress={sendMessage}
+            style={({ pressed }) => [styles.send, pressed && { backgroundColor: '#46A6FF' }]}
+          >
+            <SendIcon width={40} height={40} fill="#FFFFFF" />
+          </Pressable>
         </View>
-      </View>
-      <View style={styles.separator} />
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item._id.toString()}
-        renderItem={renderBubble}
-        inverted={messages.length > 0}
-        onEndReached={loadMoreMessages}
-        ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
-        ListEmptyComponent={screenStatus.isLoading ? undefined : <EmptyState />}
-        contentContainerStyle={messages.length > 0 ? undefined : styles.empty}
-      />
-      <View style={styles.separator} />
-      <View style={styles.bottom}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={message}
-            placeholder="Type your message..."
-            multiline
-            numberOfLines={10}
-            style={styles.input}
-            placeholderTextColor="#888888"
-            onChangeText={setMessage}
-            maxLength={1000}
-          />
-        </View>
-        <Pressable
-          onPress={sendMessage}
-          style={({ pressed }) => [styles.send, pressed && { backgroundColor: '#46A6FF' }]}
-        >
-          <SendIcon width={40} height={40} fill="#FFFFFF" />
-        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -304,6 +306,10 @@ const Chat = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#F4F9FD',
+  },
+  containerContent: {
     flex: 1,
     backgroundColor: color.background,
   },
