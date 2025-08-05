@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Text,
   FlatList,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ScreenStatusProps, StatisticsFilter, TransactionItem } from '../../types/services/types';
 import { NavigationProp } from '../../types/navigation/types';

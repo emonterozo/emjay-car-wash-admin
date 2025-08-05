@@ -530,6 +530,7 @@ export type Booking = {
   _id: string;
   date: string;
   customer: Pick<Customer, '_id' | 'first_name' | 'last_name' | 'gender'>;
+  service: Pick<Service, '_id' | 'title'>;
   slot_id: string;
   start_time: string;
   end_time: string;

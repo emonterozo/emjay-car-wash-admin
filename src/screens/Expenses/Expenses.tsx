@@ -1,15 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { format, startOfMonth } from 'date-fns';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, StatusBar, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { NavigationProp } from '../../types/navigation/types';
 import { ExpenseItem, ScreenStatusProps } from '../../types/services/types';

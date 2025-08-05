@@ -1,15 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  FlatList,
-  Text,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import { View, StyleSheet, StatusBar, FlatList, Text, Image, TouchableOpacity } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { color, font } from '@app/styles';
 import {

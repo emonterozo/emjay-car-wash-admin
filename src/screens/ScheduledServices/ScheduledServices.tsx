@@ -213,6 +213,7 @@ const ScheduledServices = () => {
                   {format(new Date(item.date), 'EEE, MMM dd, yyyy')}
                 </Text>
                 <Text style={styles.textInfo}>{`${item.start_time} - ${item.end_time}`}</Text>
+                <Text style={styles.textInfo}>{item.service.title}</Text>
               </View>
               <View style={styles.buttonContainer}>
                 {actions.map((act) => (
